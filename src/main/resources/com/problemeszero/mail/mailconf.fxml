@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<GridPane alignment="center" hgap="10" prefHeight="336.0" prefWidth="438.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.problemeszero.mail.MailConfController">
+<padding><Insets bottom="10" left="25" right="25" top="25" /></padding>
+
+<Text text="Mail Config" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+
+<Label text="Servidor:" GridPane.rowIndex="2" />
+
+<TextField fx:id="tServidor" text="${servidor}" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+<TextField fx:id="tPort" text="${port}" prefHeight="25.0" prefWidth="37.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+<Label fx:id="lblUN" text="Usuari:" GridPane.rowIndex="3" />
+
+<TextField fx:id="tUN" text="${usuari}" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+<Label fx:id="lblPW" prefHeight="17.0" prefWidth="91.0" text="Contrasenya" GridPane.rowIndex="4" />
+
+<PasswordField fx:id="tPW" text="${contrasenya}" prefHeight="25.0" prefWidth="129.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+<HBox alignment="bottom_right" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="6">
+    <Button onAction="#handleVerifyButton" text="Verifica" />
+</HBox>
+
+<HBox   alignment="bottom_left" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="6">
+    <Button fx:id="btnClose" onAction="#handleCloseButtonAction" text="Tanca" />
+</HBox>
+
+<Text fx:id="actiontarget" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+</GridPane>

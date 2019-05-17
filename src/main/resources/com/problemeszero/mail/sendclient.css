@@ -1,0 +1,28 @@
+.lay-log {
+    -fx-font-size: 13px;
+    -fx-background-color: linear-gradient(#ff2, #e5bb00), linear-gradient(#e43, #f84);
+    -fx-background-radius: 2, 29;
+}
+
+.lay-edit {
+    -fx-font-size: 13px;
+    -fx-background-color: linear-gradient(#ff2, #e5bb00), linear-gradient(#f53, #f86);
+    -fx-background-radius: 2, 29
+}
+
+.lay-sent {
+    -fx-background-color: linear-gradient(#ff2, #e5bb00), linear-gradient(#f53, #f86);
+    -fx-background-radius: 2, 29;
+}
+
+.t-suc {
+    -fx-font-size: 32px;
+    -fx-alignment: CENTER;
+    -fx-fill: #2b3;
+}
+
+.t-sent {
+    -fx-font-size: 10px;
+    -fx-fill: #676767
+    -fx-alignment: CENTER;
+}

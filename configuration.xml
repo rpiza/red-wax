@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Fitxer de configuracio del servidor de correu</comment>
+    <entry key="env">Testnet3</entry>
+    <entry key="depth">0</entry>
+    <entry key="api_addr">https://testnet.blockchain.info/rawaddr/</entry>
+    <entry key="api_currentBlock">https://testnet.blockchain.info/q/getblockcount</entry>
+    <entry key="usuari">ramon@problemeszero.com</entry>
+    <entry key="port">465</entry>
+    <entry key="contrasenya">SaintJ4mes13</entry>
+    <entry key="protocol">smtp</entry>
+    <entry key="servidor">ssl0.ovh.net</entry>
+    <entry key="imap.usuari">ramon@problemeszero.com</entry>
+    <entry key="imap.contrasenya">SaintJ4mes13</entry>
+    <!-- El protocol pot ser imaps o pop3s -->
+    <entry key="imap.protocol">pop3s</entry>
+    <entry key="imap.servidor">ssl0.ovh.net</entry>
+    <entry key="imap.port"></entry>
+    <entry key="imap.folder">Inbox</entry>
+</properties>

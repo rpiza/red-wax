@@ -1,0 +1,8 @@
+.idea
+/bin/
+target/**/*.class
+*.spvchain
+*.wallet
+target/**/*.jar
+target/
+!lib/*.jar
