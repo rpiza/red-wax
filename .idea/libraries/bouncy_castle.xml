@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="bouncy-castle">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/bc-fips-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bcmail-fips-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bcpkix-fips-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

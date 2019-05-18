@@ -8,11 +8,11 @@
     <entry key="api_currentBlock">https://testnet.blockchain.info/q/getblockcount</entry>
     <entry key="usuari">ramon@problemeszero.com</entry>
     <entry key="port">465</entry>
-    <entry key="contrasenya">SaintJ4mes13</entry>
+    <entry key="contrasenya">xxxxx</entry>
     <entry key="protocol">smtp</entry>
     <entry key="servidor">ssl0.ovh.net</entry>
     <entry key="imap.usuari">ramon@problemeszero.com</entry>
-    <entry key="imap.contrasenya">SaintJ4mes13</entry>
+    <entry key="imap.contrasenya">xxxxx</entry>
     <!-- El protocol pot ser imaps o pop3s -->
     <entry key="imap.protocol">pop3s</entry>
     <entry key="imap.servidor">ssl0.ovh.net</entry>
