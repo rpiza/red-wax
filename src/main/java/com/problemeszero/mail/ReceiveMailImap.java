@@ -19,20 +19,12 @@ public class ReceiveMailImap {
         //llegim fitxer de propietats configuration.xml
 
         System.err.println("Llegint el fitxer de propietats configuration.xml per a imap");
-//        try {
-//            InputStream in = new FileInputStream("configuration.xml");
-//            prop.loadFromXML(in);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         host = Main.appProps.getProperty("imap.servidor");
         port = Main.appProps.getProperty("imap.port");
         proto = Main.appProps.getProperty("imap.protocol");
         UN = Main.appProps.getProperty("imap.usuari");
         PW = Main.appProps.getProperty("imap.contrasenya");
         folderImap = Main.appProps.getProperty("imap.folder");
-
-
     }
 
     //
@@ -165,15 +157,16 @@ public class ReceiveMailImap {
                 //Guardar multipart a rwm
                 ByteArrayOutputStream mPartBaos = new ByteArrayOutputStream();
                 multi.writeTo(mPartBaos);
-//              if (multi.getContentType().contains("multipart/signed; protocol=\"application/pkcs7-signature\"; " + (char) 0x0D + (char) 0x0A + (char) 0x09 + "micalg=sha-384;")){
                 if (multi.getContentType().contains("multipart/signed;")){
-                    rwm.setMailSignedMultiPart(mPartBaos.toByteArray());
+                    rwm.setMailSignedMultiPart(mPartBaos.toByteArray()); //Guardam el Multipart de tot el correu (CEM + Signatura)
                     //Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cemSignat");
                     //System.err.println(java.util.Arrays.toString(mPartBaos.toByteArray()));
                 }
                 if (multi.getContentType().contains("multipart/mixed;")){
                     rwm.setCem(mPartBaos.toByteArray());
-                    //Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cem");
+                    //Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cem imaps");
+//                    System.err.println(new String(java.util.Arrays.toString(mPartBaos.toByteArray())));
+//                    System.err.println(new String(java.util.Arrays.toString(rwm.getCem())));
                 }
                 mPartBaos.close();
 

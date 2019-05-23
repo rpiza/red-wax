@@ -52,9 +52,6 @@ public class AESCrypto2 {
         generateK2();
 
         this.fipsSymmetricFactory = new FipsAES.OperatorFactory();
-
-
-
     }
 
     public static SymmetricSecretKey defineKey(byte[] keyBytes)
@@ -73,8 +70,8 @@ public class AESCrypto2 {
     public void setK1(byte[] k1) {
         this.k1 = k1;
         System.err.println("K1 = " + java.util.Arrays.toString(k1));
-        System.err.println("K1 = " + new String(Base64.getEncoder().encode(k1)));
-        System.err.println("K1 = " + new String(Hex.encode(k1)));
+        System.err.println("K1 (base64) = " + new String(Base64.getEncoder().encode(k1)));
+        System.err.println("K1 (Hex) = " + new String(Hex.encode(k1)));
     }
 
     public byte[] getK2() {
@@ -84,8 +81,8 @@ public class AESCrypto2 {
     public void setK2(byte[] k2) {
         this.k2 = k2;
         System.err.println("K2 = " + java.util.Arrays.toString(k2));
-        System.err.println("K2 = " + new String(Base64.getEncoder().encode(k2)));
-        System.err.println("K2 = " + new String(Hex.encode(k2)));
+        System.err.println("K2 (base64) = " + new String(Base64.getEncoder().encode(k2)));
+        System.err.println("K2 (Hex) = " + new String(Hex.encode(k2)));
     }
 
     public void generateK2(){
@@ -159,74 +156,5 @@ public class AESCrypto2 {
 //        return drgbBldr.build("varibale per inicialitzar".getBytes(), true);
 //    }
 
-//    public byte[] fileToByte(String title) {
-//
-//        //FileChooser1 FC = new FileChooser1();
-//        FileChooser FC = new FileChooser();
-//        FC.setTitle(title);
-//        FileInputStream iInputStream = null;
-//
-//        File iFile = new File(FC.showOpenDialog(Main.instance.stage).getAbsolutePath());
-//
-//        byte[] iByteStream = new byte[(int) iFile.length()];
-//
-//        try {
-//            iInputStream = new FileInputStream(iFile);
-//            iInputStream.read(iByteStream);
-//            iInputStream.close();
-//        } catch (Exception e) {
-//            logError("Exception" + e);
-//        }
-//        return iByteStream;
-//    }
-//
-//    private static void logError(String string) {
-//        System.out.println(string);
-//
-//    }
-//
-//    public void byteToFile(byte[] output, String title) {
-//
-//        //FileChooser1 FC = new FileChooser1();
-//        FileChooser FC = new FileChooser();
-//        FC.setTitle(title);
-//        FileOutputStream fos= null;
-//        try {
-//            fos = new FileOutputStream(FC.showSaveDialog(Main.instance.stage).getAbsolutePath());
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            fos.write(output);
-//            //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-//    public static byte[] createKeyTransEnvelopedObject(X509Certificate encryptionCert, byte[] data) throws GeneralSecurityException, CMSException, IOException {
-//
-//        CMSEnvelopedDataGenerator envelopedGen = new CMSEnvelopedDataGenerator();
-//        JcaAlgorithmParametersConverter paramsConverter = new JcaAlgorithmParametersConverter();
-//        envelopedGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encryptionCert,paramsConverter.getAlgorithmIdentifier(
-//                PKCSObjectIdentifiers.id_RSAES_OAEP, OAEPParameterSpec.DEFAULT)).setProvider("BCFIPS"));
-//        return envelopedGen.generate(new CMSProcessableByteArray(data),new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC).setProvider("BCFIPS").build()).getEncoded();
-//    }
-//
-//    public static byte[] extractKeyTransEnvelopedData(PrivateKey privateKey, X509Certificate encryptionCert, byte[] encEnvelopedData) throws CMSException {
-//
-//        CMSEnvelopedData envelopedData = new CMSEnvelopedData(encEnvelopedData);
-//        RecipientInformationStore recipients = envelopedData.getRecipientInfos();
-//        Collection c = recipients.getRecipients(new JceKeyTransRecipientId(encryptionCert));
-//        Iterator it = c.iterator();
-//        if (it.hasNext()) {
-//            RecipientInformation recipient = (RecipientInformation)it.next();
-//            return recipient.getContent(new JceKeyTransEnvelopedRecipient(privateKey).setProvider("BCFIPS"));
-//        }
-//        throw new IllegalArgumentException("recipient for certificate not found");
-//    }
 
 }

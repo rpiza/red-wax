@@ -24,15 +24,15 @@ public class RedWaxMessage implements Serializable {
     private String to;
     private String subject;
     private Date sentDate;
-    private byte[] mailSign;
-    private byte[] mailSignedMultiPart;
+    private byte[] mailSign; //conte el MimeBodyPart del la signatura
+    private byte[] mailSignedMultiPart; //conte el MultiPart del (MultiPart) Cem + (MimeBodyPart) Signatura
     private byte[] K1;
     private byte[] K2;
-    private byte[][] certFile;
+    private byte[][] certFile; //Conte el document certificat xifrat.
     private long deadTimeMillis;
     private byte[] kPrima;
     private String addrAlice;
-    private byte[] cem;
+    private byte[] cem; //Conte el Multipart del missatge. Sense signatura
     private byte[] hashCem;
     private byte[] opReturn;
     private String id;

@@ -1,6 +1,7 @@
 package com.problemeszero.mail;
 
 
+import com.problemeszero.crypto.AESCrypto2;
 import com.problemeszero.crypto.Pem;
 import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.Main;
@@ -82,6 +83,11 @@ public class ReadConfirmationController {
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         rwmAlice = (RedWaxMessage) jaxbUnmarshaller.unmarshal(file);
 
+//        System.err.println(new String(java.util.Arrays.toString(rwm.getCem())));
+//        System.err.println(new String(java.util.Arrays.toString(rwmAlice.getCem())));
+//        Smime.byteToFile(rwm.getCem(), "Guardar cem Bob", new File(Main.appProps.getProperty("Fitxers")));
+//        Smime.byteToFile(rwmAlice.getCem(), "Guardar cem Alice", new File(Main.appProps.getProperty("Fitxers")));
+
         if (Arrays.equals(rwm.getCem(),rwmAlice.getCem())){
             cemIguals = true;
             System.err.println(" El cem rebut per n'Alice és igual a l'enviat a ne'n Bob " );
@@ -118,7 +124,7 @@ public class ReadConfirmationController {
 //        } catch (MessagingException e) {
 //            e.printStackTrace();
 //        }
-//        Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cemSignat");
+//        Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cemSignat",new File(Main.appProps.getProperty("Fitxers")));
 
         //enviar K1 a bitcoin
         if (okSignatura && cemIguals){

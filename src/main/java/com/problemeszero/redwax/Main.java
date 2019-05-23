@@ -67,6 +67,7 @@ public class Main extends Application {
     private void realStart(Stage mainWindow) throws IOException {
 
         BasicConfigurator.configure();
+        //System.setProperty("line.separator","\r\n");
 
         //carregam el proveidor desde la JVM - https://docs.oracle.com/cd/E19830-01/819-4712/ablsc/index.html
         Security.addProvider(new BouncyCastleFipsProvider());

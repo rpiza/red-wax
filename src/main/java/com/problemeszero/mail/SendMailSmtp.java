@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import static com.problemeszero.time.TimePickerController.selectTimeAlert;
+import static java.lang.Thread.sleep;
 import static javafx.beans.binding.Bindings.convert;
 
 public class SendMailSmtp {
@@ -125,8 +126,16 @@ public class SendMailSmtp {
 
         try {
 
-            System.out.println("\n \n>> ?" + mto);
+//            System.out.println("\n \n>> ?" + cont);
+//            System.out.println(java.util.Arrays.toString(cont.getBytes()));
+
+            //AFEGIM UN CR (13) ABANS DEL LF (10) al missatge body del correu
+            System.out.println("El valor de line_break es: " + Main.appProps.getProperty("line_break"));
+            if ( Boolean.valueOf(Main.appProps.getProperty("line_break"))) { cont =linebreak(cont);}
+//            System.out.println(java.util.Arrays.toString(cont.getBytes()));
+            System.out.println("\n \n>> ?" + cont);
             System.out.println("\n \n>> ?" + to);
+
             Message m = new MimeMessage(sesh);
             m.setFrom(new InternetAddress(UN));
             m.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
@@ -268,16 +277,17 @@ public class SendMailSmtp {
 //                }
 
 //                Guardar a un fitxer tot el multipart : cem + signatura
+                //mPart  conte dos MimeBobyPart: 1r que es el cem i el 2n que es el missatge signat
 //                ByteArrayOutputStream mPartBaos = new ByteArrayOutputStream();
 //                mPart.writeTo(mPartBaos);
 //                //System.err.println(java.util.Arrays.toString(mPartBaos.toByteArray()));
-//               // aes.byteToFile(mPartBaos.toByteArray(), "Guardar cemSignat");
+//                Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cemSignat", new File(Main.appProps.getProperty("Fitxers")));
 //                mPartBaos.close();
 
                 //Signar i xifrar el missatge
                 //mPart.addBodyPart(Smime.createSignedEncryptedBodyPart(priKeyAlice,aliceCert, bobCert ,bodyPart));
 
-                //Obtenim el Cem del multipart i cream el hash del missatge
+                //Obtenim el Cem del multipart signat i cream el hash del missatge
                 ByteArrayOutputStream bodyPartBaos = new ByteArrayOutputStream();
                 Multipart multi=(Multipart) mPart.getBodyPart(0).getContent();
                 multi.writeTo(bodyPartBaos);
@@ -359,6 +369,26 @@ public class SendMailSmtp {
             e.printStackTrace();
         }
 
+    }
+    //Afegeix un CR al final de linia.
+    //A l'hora de comparar els cem a ReadConfirmationController dona error.
+    //Sense haver investigat molt, sembla ser que els servidors de correu afegeixen un \r quan troben un \n, quedant \r\n
+    //Amb aquesta funcio afegim de serie el \r i aixi la comparacion de cem no falla
+    private String linebreak(String string){
+        int j= 0;
+        int i=string.indexOf(10);
+        String str="";
+        while (i>0) {
+//            System.out.println("i=" + i);
+//            System.out.println(string.substring(j, i));
+//            System.out.println("length="+string.substring(j, i).length());
+            str =  str + string.substring(j, i) + (char) 0x0D + (char) 0x0A;
+//            System.out.println("length="+ str.length());
+            j=i+1;
+            i=string.indexOf(10,j);
+        }
+        str = str + string.substring(j);
+        return str;
     }
 
 //    public byte[] wrapKey(AsymmetricRSAPublicKey pubKey, byte[] inputKeyBytes) throws PlainInputProcessingException{

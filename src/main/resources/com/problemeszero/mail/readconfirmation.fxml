@@ -15,7 +15,7 @@
 <?import com.problemeszero.redwax.controls.*?>
 <?scenebuilder-stylesheet ../redwax/wallet.css?>
 
-<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="200.0" minWidth="300.0" prefHeight="451.0" prefWidth="800.0" opacity="100.0" styleClass="root-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.problemeszero.mail.ReadConfirmationController">
+<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="200.0" minWidth="300.0" opacity="100.0" prefHeight="451.0" prefWidth="800.0" styleClass="root-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.problemeszero.mail.ReadConfirmationController">
   <children>
     <Label layoutX="14.0" layoutY="14.0" text="REDWAX">
       <font>
@@ -39,8 +39,8 @@
     <!--<HBox alignment="TOP_RIGHT" fillHeight="true" layoutX="616.0" minHeight="16.0" prefHeight="36.0" prefWidth="170.0" visible="true" AnchorPane.bottomAnchor="17.0">-->
     <HBox alignment="TOP_LEFT" fillHeight="true" layoutX="14.0" minHeight="16.0" prefHeight="36.0" prefWidth="243.0" spacing="10.0" visible="true" AnchorPane.bottomAnchor="17.0">
       <children>
+        <Button defaultButton="true" mnemonicParsing="false" onAction="#onRefreshClicked" styleClass="fat-button" text="Carrega" />
         <Button defaultButton="true" mnemonicParsing="false" onAction="#onEnviaK1Clicked" styleClass="fat-button" text="Envia K1" />
-        <Button defaultButton="true" mnemonicParsing="false" onAction="#onRefreshClicked" styleClass="fat-button" text="Recarrega" />
       </children>
     </HBox>
     <ImageView fitHeight="243.0" fitWidth="243.0" opacity="0.28" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="-36.0" AnchorPane.rightAnchor="-34.0">

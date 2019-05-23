@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="bouncy-castle">
+  <library name="bc-fips">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/bc-fips-1.0.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/bcmail-fips-1.0.1.jar!/" />
