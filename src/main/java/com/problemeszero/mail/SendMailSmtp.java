@@ -53,8 +53,7 @@ public class SendMailSmtp {
     public RedWaxMessage messageObject;
 
     public SendMailSmtp() {
-        //carregam el fitxer properties
-        //llegim fitxer de propietats configuration.xml
+        //messageObject conte les diferents part de la transaccio (K,K1,K2,CEM,from,subject, .....)
         messageObject = new RedWaxMessage();
         System.err.println("Llegint el fitxer de propietats configuration.xml per a smtp");
 //        try {
@@ -78,16 +77,29 @@ public class SendMailSmtp {
         Main.appProps = prop;
     }
 
-    public void auth() throws IOException {
-        boolean auth = chk(UN, PW);
-        if(!auth) {
-            System.out.print("Not auth");
-            // ESCRIURE a la finestra si l'autenticacio NO es correcte. retornar un string
+//    public void auth() throws IOException {
+//        boolean auth = chk(UN, PW);
+//        if(!auth) {
+//            System.out.println("Auth KO. Credencials SMPT incorrectes");
+//            // ESCRIURE a la finestra si l'autenticacio NO es correcte. retornar un string
+//
+//        } else {
+//            System.out.println("Auth OK!!. Credencials SMPT correctes");
+//            // ESCRIURE a la finestra si l'autenticacio es correcte. retornar un string
+//        }
+//    }
 
+    public String auth() throws IOException {
+        boolean auth = chk(UN, PW);
+        String s="";
+
+        if(!auth) {
+            s="Auth KO. Credencials SMPT incorrectes";
         } else {
-            System.out.print("Auth");
-            // ESCRIURE a la finestra si l'autenticacio es correcte. retonrar un string
+            s="Auth OK!!. Credencials SMPT correctes";
         }
+        System.out.println(s);
+        return s;
     }
 
     private  boolean chk(String UN, String PW) {
@@ -98,7 +110,9 @@ public class SendMailSmtp {
         }
         Main.appProps.put("mail.smtp.host", host);
         Main.appProps.put("mail.smtp.port", port);
-        if(host.equals("ssl0.ovh.net")) { Main.appProps.put("mail.smtp.ssl.enable", "true"); }
+        if(port.equals("465") & !host.equals("smtp.gmail.com")) {
+            System.out.println("Connectat a un SMTP diferent de gmail");
+            Main.appProps.put("mail.smtp.ssl.enable", "true"); }
 
         boolean check = true;
         //
@@ -115,7 +129,6 @@ public class SendMailSmtp {
                 protected PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication(UN, PW);}
             });
         }
-
         return check;
     }
 
@@ -155,13 +168,13 @@ public class SendMailSmtp {
             messageBodyPart.setText(cont);
             messageBodyPart.setHeader("Content-ID","mailBody");
 
-            // Create a multipart message
+            // Create a multipart message on hi afegim les diferents parts del missatge (COS del correu, fitxer xifrat, deadTime, la clau K2 signada amb PubKey de'n Bob, addrAlice)
             Multipart multipart = new MimeMultipart();
 
             // Set text message part
             multipart.addBodyPart(messageBodyPart);
 
-            AESCrypto2 aes = new AESCrypto2(); //quan incialitzam AESCrypto2, es crear K, K1 i es calcula K2
+            AESCrypto2 aes = new AESCrypto2(); //quan incialitzam AESCrypto2, es crea K, K1 i es calcula K2 mitjançant XOR
 
 ///////////////Seleccionam el document a xifrar ######################################################
             ////            certFile[0] conte IV i certFile[1] el fitxer xifrat
@@ -196,8 +209,8 @@ public class SendMailSmtp {
             // Carregam la finestra
             selectTimeAlert(messageObject,"Selecciona el periode de validesa","");
             System.err.println("Dead Time: " + new Date(messageObject.getDeadTimeMillis()) + " " + messageObject.getDeadTimeMillis());
+            //Part three is deadTime
             messageBodyPart = new MimeBodyPart();
-
             messageBodyPart.setText(Long.toString(messageObject.getDeadTimeMillis()));
             messageBodyPart.setHeader("Content-ID","deadTime");
             multipart.addBodyPart(messageBodyPart);
@@ -219,13 +232,12 @@ public class SendMailSmtp {
                // AsymmetricRSAPrivateKey rsaPrivKey =   new AsymmetricRSAPrivateKey(FipsRSA.ALGORITHM, kp.getPrivate().getEncoded());
 
                 byte[] kPrima = Smime.wrapKey(rsaPubKey,aes.getK2());
-
                 System.err.println("k2 (Hex): " + new String(Hex.encode(aes.getK2()))); //k2 en hexadecimal
                 System.err.println("kPrima (Hex): " +  new String(Hex.encode(kPrima))); //kprima en hexadecimal
-
 //                System.err.println("k2: " + java.util.Arrays.toString(aes.getK2())); //k2 com string de bytes
 //                System.err.println("kPrima: " + java.util.Arrays.toString(kPrima)); //kprima com string de bytes
 //                System.err.println("kPrima: " + java.util.Arrays.toString(Hex.decode(Hex.encode(kPrima)))); //kprima com string de bytes
+                //Part four is K2 signed wiht Bob's PubKey
                 messageBodyPart = new MimeBodyPart();
                 messageBodyPart.setText(new String(Hex.encode(kPrima)));
                 messageBodyPart.setHeader("Content-ID","kPrima");
@@ -250,16 +262,15 @@ public class SendMailSmtp {
 //////////////// Obtenim l'adreca de Bitcoin de n'Alice ##############################################################
             //Hem hagut de fer la classe ClickableBitcoinAddress static. La variable address i el metode addressProperty tambe
             messageObject.setAddrAlice(Main.bitcoin.wallet().currentChangeAddress().toString());
-
             System.err.println("Addr d'Alice: " + messageObject.getAddrAlice());
+            //Part five is Alice address
             messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText(messageObject.getAddrAlice());
             messageBodyPart.setHeader("Content-ID","addrAlice");
             multipart.addBodyPart(messageBodyPart);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+            // Preparam per a signar el missatge, per aixo  de convertir multiPart amb un MimeBodyPart
             try {
-               // Preparam per a signar el missatge, per aixo l'hem de convertir amb un MimeBodyPart
                 javax.mail.internet.MimeBodyPart bodyPart = new MimeBodyPart();
                 bodyPart.setContent(multipart);
 
@@ -270,14 +281,13 @@ public class SendMailSmtp {
                 //Signam el missatge
                 mPart = Smime.createSignedMultipart(priKeyAlice,aliceCert,bodyPart);
 //                try {
-                    //comprovam que la signatura es correcta
+//                  //comprovam que la signatura es correcta
 //                    System.err.println("La validacio de la signatura es: ") + Smime.verifySignedMultipart(mPart));
 //                } catch (CMSException e) {
 //                    e.printStackTrace();
 //                }
-
 //                Guardar a un fitxer tot el multipart : cem + signatura
-                //mPart  conte dos MimeBobyPart: 1r que es el cem i el 2n que es el missatge signat
+//                //mPart  conte dos MimeBobyPart: 1r que es el cem i el 2n que es el missatge signat
 //                ByteArrayOutputStream mPartBaos = new ByteArrayOutputStream();
 //                mPart.writeTo(mPartBaos);
 //                //System.err.println(java.util.Arrays.toString(mPartBaos.toByteArray()));
@@ -287,29 +297,30 @@ public class SendMailSmtp {
                 //Signar i xifrar el missatge
                 //mPart.addBodyPart(Smime.createSignedEncryptedBodyPart(priKeyAlice,aliceCert, bobCert ,bodyPart));
 
-                //Obtenim el Cem del multipart signat i cream el hash del missatge
+                //Obtenim el Cem del multipart signat
                 ByteArrayOutputStream bodyPartBaos = new ByteArrayOutputStream();
                 Multipart multi=(Multipart) mPart.getBodyPart(0).getContent();
                 multi.writeTo(bodyPartBaos);
                 //System.err.println(java.util.Arrays.toString(fos.toByteArray()));
                 //System.err.println(new String(fos.toByteArray()));
-                byte[] hashCem = Smime.calculateDigest(bodyPartBaos.toByteArray()); //SHA2-256 - Tambe pot ser SHA2-384
+                byte [] cem = bodyPartBaos.toByteArray();
+                //cream el hash del missatge cem
+                byte[] hashCem = Smime.calculateDigest(cem); //SHA2-256 - Tambe pot ser SHA2-384
                 //byte[] hashCem = Smime.calculateSha3Digest(fos.toByteArray());  //SHA3-256 - Tambe pot ser SHA2-384
                 System.err.println("HashCEM = " + new String(Hex.encode(hashCem)));
-//                System.err.println("HashCEM = " + java.util.Arrays.toString(hashCem));
-
-                messageObject.setCem(bodyPartBaos.toByteArray());
-                //aes.byteToFile(bodyPartBaos.toByteArray(), "Guardar cem");
+                //System.err.println("HashCEM = " + java.util.Arrays.toString(hashCem));
+                messageObject.setCem(cem);
+                //Smime.byteToFile(bodyPartBaos.toByteArray(), "Guardar cem");
                 messageObject.setHashCem(hashCem);
                 bodyPartBaos.close();
 
+                //Obtenim el MimeBodyPart de la signatura del missatge
                 MimeBodyPart bPart = (MimeBodyPart) mPart.getBodyPart(1);
 //                Guardar el bodypart de la signatura a un fitxer
 //                bodyPartBaos = new ByteArrayOutputStream();
 //                bPart.writeTo(bodyPartBaos);
 //                //aes.byteToFile(bodyPartBaos.toByteArray(), "Guardar signaturaCem");
 //                bodyPartBaos.close();
-
                 ByteArrayOutputStream out = null;
                 InputStream in = null;
                 out = new ByteArrayOutputStream();
@@ -323,9 +334,10 @@ public class SendMailSmtp {
                 out.close();
                 in.close();
 
-
                // System.err.println(java.util.Arrays.toString(mPart.getContentType().getBytes()));
+                //Afegim el mPart com a part del contingut del missatge de correu
                 m.setContent(mPart,mPart.getContentType());
+                //Afegim una capçalera que permet identificar les correus
                 m.setHeader("Content-ID","redWax");
 
             } catch (GeneralSecurityException | SMIMEException | IOException | OperatorCreationException e) {
@@ -337,9 +349,7 @@ public class SendMailSmtp {
 //            System.out.println("\n \n \n \t >> ??????? " + m.getSubject());
 
             Transport t = sesh.getTransport(proto);
-
             System.out.println(">> ? smtp(s) ---> ## " + t.getURLName() + " \n>> ?");
-
             Transport.send(m);
             //Guardam a un xml l'objecte redwaxmessage
             messageObject.redWaxToPersistent();

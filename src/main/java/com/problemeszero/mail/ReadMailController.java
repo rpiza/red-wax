@@ -12,10 +12,7 @@ import com.sun.javaws.jnl.InformationDesc;
 import com.sun.mail.util.LineInputStream;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.util.Callback;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.crypto.InvalidWrappingException;
@@ -60,6 +57,7 @@ public class ReadMailController {
     private ReceiveMailImap rebreImap = new ReceiveMailImap();
     @FXML
     Button closeButton;
+    @FXML private Label connectionLabel;
 
     public void onConfirmClicked(ActionEvent actionEvent) {
 
@@ -72,23 +70,17 @@ public class ReadMailController {
 
         boolean okSignatura = false;
         RedWaxMessage rwm = (RedWaxMessage) redWaxList.getFocusModel().getFocusedItem();
-        //rwm.redWaxToPersistent();
-
         //validar la signatura del correu rebut
-
         ContentType cType = new ContentType("multipart", "signed", null);
         cType.setParameter("boundary", obtenir_boundary(rwm.getMailSignedMultiPart()));
-
         DataSource dataSource = new ByteArrayDataSource(rwm.getMailSignedMultiPart(),cType.toString());
-
         MimeMultipart mPart = null;
         try {
             mPart = new MimeMultipart(dataSource);
-
             //comprovam que la signatura es correcta
             okSignatura = Smime.verifySignedMultipart(mPart);
-             System.err.println(" La validacio de la signatura del correu rebut es: " + okSignatura );
-             if (okSignatura) informationalAlert("Validació de la signatura","En Bob determina que la signatura del missatge enviat per n'Alice és correcta");
+            System.err.println(" La validacio de la signatura del correu rebut es: " + okSignatura );
+            if (okSignatura) informationalAlert("Validació de la signatura","En Bob determina que la signatura del missatge enviat per n'Alice és correcta");
         } catch (GeneralSecurityException |  OperatorCreationException | CMSException | SMIMEException | MessagingException e) {
             e.printStackTrace();
         }
@@ -106,11 +98,9 @@ public class ReadMailController {
         //enviar confirmacio
         if (okSignatura) {
 
-            //Obtenim el cem del missatge enviar per Alice contingut dins l'objecte rwm
-
+            //Obtenim el cem del missatge enviat per Alice contingut dins l'objecte rwm
             cType = new ContentType("multipart", "mixed", null);
             cType.setParameter("boundary", obtenir_boundary(rwm.getCem()));
-
             dataSource = new ByteArrayDataSource(rwm.getCem(),cType.toString());
             MimeBodyPart bodyPart = null;
             MimeMultipart multiPart;
@@ -156,11 +146,11 @@ public class ReadMailController {
 //                e.printStackTrace();
 //            }
             //Enviam el missatge
-            try {
-                enviaCorreu.auth();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                enviaCorreu.auth();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
             enviaCorreu.mail(rwm,mPart);
             informationalAlert("Enviat missatge NRR", "En Bob ha enviat el missatge NRR a n'Alice");
 
@@ -346,6 +336,8 @@ public class ReadMailController {
         }
      return null;
     }
+
+    @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); }
 }
 
 

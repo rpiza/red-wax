@@ -231,6 +231,7 @@ public class MainController {
 
             MailEditController controller = loader.getController();
             controller.initialize(null);
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -267,38 +268,38 @@ public class MainController {
 
     }
 
-    private void enviarTx() {
-        //Carregam l'objecte RedWaxMessage
-        RedWaxMessage rwm = new RedWaxMessage();
-        try {
-
-            FileChooser FC = new FileChooser();
-            FC.setTitle("Nom del fitxer");
-            File file = new File(FC.showOpenDialog(Main.instance.mainWindow).getAbsolutePath());
-            JAXBContext jaxbContext = JAXBContext.newInstance(RedWaxMessage.class);
-
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            rwm = (RedWaxMessage) jaxbUnmarshaller.unmarshal(file);
-
-            System.err.println("Valor de OPRETURN = " + new String(Hex.encode(rwm.getOpReturn())));
-
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-
-        // Create a tx with an OP_RETURN output
-        Transaction tx = new Transaction(Main.params);
-        tx.addOutput(Coin.ZERO, ScriptBuilder.createOpReturnScript(rwm.getOpReturn()));
-
-        // Send it to the Bitcoin network
-        try {
-            Main.bitcoin.wallet().sendCoins(SendRequest.forTx(tx));
-        } catch (InsufficientMoneyException e) {
-            informationalAlert("Insufficient funds","You need bitcoins in this wallet in order to pay network fees.");
-        }
-        //Treure un Alert amb info de la transaccio
-
-    }
+//    private void enviarTx() {
+//        //Carregam l'objecte RedWaxMessage
+//        RedWaxMessage rwm = new RedWaxMessage();
+//        try {
+//
+//            FileChooser FC = new FileChooser();
+//            FC.setTitle("Nom del fitxer");
+//            File file = new File(FC.showOpenDialog(Main.instance.mainWindow).getAbsolutePath());
+//            JAXBContext jaxbContext = JAXBContext.newInstance(RedWaxMessage.class);
+//
+//            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+//            rwm = (RedWaxMessage) jaxbUnmarshaller.unmarshal(file);
+//
+//            System.err.println("Valor de OPRETURN = " + new String(Hex.encode(rwm.getOpReturn())));
+//
+//        } catch (JAXBException e) {
+//            e.printStackTrace();
+//        }
+//
+//        // Create a tx with an OP_RETURN output
+//        Transaction tx = new Transaction(Main.params);
+//        tx.addOutput(Coin.ZERO, ScriptBuilder.createOpReturnScript(rwm.getOpReturn()));
+//
+//        // Send it to the Bitcoin network
+//        try {
+//            Main.bitcoin.wallet().sendCoins(SendRequest.forTx(tx));
+//        } catch (InsufficientMoneyException e) {
+//            informationalAlert("Insufficient funds","You need bitcoins in this wallet in order to pay network fees.");
+//        }
+//        //Treure un Alert amb info de la transaccio
+//
+//    }
 
     public void onLlegirClicked(ActionEvent actionEvent) {
         try {

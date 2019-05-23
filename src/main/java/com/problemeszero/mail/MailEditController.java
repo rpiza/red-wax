@@ -2,6 +2,7 @@ package com.problemeszero.mail;
 
 import com.problemeszero.redwax.Main;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,8 +18,6 @@ import java.util.*;
 
 public class MailEditController {
 
-
-
     @FXML private ComboBox<String> cmbTYPE;
     @FXML protected TextField tto;
     @FXML protected TextField thead;
@@ -28,7 +27,7 @@ public class MailEditController {
     @FXML private Button btnClose;
 
     @FXML private TextField tUN, tPW;
-    private Label connectionLabel;
+    @FXML private Label connectionLabel;
 
     public Main.OverlayUI overlayUI;
 
@@ -66,7 +65,7 @@ public class MailEditController {
 
     @FXML protected void handleSendButton(ActionEvent e) throws IOException {
 
-        enviaCorreu.auth();
+       // enviaCorreu.auth();
 
         enviaCorreu.mail(tto.getText(), tsub.getText(), ttext.getText());
         if(!tto.getText().isEmpty() || !ttext.getText().isEmpty() || !tsub.getText().isEmpty()){
@@ -81,7 +80,9 @@ public class MailEditController {
         }
     }
 
-    public void initialize(Object o)  {
+    @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); }
+
+    public void initialize(Object o) throws IOException {
 //        //carregam el fitxer properties
 //        //llegim fitxer de propietats configuration.xml
 //        System.err.println("Llegint el fitxer de propietats configuration.xml");
