@@ -69,9 +69,9 @@ public class AESCrypto2 {
 
     public void setK1(byte[] k1) {
         this.k1 = k1;
-        System.err.println("K1 = " + java.util.Arrays.toString(k1));
-        System.err.println("K1 (base64) = " + new String(Base64.getEncoder().encode(k1)));
-        System.err.println("K1 (Hex) = " + new String(Hex.encode(k1)));
+//        System.err.println("K1 = " + java.util.Arrays.toString(k1));
+//        System.err.println("K1 (base64) = " + new String(Base64.getEncoder().encode(k1)));
+//        System.err.println("K1 (Hex) = " + new String(Hex.encode(k1)));
     }
 
     public byte[] getK2() {
@@ -80,9 +80,9 @@ public class AESCrypto2 {
 
     public void setK2(byte[] k2) {
         this.k2 = k2;
-        System.err.println("K2 = " + java.util.Arrays.toString(k2));
-        System.err.println("K2 (base64) = " + new String(Base64.getEncoder().encode(k2)));
-        System.err.println("K2 (Hex) = " + new String(Hex.encode(k2)));
+//        System.err.println("K2 = " + java.util.Arrays.toString(k2));
+//        System.err.println("K2 (base64) = " + new String(Base64.getEncoder().encode(k2)));
+//        System.err.println("K2 (Hex) = " + new String(Hex.encode(k2)));
     }
 
     public void generateK2(){

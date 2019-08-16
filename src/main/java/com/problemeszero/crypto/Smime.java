@@ -1,14 +1,12 @@
 package com.problemeszero.crypto;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.*;
 import java.util.*;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -47,36 +45,6 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
 
 public class Smime {
-
-//    public static MimeMultipart createMultipartWithSignature(
-//            PrivateKey key,
-//            X509Certificate cert,
-//            CertStore       certsAndCRLs,
-//            MimeBodyPart    dataPart)
-//            throws Exception
-//    {
-//        // create some smime capabilities in case someone wants to respond
-//        ASN1EncodableVector         signedAttrs = new ASN1EncodableVector();
-//        SMIMECapabilityVector       caps = new SMIMECapabilityVector();
-//
-//        caps.addCapability(SMIMECapability.aES256_CBC);
-//        caps.addCapability(SMIMECapability.dES_EDE3_CBC);
-//        caps.addCapability(SMIMECapability.rC2_CBC, 128);
-//
-//        signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
-//        signedAttrs.add(new SMIMEEncryptionKeyPreferenceAttribute(SMIMEUtil.createIssuerAndSerialNumberFor(cert)));
-//
-//        // set up the generator
-//        SMIMESignedGenerator gen = new SMIMESignedGenerator();
-//        SignerInformationStore sio = new SignerInformationStore(new SignerInformation(key,cert,SMIMESignedGenerator.DIGEST_SHA256, new AttributeTable(signedAttrs))).
-//
-//        gen.addSigners();addSigner(key, cert, SMIMESignedGenerator.DIGEST_SHA256, new AttributeTable(signedAttrs), null);
-//
-//        gen.addCertificatesAndCRLs(certsAndCRLs);
-//
-//        // create the signed message
-//        return gen.generate(dataPart, "BC");
-//    }
 
      /**
      * Create a MIME message from using the passed in content.
@@ -132,7 +100,6 @@ public class Smime {
     public static boolean verifySignedMultipart(MimeMultipart signedMessage)
             throws GeneralSecurityException, OperatorCreationException, CMSException, SMIMEException, MessagingException {
 
-       // System.err.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  Nomes mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
         SMIMESigned signedData = new SMIMESigned(signedMessage);
         Store certStore = signedData.getCertificates();
         SignerInformationStore signers = signedData.getSignerInfos();
@@ -152,58 +119,40 @@ public class Smime {
         return true;
     }
 
-    public static MimeBodyPart createSignedEncryptedBodyPart(PrivateKey signingKey, X509Certificate signingCert, X509Certificate encryptionCert, MimeBodyPart message)
-            throws GeneralSecurityException, SMIMEException, CMSException, IOException,OperatorCreationException, MessagingException {
-        SMIMEEnvelopedGenerator gen = new SMIMEEnvelopedGenerator();
-        gen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encryptionCert).setProvider("BCFIPS"));
-        MimeBodyPart bodyPart = new MimeBodyPart();
-        bodyPart.setContent(createSignedMultipart(signingKey, signingCert, message));
-        return gen.generate(bodyPart, new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC).setProvider("BCFIPS").build());
-    }
-
-    public static boolean verifySignedEncryptedBodyPart(PrivateKey privateKey, X509Certificate encryptionCert, MimeBodyPart envelopedBodyPart)
-            throws SMIMEException, CMSException, GeneralSecurityException, OperatorCreationException,MessagingException, IOException {
-        SMIMEEnveloped envelopedData = new SMIMEEnveloped(envelopedBodyPart);
-        RecipientInformationStore recipients = envelopedData.getRecipientInfos();
-        Collection c = recipients.getRecipients(new JceKeyTransRecipientId(encryptionCert));
-        Iterator it = c.iterator();
-        if (it.hasNext()) {
-            RecipientInformation recipient = (RecipientInformation)it.next();
-            MimeBodyPart signedPart = SMIMEUtil.toMimeBodyPart(
-                    recipient.getContent(new JceKeyTransEnvelopedRecipient(privateKey).setProvider("BCFIPS")));
-            return verifySignedMultipart((MimeMultipart)signedPart.getContent());
-        }
-        throw new IllegalArgumentException("recipient for certificate not found");
-    }
-
-//    public static MimeBodyPart createEnvelopedBodyPart(X509Certificate encryptionCert, MimeBodyPart message)
-//            throws GeneralSecurityException, SMIMEException, CMSException, IOException {
+//    public static MimeBodyPart createSignedEncryptedBodyPart(PrivateKey signingKey, X509Certificate signingCert, X509Certificate encryptionCert, MimeBodyPart message)
+//            throws GeneralSecurityException, SMIMEException, CMSException, IOException,OperatorCreationException, MessagingException {
 //        SMIMEEnvelopedGenerator gen = new SMIMEEnvelopedGenerator();
 //        gen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encryptionCert).setProvider("BCFIPS"));
-//        return gen.generate(message, new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC).setProvider("BCFIPS").build());
+//        MimeBodyPart bodyPart = new MimeBodyPart();
+//        bodyPart.setContent(createSignedMultipart(signingKey, signingCert, message));
+//        return gen.generate(bodyPart, new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC).setProvider("BCFIPS").build());
 //    }
 //
-//    // as this is based on CMS we again use encryptionCert to identify the recipient for the private key
-//    public static MimeBodyPart extractEnvelopedBodyPart(PrivateKey privateKey, X509Certificate encryptionCert, MimeBodyPart envelopedBodyPart)
-//            throws SMIMEException, CMSException, MessagingException {
-//
+//    public static boolean verifySignedEncryptedBodyPart(PrivateKey privateKey, X509Certificate encryptionCert, MimeBodyPart envelopedBodyPart)
+//            throws SMIMEException, CMSException, GeneralSecurityException, OperatorCreationException,MessagingException, IOException {
 //        SMIMEEnveloped envelopedData = new SMIMEEnveloped(envelopedBodyPart);
 //        RecipientInformationStore recipients = envelopedData.getRecipientInfos();
 //        Collection c = recipients.getRecipients(new JceKeyTransRecipientId(encryptionCert));
 //        Iterator it = c.iterator();
 //        if (it.hasNext()) {
-//            RecipientInformation recipient = (RecipientInformation) it.next();
-//            return SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(privateKey).setProvider("BCFIPS")));
+//            RecipientInformation recipient = (RecipientInformation)it.next();
+//            MimeBodyPart signedPart = SMIMEUtil.toMimeBodyPart(
+//                    recipient.getContent(new JceKeyTransEnvelopedRecipient(privateKey).setProvider("BCFIPS")));
+//            return verifySignedMultipart((MimeMultipart)signedPart.getContent());
 //        }
 //        throw new IllegalArgumentException("recipient for certificate not found");
 //    }
 
     public static byte[] calculateDigest(byte[] data) throws GeneralSecurityException {
+
         MessageDigest hash = MessageDigest.getInstance("SHA256", "BCFIPS");
+
         return hash.digest(data);
     }
     public static byte[] calculateSha3Digest(byte[] data) throws GeneralSecurityException {
+
         MessageDigest hash = MessageDigest.getInstance("SHA3-256", "BCFIPS");
+
         return hash.digest(data);
     }
 
@@ -214,7 +163,6 @@ public class Smime {
         //FC.setInitialDirectory(new File("."));
         FC.setInitialDirectory(initialDir);
         FileInputStream iInputStream = null;
-
         File iFile = new File(FC.showOpenDialog(Main.instance.stage).getAbsolutePath());
 
         byte[] iByteStream = new byte[(int) iFile.length()];
@@ -226,6 +174,7 @@ public class Smime {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return iByteStream;
     }
 
@@ -254,10 +203,32 @@ public class Smime {
 
     }
 
+
+    //Escriu tot el "part" al byteArray. Incloses les capsaleres.
+    public static byte [] PartToBAOS(Object p) throws MessagingException,IOException {
+
+        ByteArrayOutputStream bodyPartBaos = new ByteArrayOutputStream();
+        byte [] bPB;
+
+        if (p instanceof Multipart) {
+            Multipart part = (Multipart) p;
+            part.writeTo(bodyPartBaos);
+        } else {
+            MimeBodyPart part = (MimeBodyPart) p;
+            part.writeTo(bodyPartBaos);
+        }
+        bPB = bodyPartBaos.toByteArray();
+        bodyPartBaos.close();
+
+        return bPB;
+
+    }
+
     public static SecureRandom buildDrbg(){
 
         EntropySourceProvider entSource = new BasicEntropySourceProvider(new SecureRandom(), true);
         FipsDRBG.Builder drgbBldr = FipsDRBG.SHA512_HMAC.fromEntropySource(entSource).setSecurityStrength(256).setEntropyBitsRequired(256);
+
         return drgbBldr.build("varibale per inicialitzar".getBytes(), false);
     }
 
@@ -266,6 +237,7 @@ public class Smime {
         EntropySourceProvider entSource = new BasicEntropySourceProvider(new SecureRandom(), true);
         FipsDRBG.Builder drgbBldr = FipsDRBG.SHA512_HMAC.fromEntropySource(entSource).setSecurityStrength(256).setEntropyBitsRequired(256)
                 .setPersonalizationString("una altra variable per inicialitzar".getBytes());
+
         return drgbBldr.build("varibale per inicialitzar".getBytes(), true);
     }
 
@@ -281,15 +253,46 @@ public class Smime {
         }
     }
 
-        public static byte[] wrapKey(AsymmetricRSAPublicKey pubKey, byte[] inputKeyBytes) throws PlainInputProcessingException {
+//    Aquesta funcio corregeix les modificacions introduides pel servidor SMTP de Gmail al Content-type del missatge.
+//    Aquestes modificacions fan que la validacio de la signatura segui erronea.
+//    Pot ser que altres servidors indroduexien altres modificacions o que els servidor de gmail en generi de noves amb el temps.
+    public static byte [] tractar_smtp (byte [] content){
+        int i,j;
+        String bigStr = new String(content, StandardCharsets.UTF_8);
+        byte [] small1 = {98, 111, 117, 110, 100, 97, 114, 121, 61, 34, 45, 45, 45, 45}; //boundary="----
+        byte [] small2 = {32, 115, 109, 105, 109, 101, 45, 116, 121, 112, 101, 61, 115, 105, 103, 110, 101, 100, 45, 100, 97, 116, 97};// smime-type=signed-data
+        String smallStr1 = new String(small1, StandardCharsets.UTF_8);
+        String smallStr2 = new String(small2, StandardCharsets.UTF_8);
+
+        i = bigStr.indexOf(smallStr1);
+//        System.err.println(java.util.Arrays.toString(bigStr.substring(i-3,i).getBytes()));
+        if (!bigStr.substring(i-3,i).equals("\r\n\t")) {
+            bigStr = bigStr.substring(0, i) + (char) 0x0D + (char) 0x0A + (char) 0x09 + bigStr.substring(i);
+            System.err.println("Corregim modificació SMTP: \"boundary=\"----\"");
+        }
+        j = bigStr.indexOf(smallStr2);
+//        System.err.println(java.util.Arrays.toString(bigStr.substring(j-2,j).getBytes()));
+        if (bigStr.substring(j-2,j).equals("\r\n")) {
+            bigStr = bigStr.substring(0, j - 2) + bigStr.substring(j - 2);
+            System.err.println("Corregim modificació SMPT: \" smime-type=signed-data\"");
+        }
+
+        return bigStr.getBytes();
+    }
+
+    public static byte[] wrapKey(AsymmetricRSAPublicKey pubKey, byte[] inputKeyBytes) throws PlainInputProcessingException {
         FipsRSA.KeyWrapOperatorFactory wrapFact = new FipsRSA.KeyWrapOperatorFactory();
-        FipsKeyWrapperUsingSecureRandom wrapper = (FipsKeyWrapperUsingSecureRandom) wrapFact.createKeyWrapper( pubKey,FipsRSA.WRAP_OAEP).withSecureRandom(CryptoServicesRegistrar.getSecureRandom());
+        FipsKeyWrapperUsingSecureRandom wrapper = (FipsKeyWrapperUsingSecureRandom) wrapFact.createKeyWrapper( pubKey,FipsRSA.WRAP_OAEP)
+                .withSecureRandom(CryptoServicesRegistrar.getSecureRandom());
+
         return wrapper.wrap(inputKeyBytes, 0, inputKeyBytes.length);
     }
 
     public static byte[] unwrapKey(AsymmetricRSAPrivateKey privKey, byte[] wrappedKeyBytes) throws InvalidWrappingException {
         FipsRSA.KeyWrapOperatorFactory wrapFact = new FipsRSA.KeyWrapOperatorFactory();
-        FipsKeyUnwrapperUsingSecureRandom unwrapper = (FipsKeyUnwrapperUsingSecureRandom) wrapFact.createKeyUnwrapper(privKey,FipsRSA.WRAP_OAEP).withSecureRandom(CryptoServicesRegistrar.getSecureRandom());
+        FipsKeyUnwrapperUsingSecureRandom unwrapper = (FipsKeyUnwrapperUsingSecureRandom) wrapFact.createKeyUnwrapper(privKey,FipsRSA.WRAP_OAEP)
+                .withSecureRandom(CryptoServicesRegistrar.getSecureRandom());
+
         return unwrapper.unwrap(wrappedKeyBytes, 0, wrappedKeyBytes.length);
     }
 

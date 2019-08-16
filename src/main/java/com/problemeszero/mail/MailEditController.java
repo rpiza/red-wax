@@ -66,7 +66,6 @@ public class MailEditController {
     @FXML protected void handleSendButton(ActionEvent e) throws IOException {
 
        // enviaCorreu.auth();
-
         enviaCorreu.mail(tto.getText(), tsub.getText(), ttext.getText());
         if(!tto.getText().isEmpty() || !ttext.getText().isEmpty() || !tsub.getText().isEmpty()){
             FXMLLoader loader = new FXMLLoader(getClass().getResource("mailsent.fxml"));
@@ -82,22 +81,22 @@ public class MailEditController {
 
     @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); }
 
-    public void initialize(Object o) throws IOException {
-//        //carregam el fitxer properties
-//        //llegim fitxer de propietats configuration.xml
-//        System.err.println("Llegint el fitxer de propietats configuration.xml");
-//        try {
-//            InputStream in = new FileInputStream("configuration.xml");
-//            prop.loadFromXML(in);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        host = prop.getProperty("servidor");
-//        port = prop.getProperty("port");
-//        proto = prop.getProperty("protocol");
-//        UN = prop.getProperty("usuari");
-//        PW = prop.getProperty("contrasenya");
-    }
+//    public void initialize(Object o) throws IOException {
+////        //carregam el fitxer properties
+////        //llegim fitxer de propietats configuration.xml
+////        System.err.println("Llegint el fitxer de propietats configuration.xml");
+////        try {
+////            InputStream in = new FileInputStream("configuration.xml");
+////            prop.loadFromXML(in);
+////        } catch (IOException e) {
+////            e.printStackTrace();
+////        }
+////        host = prop.getProperty("servidor");
+////        port = prop.getProperty("port");
+////        proto = prop.getProperty("protocol");
+////        UN = prop.getProperty("usuari");
+////        PW = prop.getProperty("contrasenya");
+//    }
 
     public void closeClicked(ActionEvent actionEvent) {
         //overlayUI.done();

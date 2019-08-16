@@ -3,7 +3,6 @@ package com.problemeszero.mail;
 import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.Main;
 import com.problemeszero.redwax.RedWaxMessage;
-import javafx.beans.binding.StringExpression;
 
 import java.io.*;
 import java.util.*;
@@ -61,6 +60,10 @@ public class ReceiveMailImap {
                 Message msg = messages[i];
                 if (msg.getHeader("Content-ID")!=null)
                 if (contentId.equals(msg.getHeader("Content-ID")[0])) {
+                    System.err.println("####################################################################################################################");
+                    System.err.println("########################## Contingut dels missatges recuperats del compte de correu");
+                    System.err.println("####################################################################################################################");
+
                     System.out.println("MESSAGE #" + (i + 1) + ":");
                     RedWaxMessage rwm = new RedWaxMessage();
                     /*
@@ -86,6 +89,8 @@ public class ReceiveMailImap {
                     // the TEMP directory is used to store the files
                     String filename =  subject;
                     saveParts(msg.getContent(), rwm);
+                    System.err.println("####################################################################################################################");
+                    System.err.println("####################################################################################################################");
                     msg.setFlag(Flags.Flag.SEEN, true);
                     rwmList.add(rwm);
                     // to delete the message
@@ -148,29 +153,32 @@ public class ReceiveMailImap {
 
     public void saveParts(Object content, RedWaxMessage rwm) throws IOException, MessagingException {
 
-        ByteArrayOutputStream out = null;
-        InputStream in = null;
+//        ByteArrayOutputStream out = null;
+//        InputStream in = null;
         try {
             if (content instanceof Multipart) {
                 Multipart multi = ((Multipart)content);
 
                 //Guardar multipart a rwm
-                ByteArrayOutputStream mPartBaos = new ByteArrayOutputStream();
-                multi.writeTo(mPartBaos);
-                if (multi.getContentType().contains("multipart/signed;")){
-                    rwm.setMailSignedMultiPart(mPartBaos.toByteArray()); //Guardam el Multipart de tot el correu (CEM + Signatura)
-                    //Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cemSignat");
-                    //System.err.println(java.util.Arrays.toString(mPartBaos.toByteArray()));
+//                System.err.println(new String(java.util.Arrays.toString(mPartBaos.toByteArray())));
+//                Smime.byteToFile(mPartBaos.toByteArray(), "Guardar multipart", new File(Main.appProps.getProperty("Fitxers")));
+
+                System.err.println("Content-Type=" + multi.getContentType());
+                if (multi.getContentType().toLowerCase().contains("multipart/signed;")){
+                    rwm.setMailSignedMultiPart(Smime.PartToBAOS(multi)); //Guardam el Multipart de tot el correu (CEM + Signatura)
+//                    Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cemSignat",new File(Main.appProps.getProperty("Fitxers")));
+//                    System.err.println(java.util.Arrays.toString(mPartBaos.toByteArray()));
                 }
-                if (multi.getContentType().contains("multipart/mixed;")){
-                    rwm.setCem(mPartBaos.toByteArray());
-                    //Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cem imaps");
+
+                if (multi.getContentType().toLowerCase().contains("multipart/mixed;")){
+                    rwm.setCem(Smime.PartToBAOS(multi));
+//                    Smime.byteToFile(mPartBaos.toByteArray(), "Guardar cem imaps",new File(Main.appProps.getProperty("Fitxers")));
 //                    System.err.println(new String(java.util.Arrays.toString(mPartBaos.toByteArray())));
 //                    System.err.println(new String(java.util.Arrays.toString(rwm.getCem())));
                 }
-                mPartBaos.close();
 
                 int parts = multi.getCount();
+                System.err.println("Num. parts del missatge multipart = " + parts);
                 for (int j=0; j < parts; ++j) {
                     MimeBodyPart part = (MimeBodyPart)multi.getBodyPart(j);
                     if (part.getContent() instanceof Multipart) {
@@ -180,67 +188,32 @@ public class ReceiveMailImap {
                     else {
                         if (part.getContentID() != null) {
                             if ("fitxerXifrat".equals(part.getContentID())){
-                                System.err.println(j+"-" + part.getContentID() +" " + part.getContentType());
-                                out = new ByteArrayOutputStream();
-                                in = part.getInputStream();
-                                int k;
-                                while ((k = in.read()) != -1) {
-                                    out.write(k);
-                                }
-                                System.err.println(new String(Base64.getEncoder().encode(out.toByteArray())));
-                                byte [][] cF = {Arrays.copyOfRange(out.toByteArray(),0,16) ,Arrays.copyOfRange(out.toByteArray(),16, out.toByteArray().length) };
-                                System.err.println(new String(Base64.getEncoder().encode(cF[0])));
-                                System.err.println(new String(Base64.getEncoder().encode(cF[1])));
+                                byte[] out2 = MimeBodyPartToBAOS(part,"Base64");
+                                byte [][] cF = {Arrays.copyOfRange(out2,0,16) ,Arrays.copyOfRange(out2,16, out2.length) };
+//                                System.err.println(new String(Base64.getEncoder().encode(cF[0])));
+//                                System.err.println(new String(Base64.getEncoder().encode(cF[1])));
                                 rwm.setCertFile(cF);
                             }
 
                             if ("deadTime".equals(part.getContentID())){
-                                System.err.println(j+"-" + part.getContentID() +" " + part.getContentType());
-                                out = new ByteArrayOutputStream();
-                                in = part.getInputStream();
-                                int k;
-                                while ((k = in.read()) != -1) {
-                                    out.write(k);
-                                }
-                               System.err.println(new String(out.toByteArray()));
-                               rwm.setDeadTimeMillis(Long.valueOf(new String(out.toByteArray())));
+                                rwm.setDeadTimeMillis(Long.valueOf(new String(MimeBodyPartToBAOS(part,""))));
                             }
 
                             if ("kPrima".equals(part.getContentID())){
-                                System.err.println(j+"-" + part.getContentID() +" " + part.getContentType());
-                                out = new ByteArrayOutputStream();
-                                in = part.getInputStream();
-                                int k;
-                                while ((k = in.read()) != -1) {
-                                    out.write(k);
-                                }
-                                System.err.println(new String(out.toByteArray()));
-                                rwm.setkPrima(out.toByteArray());
+                                rwm.setkPrima(MimeBodyPartToBAOS(part,""));
                             }
 
                             if ("addrAlice".equals(part.getContentID())){
-                                System.err.println(j+"-" + part.getContentID() +" " + part.getContentType());
-                                out = new ByteArrayOutputStream();
-                                in = part.getInputStream();
-                                int k;
-                                while ((k = in.read()) != -1) {
-                                    out.write(k);
-                                }
-                                System.err.println(new String(out.toByteArray()));
-                                rwm.setAddrAlice(new String(out.toByteArray()));
+                                rwm.setAddrAlice(new String(MimeBodyPartToBAOS(part,"")));
                             }
                         }
-                        if (("application/pkcs7-signature; name=smime.p7s; "+ (char) 0x0D + (char) 0x0A + (char) 0x09 + "smime-type=signed-data").equals(part.getContentType())) {
+//                        System.err.println(j + "-"  + part.getContentType());
+//                        System.err.println(java.util.Arrays.toString(part.getContentType().getBytes()));
+                        if (("application/pkcs7-signature; name=smime.p7s; "+ (char) 0x0D + (char) 0x0A + (char) 0x09 + "smime-type=signed-data").equals(part.getContentType().toLowerCase())) {
                             System.err.println("Signatura del correu");
-                            System.err.println(j + "-"  + part.getContentType());
-                            out = new ByteArrayOutputStream();
-                            in = part.getInputStream();
-                            int k;
-                            while ((k = in.read()) != -1) {
-                                out.write(k);
-                            }
-                            System.err.println(new String(Base64.getEncoder().encode(out.toByteArray())));
-                            rwm.setMailSign(out.toByteArray());
+                            System.err.println(j + "-" + "Content-Type: " + part.getContentType());
+
+                            rwm.setMailSign(MimeBodyPartToBAOS(part,"Base64"));
 
                         }
 
@@ -250,9 +223,29 @@ public class ReceiveMailImap {
         }
 
         finally {
-            if (in != null) { in.close(); }
-            if (out != null) { out.flush(); out.close(); }
+//            if (in != null) { in.close(); }
+//            if (out != null) { out.flush(); out.close(); }
         }
+    }
+
+
+    //Escriu nomes el contingut del MimeBodyPart. NO inclou les capsaleres
+    private byte [] MimeBodyPartToBAOS (MimeBodyPart part, String code) throws MessagingException, IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        InputStream in = part.getInputStream();
+        byte [] output;
+        int k;
+        while ((k = in.read()) != -1) {
+            out.write(k);
+        }
+        output = out.toByteArray();
+        in.close();
+        out.close();
+//        System.err.println(j+"-" + part.getContentID() +" " + part.getContentType());
+//        if (!code.equals("Base64")) System.err.println(new String(output));
+//        else System.err.println(new String(Base64.getEncoder().encode(output)));
+        return output;
     }
 
     public static void main(String args[]) throws Exception {

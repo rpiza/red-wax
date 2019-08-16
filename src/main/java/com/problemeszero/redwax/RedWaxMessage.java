@@ -25,6 +25,7 @@ public class RedWaxMessage implements Serializable {
     private String subject;
     private Date sentDate;
     private byte[] mailSign; //conte el MimeBodyPart del la signatura
+    private String mailSignCT;
     private byte[] mailSignedMultiPart; //conte el MultiPart del (MultiPart) Cem + (MimeBodyPart) Signatura
     private byte[] K1;
     private byte[] K2;
@@ -33,6 +34,7 @@ public class RedWaxMessage implements Serializable {
     private byte[] kPrima;
     private String addrAlice;
     private byte[] cem; //Conte el Multipart del missatge. Sense signatura
+    private String cemCT;
     private byte[] hashCem;
     private byte[] opReturn;
     private String id;
@@ -82,6 +84,15 @@ public class RedWaxMessage implements Serializable {
     @XmlElement
     public void setMailSign(byte[] mailSign) {
         this.mailSign = mailSign;
+    }
+
+    public String getMailSignCT() {
+        return mailSignCT;
+    }
+
+    @XmlElement
+    public void setMailSignCT(String mailSignCT) {
+        this.mailSignCT = mailSignCT;
     }
 
     public byte[] getMailSignedMultiPart() {
@@ -153,6 +164,15 @@ public class RedWaxMessage implements Serializable {
     @XmlElement
     public void setCem(byte[] cem) {
         this.cem = cem;
+    }
+
+    public String getCemCT() {
+        return cemCT;
+    }
+
+    @XmlElement
+    public void setCemCT(String cemCT) {
+        this.cemCT = cemCT;
     }
 
     public byte[] getHashCem() {

@@ -3,8 +3,9 @@
 target/**/*.class
 *.spvchain
 *.wallet
-target/**/*.jar
-target/
+target/*
+!com.problemeszero.redwax-0.1.jar
+!com.problemeszero.redwax-shaded.jar
 !lib/*.jar
 .project
 .classpath

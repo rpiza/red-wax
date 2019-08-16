@@ -230,7 +230,7 @@ public class MainController {
             Main.instance.stage.showAndWait();
 
             MailEditController controller = loader.getController();
-            controller.initialize(null);
+//            controller.initialize(null);
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
