@@ -5,6 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/AESCrypto2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/AESCrypto2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/Client.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadConfirmationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadConfirmationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReceiveMailImap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReceiveMailImap.java" afterDir="false" />
@@ -39,7 +40,7 @@
     <session id="-671383417">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="22" />
+          <entry key="project.closed" value="23" />
           <entry key="project.open.time.10" value="10" />
           <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.12" value="3" />
@@ -386,7 +387,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1565979549222" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1565979603250" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/bcpkix-fips-1.0.2.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
