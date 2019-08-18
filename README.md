@@ -13,6 +13,18 @@ Desenvolupament d'un client basat en java amb l'objectiu de realitzar una prova 
 
 ### Comanda d'execució
 
+La versió de java utilitzada per realitzar el desenvolupament és:
+
 <pre>
-  #> /usr/java/jdk1.8.0_211-amd64/bin/java -cp target/*:lib/*:. com.problemeszero.redwax.Main
+java version "1.8.0_211"
+Java(TM) SE Runtime Environment (build 1.8.0_211-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.211-b12, mixed mode)
+</pre>
+
+Per assegurar el correcte funcionament recomanam la versió java8 d'Oracle
+
+La comanda d'execució és:
+
+<pre>
+  #> java -cp target/*:lib/*:. com.problemeszero.redwax.Main
 </pre>

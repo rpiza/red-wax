@@ -3,6 +3,7 @@
 target/**/*.class
 *.spvchain
 *.wallet
+*.tmp
 target/*
 !com.problemeszero.redwax-0.1.jar
 !com.problemeszero.redwax-shaded.jar
