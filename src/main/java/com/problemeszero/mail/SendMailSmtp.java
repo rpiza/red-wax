@@ -54,6 +54,7 @@ public class SendMailSmtp {
     public RedWaxMessage messageObject;
 
     public SendMailSmtp() {
+
         //messageObject conte les diferents part de la transaccio (K,K1,K2,CEM,from,subject, .....)
         messageObject = new RedWaxMessage();
         System.err.println("Llegint el fitxer de propietats configuration.xml per a smtp");
@@ -88,7 +89,7 @@ public class SendMailSmtp {
         } else {
             s="SMTP OK. Credencials correctes";
         }
-        System.out.println(s);
+        System.out.println(s + " - " + UN) ;
         return s;
     }
 
@@ -167,19 +168,24 @@ public class SendMailSmtp {
 
             // Set text message part
             multipart.addBodyPart(messageBodyPart);
-
-            AESCrypto2 aes = new AESCrypto2(); //quan incialitzam AESCrypto2, es crea K, K1 i es calcula K2 mitjançant XOR
-
             System.err.println("####################################################################################################################");
-            System.err.println("########################## Contingut del missatge enviat per n'Alice");
+            System.err.println("########################## PHASE I - Delivery");
+            System.err.println("####################################################################################################################");
+            System.err.println("########################## Step 1: Alice envia el missatge certificat a n'en Bob");
+            System.err.println("####################################################################################################################");
+
+            System.err.println("Es genera K = K1 XOR K2");
+            AESCrypto2 aes = new AESCrypto2(); //quan incialitzam AESCrypto2, es crea K, K1 i es calcula K2 mitjançant XOR
             System.err.println("####################################################################################################################");
 ///////////////Seleccionam el document a xifrar ######################################################
             ////            certFile[0] conte IV i certFile[1] el fitxer xifrat
+            System.err.println("Obtenim el fitxer a xifrar M");
             byte[][] certFile = aes.cbcEncrypt(Smime.fileToByte("Document a xifrar:", new File(Main.appProps.getProperty("Fitxers"))));
             //byte[][] certFile ={new byte[16], aes.fileToByte("Document a xifrar:")};
+            System.err.println("Es genera C(M)");
             System.err.println("IV: " + new String(Base64.getEncoder().encode(certFile[0])));
             System.err.println("Fitxer: " + new String(Base64.getEncoder().encode(certFile[1])));
-
+            System.err.println("####################################################################################################################");
             //Concatenam el fitxer amb IV
             certFile[1] = Bytes.concat(certFile[0],certFile[1]);  //Adjuntam l'IV al fitxer
 
@@ -204,8 +210,10 @@ public class SendMailSmtp {
 
             // Introduir la marca de temps que volem donar per publicar la transaccio al blockchain
             // Carregam la finestra
+            System.err.println("S'especifica el Deadline Time");
             selectTimeAlert(messageObject,"Selecciona el periode de validesa","");
-            System.err.println("Dead Time: " + new Date(messageObject.getDeadTimeMillis()) + " " + messageObject.getDeadTimeMillis());
+            System.err.println("Deadline Time: " + new Date(messageObject.getDeadTimeMillis()) + " " + messageObject.getDeadTimeMillis());
+            System.err.println("####################################################################################################################");
             //Part three is deadTime
             messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText(Long.toString(messageObject.getDeadTimeMillis()));
@@ -219,6 +227,7 @@ public class SendMailSmtp {
             try {
 //              Carregar la clau Publica de Bob
                 //LLANÇAR UN MISSATGE DEMANANT EL CERTIFICAT DE BOB
+                System.err.println("Xifram K2 amb la clau publica d'en Bob");
                 bobCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de'n Bob", new File(Main.appProps.getProperty("Certificats"))));
 
               // AsymmetricKeyParameter pubKey = PublicKeyFactory.createKey(bobCert.getPublicKey());
@@ -239,6 +248,7 @@ public class SendMailSmtp {
                 messageObject.setK2(aes.getK2());
                 messageObject.setkPrima(kPrima);
                 messageObject.setK1(aes.getK1());
+                System.err.println("####################################################################################################################");
 /////////////////////////////////////////////////////////////////////////////////////////////
 ////              Carrergam la clau privada de Bob
 //                //Hex.decode(new String(Hex.encode(kPrima)));
@@ -255,13 +265,17 @@ public class SendMailSmtp {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //////////////// Obtenim l'adreca de Bitcoin de n'Alice ##############################################################
             //Hem hagut de fer la classe ClickableBitcoinAddress static. La variable address i el metode addressProperty tambe
+            System.err.println("Obtenim l'adreça de n'Alice:");
             messageObject.setAddrAlice(Main.bitcoin.wallet().currentChangeAddress().toString());
+
             System.err.println("Addr d'Alice: " + messageObject.getAddrAlice());
             //Part five is Alice address
             messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText(messageObject.getAddrAlice());
             messageBodyPart.setHeader("Content-ID","addrAlice");
             multipart.addBodyPart(messageBodyPart);
+            System.err.println("####################################################################################################################");
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //            System.out.println("Multipart Content-Type= " +  multipart.getContentType());
             messageObject.setCemCT(multipart.getContentType());
@@ -281,6 +295,7 @@ public class SendMailSmtp {
 //                Smime.byteToFile(Smime.PartToBAOS(bodyPart), "Guardar bodypartCem",new File(Main.appProps.getProperty("Fitxers")));
 
                 //Preparam per signar el missatge
+                System.err.println("N'Alice signa el missatge de correu");
                 aliceCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de n'Alice", new File(Main.appProps.getProperty("Certificats"))));
                 PrivateKey priKeyAlice = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de n'ALice", new File(Main.appProps.getProperty("Certificats"))));
                 //MimeMultipart mPart;
@@ -356,12 +371,11 @@ public class SendMailSmtp {
             Transport.send(m);
             //Guardam a un xml l'objecte redwaxmessage
 
-            System.err.println("####################################################################################################################");
             System.err.println("################### Contingut del fitxer xml, que dona persistència a les dades del missatge enviat per n'Alice");
             System.err.println("####################################################################################################################");
             messageObject.redWaxToPersistent();
             System.err.println("####################################################################################################################");
-            System.err.println("####################################################################################################################");
+
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

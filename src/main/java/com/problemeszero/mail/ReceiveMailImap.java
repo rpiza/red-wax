@@ -56,7 +56,13 @@ public class ReceiveMailImap {
             Message messages[] = folder.getMessages();
             System.out.println("No of Messages : " + folder.getMessageCount());
             System.out.println("No of Unread Messages : " + folder.getUnreadMessageCount());
-            for (int i= messages.length-5; i < messages.length; ++i) {
+
+            //Per guanyar rapidesa nomes recuperam els darrers 5 missatges de la bustia.
+            //En el cas de haver-hi menys de 5 missatges el agafam tots
+            int total_missatges = ((messages.length > 5) ? 5 : messages.length);
+
+            for (int i= messages.length - total_missatges; i < messages.length; ++i) {
+                System.out.println("valor de i = " + i);
                 Message msg = messages[i];
                 if (msg.getHeader("Content-ID")!=null)
                 if (contentId.equals(msg.getHeader("Content-ID")[0])) {

@@ -83,7 +83,7 @@ public class ReadMailController {
             e.printStackTrace();
         }
         System.err.println("####################################################################################################################");
-        System.err.println("########################## Comprovacions d'en Bob sobre el missatge rebut de n'Alice");
+        System.err.println("########################## Step 2: NRR enviat per en Bob");
         System.err.println("####################################################################################################################");
         System.err.println("La validació de la signatura del correu rebut és: " + okSignatura );
         no = "";
@@ -287,7 +287,7 @@ public class ReadMailController {
 
 
         System.err.println("####################################################################################################################");
-        System.err.println("########################## En Bob amb el hashCEM del correu seleccionat més l'adreça de n'Alice\n" +
+        System.err.println("########################## PHASE III: En Bob amb el hashCEM del correu seleccionat més l'adreça de n'Alice\n" +
                 "########################## cerca a a l'explorer del blockchain una tx on l'OPRETURN contengui el hashCEM.\n" +
                 "########################## A més la tx ha de complir el requisit de confirmacions configurat al\n" +
                 "########################## fitxer configuration.xml. Per defecte aquest valor\n" +
@@ -439,7 +439,7 @@ public class ReadMailController {
         } else {
             s= proto + " OK. Credencials correctes";
         }
-        System.out.println(s);
+        System.out.println(s + " - " + UN );
         return s;
     }
 

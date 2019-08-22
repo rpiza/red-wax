@@ -75,7 +75,7 @@ public class ReadConfirmationController {
 //            Smime.byteToFile(rwmAlice.getCem(), "Guardar cem Alice", new File(Main.appProps.getProperty("Fitxers")))
 
             System.err.println("####################################################################################################################");
-            System.err.println("########################## Comprovacions del correu enviat per en Bob i enviament de K1 a la xarxa blockchain");
+            System.err.println("########################## PHASE II: Comprovacions del correu enviat per en Bob i enviament de K1 a la xarxa blockchain");
             System.err.println("####################################################################################################################");
 
             // Comprovam si el cem generat per n'Alice es el matiex que li ha enviat en Bob
@@ -258,7 +258,7 @@ public class ReadConfirmationController {
         } else {
             s= proto + " OK. Credencials correctes";
         }
-        System.out.println(s);
+        System.out.println(s + " - " + UN);
         return s;
     }
 
