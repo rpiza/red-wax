@@ -26,18 +26,6 @@
     <entry key="imap.protocol">imaps</entry>
     <entry key="imap.servidor">ssl0.ovh.net</entry>
 
-<!--
-    <entry key="usuari">redwaxbc@gmail.com</entry>
-    <entry key="port">587</entry>
-    <entry key="contrasenya">cad3na bloc:c3rtificat</entry>
-    <entry key="protocol">smtp</entry>
-    <entry key="servidor">smtp.gmail.com</entry>
-    <entry key="imap.usuari">redwaxbc@gmail.com</entry>
-    <entry key="imap.contrasenya">cad3na bloc:c3rtificat</entry>
-    <entry key="imap.protocol">imaps</entry>
-    <entry key="imap.servidor">imap.gmail.com</entry>
--->
-
     <entry key="imap.port">993</entry>
     <entry key="imap.folder">Inbox</entry>
 </properties>

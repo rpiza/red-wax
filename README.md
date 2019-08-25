@@ -48,3 +48,5 @@ Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
 
 
 7. En el següent vídeo s'expliquen les passes a seguir per executar el client i fer l'enviament d'un correu certificat en base les especificacions del protocol
+
+[Video Tutorial]()
