@@ -11,18 +11,20 @@ S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges
 
 1. Primer feim un clone del repositori
 <pre>
-git clone --depth=1 --branch=master https://github.com/rpiza/red-wax.git
+#> git clone --depth=1 --branch=master https://github.com/rpiza/red-wax.git
 </pre>
 
 2. Entram al directori **red-wax**
 <pre>
-cd red-wax
+#> cd red-wax
 </pre>
 
 
 3. Comprovam que tenim la versió de **java** adequada.
 Pel desenvolument s'ha utilitzat la versió:
 <pre>
+#> java -version
+
 java version "1.8.0_211"
 Java(TM) SE Runtime Environment (build 1.8.0_211-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.211-b12, mixed mode)
