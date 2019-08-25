@@ -4,18 +4,40 @@
 <comment>Fitxer de configuracio del servidor de correu</comment>
     <entry key="env">Testnet3</entry>
     <entry key="depth">0</entry>
-    <entry key="api_addr">https://testnet.blockchain.info/rawaddr/</entry>
-    <entry key="api_currentBlock">https://testnet.blockchain.info/q/getblockcount</entry>
-    <entry key="usuari">ramon@problemeszero.com</entry>
-    <entry key="port">465</entry>
+    <!--Consulta les txs de la addrAlice-->
+    <entry key="api_addr">http://api.blockcypher.com/v1/btc/test3/addrs/</entry>
+    <entry key="api_addr_sufix">/full</entry>
+    <!--Conslutla el darrer bloc de la xarxa blockchain-->
+    <entry key="api_currentBlock">https://testnet.blockchain.info/latestblock</entry>
+    <entry key="line_break">true</entry>
+
+    <!-- Fa referencia al servidor SMTP -->
+    <entry key="usuari">redwax@oneselnord.com</entry>
+    <!--<entry key="port">465</entry>-->
+    <entry key="port">587</entry>
     <entry key="contrasenya">xxxxx</entry>
     <entry key="protocol">smtp</entry>
     <entry key="servidor">ssl0.ovh.net</entry>
-    <entry key="imap.usuari">ramon@problemeszero.com</entry>
+
+    <!-- Fa referencia al servidor IMAPS o POP3S -->
+    <entry key="imap.usuari">redwax@oneselnord.com</entry>
     <entry key="imap.contrasenya">xxxxx</entry>
     <!-- El protocol pot ser imaps o pop3s -->
-    <entry key="imap.protocol">pop3s</entry>
+    <entry key="imap.protocol">imaps</entry>
     <entry key="imap.servidor">ssl0.ovh.net</entry>
-    <entry key="imap.port"></entry>
+
+<!--
+    <entry key="usuari">redwaxbc@gmail.com</entry>
+    <entry key="port">587</entry>
+    <entry key="contrasenya">cad3na bloc:c3rtificat</entry>
+    <entry key="protocol">smtp</entry>
+    <entry key="servidor">smtp.gmail.com</entry>
+    <entry key="imap.usuari">redwaxbc@gmail.com</entry>
+    <entry key="imap.contrasenya">cad3na bloc:c3rtificat</entry>
+    <entry key="imap.protocol">imaps</entry>
+    <entry key="imap.servidor">imap.gmail.com</entry>
+-->
+
+    <entry key="imap.port">993</entry>
     <entry key="imap.folder">Inbox</entry>
 </properties>
