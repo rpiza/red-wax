@@ -311,7 +311,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1565979603250" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1566735357472" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/bcpkix-fips-1.0.2.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
@@ -330,7 +330,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Maven.com.problemeszero.redwax [package]">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.problemeszero.mail.Client" />
       <module name="com.problemeszero.redwax" />
@@ -357,7 +357,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.problemeszero.redwax.Main" />
       <module name="com.problemeszero.redwax" />
       <extension name="coverage">
@@ -417,7 +417,6 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="Application.Client" />
         <item itemvalue="Application.unicode" />
         <item itemvalue="Application.FalseIsTrue" />

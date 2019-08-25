@@ -49,10 +49,14 @@ Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
    - https://testnet-faucet.mempool.co/
 
 
-7. En el següent vídeo s'expliquen les passes a seguir per executar el client i fer l'enviament d'un correu certificat en base les especificacions del protocol
+7. En el següent vídeo s'expliquen les passes a seguir per executar el client i fer l'enviament d'un correu certificat en base les especificacions del protocol:
+
+   Per simplicitat en tutorial assumim que n'Alice i en Bob tenen la mateixa adreça de correu, així només utilitzam una instància del client.   
+   Per simular un cas real, s'ha de duplicar el directori **red-wax** descarregat i modificar el **configuration.xml** de cada directori amb les dades de n'Alice i de'n Bob respectivament. Finalment executar una instància del client de cada directori.   
+
+  [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/experiment/media/tutorial.html)
 
 
-   [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/experiment/media/tutorial.html)
 
 ### Problemes detectats
 
