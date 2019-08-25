@@ -53,3 +53,13 @@ Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
 
 
    [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/experiment/media/tutorial.html)
+
+### Problemes detectats
+
+1. Enviament correus amb smtp.gmail.com    
+
+   Hem detectat que el servidor de smtp de gmail realitza modificacions al contingut dels correus. Modifica els finals de línia i les tabulacions.   
+
+   Aparentment els missatges semblen idèntics, pero a l'hora de validar les signatures la modificació de aquests continguts detecta la signatura com invàlida. El client permet a l'usuari continuar malgrat la signatura sigui invàlida.
+
+   Les proves s'han realitzat amb el servidor smtp d'OVH i encara que aquest també modifica els finals de línia del body de missatge de correu, per programació es corregit a l'origen i el funcionament és correcte.
