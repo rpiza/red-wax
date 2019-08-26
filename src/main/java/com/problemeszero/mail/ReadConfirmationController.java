@@ -14,6 +14,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.script.ScriptBuilder;
+import org.bitcoinj.wallet.KeyChain;
 import org.bitcoinj.wallet.SendRequest;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.mail.smime.SMIMEException;
@@ -164,13 +165,27 @@ public class ReadConfirmationController {
         // Create a tx with an OP_RETURN output
         Transaction tx = new Transaction(Main.params);
         tx.addOutput(Coin.ZERO, ScriptBuilder.createOpReturnScript(rwm.getOpReturn()));
-        tx.addOutput(Coin.valueOf(1000), ScriptBuilder.createOutputScript(Address.fromBase58(Main.params,rwm.getAddrAlice())));
+        //tx.addOutput(Coin.valueOf(1000), ScriptBuilder.createOutputScript(Address.fromBase58(Main.params,rwm.getAddrAlice())));
 
         // Send it to the Bitcoin network
         try{
+//            System.err.println("Current:" + Main.bitcoin.wallet().currentChangeAddress().toString());
+//            System.err.println("Authentication:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.AUTHENTICATION).toString());
+//            System.err.println("Change:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString());
+//            System.err.println("Receive:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.RECEIVE_FUNDS).toString());
+//            System.err.println("Refund:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.REFUND).toString());
+            System.err.println("ChangeAddress actual del wallet:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString());
+            System.err.println("Addr de n'Alice: " + rwm.getAddrAlice());
+            if (!rwm.getAddrAlice().equals(Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString())){
+                Main.bitcoin.wallet().reuseAddress(KeyChain.KeyPurpose.CHANGE,
+                        Main.bitcoin.wallet().findKeyFromPubHash(new Address(Main.params, rwm.getAddrAlice()).getHash160()));
+                System.err.println("Actualitzam ChangeAddress a l'adreça de n'Alice. ChangeAddress: " + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString());
+            } else {
+                System.err.println("ChangeAddress és correspon amb l'adreça de n'Alice");
+
+            }
             Main.bitcoin.wallet().sendCoins(SendRequest.forTx(tx));
             System.err.println("Hash de la TX = " + tx.getHash());
-            System.err.println("Addr = " + rwm.getAddrAlice());
             //Treure un Alert amb info de la transaccio
             informationalAlert("Enviada la transacio a Bitcoin","OPRETURN=" + new String(Hex.encode(rwm.getOpReturn())) +"\n" +
                     "TX=" + tx.getHash() +"\nAddr="+ rwm.getAddrAlice());

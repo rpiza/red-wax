@@ -147,7 +147,7 @@ public class SendMailSmtp {
             Message m = new MimeMessage(sesh);
             m.setFrom(new InternetAddress(UN));
             m.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            m.setSubject(sub);
+            m.setSubject("REDWAX - " + sub);
             m.setSentDate(new Date());
 
             //Hem de posar un ID qeu faci referencia al missatge,receptor,asumpte, data
@@ -387,7 +387,7 @@ public class SendMailSmtp {
 
         try {
             m.setFrom(new InternetAddress(UN));
-            m.setSubject("RE:" + rwm.getSubject());
+            m.setSubject("REDWAX NRR - " + rwm.getSubject().substring(9));
             m.setRecipients(Message.RecipientType.TO, InternetAddress.parse(rwm.getFrom()));
             m.setSentDate(new Date());
             m.setContent(mPart, mPart.getContentType());

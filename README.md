@@ -33,7 +33,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
 
 4. Configuram adequadament el fitxer **configuration.xml** amb el valors del compte SMTP i IMAP necessaris per enviar i rebre els missatges de correu.
 
-5. La comanda d'execució del client és:
+5. Execució del client amb la comanda:
 <pre>
   #> java -cp target/*:lib/*:. com.problemeszero.redwax.Main
 </pre>
@@ -51,19 +51,22 @@ Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
 
 7. En el següent vídeo s'expliquen les passes a seguir per executar el client i fer l'enviament d'un correu certificat en base les especificacions del protocol:
 
-   Per simplicitat en tutorial assumim que n'Alice i en Bob tenen la mateixa adreça de correu, així només utilitzam una instància del client.   
+   [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/experiment/media/tutorial.html)
+
+   Per simplicitat en el tutorial assumim que n'Alice i en Bob tenen la mateixa adreça de correu, així només utilitzam una instància del client.
+
    Per simular un cas real, s'ha de duplicar el directori **red-wax** descarregat i modificar el **configuration.xml** de cada directori amb les dades de n'Alice i de'n Bob respectivament. Finalment executar una instància del client de cada directori.   
 
-  [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/experiment/media/tutorial.html)
+
 
 
 
 ### Problemes detectats
 
-1. Enviament correus amb smtp.gmail.com    
+1. Modificació dels missatges de correu per part del servidors SMTP
 
-   Hem detectat que el servidor de smtp de gmail realitza modificacions al contingut dels correus. Modifica els finals de línia i les tabulacions.   
+   Hem detectat que el servidor de smtp de gmail realitza modificacions al contingut dels missatges correus. Modifica els finals de línia i les tabulacions, així com també el Content-Type de les diferents parts del missatge.
 
-   Aparentment els missatges semblen idèntics, pero a l'hora de validar les signatures la modificació de aquests continguts detecta la signatura com invàlida. El client permet a l'usuari continuar malgrat la signatura sigui invàlida.
+   Els missatges semblen idèntics a l'ull, però a l'hora de validar les signatures la modificació de aquests continguts afecta la validació de la signatura del missatge, donant-la com invàlida. El client permet a l'usuari continuar malgrat la signatura sigui invàlida.
 
-   Les proves s'han realitzat amb el servidor smtp d'OVH i encara que aquest també modifica els finals de línia del body de missatge de correu, per programació es corregit a l'origen i el funcionament és correcte.
+   Per evitar els problemes amb gmail s'ha utilitzat el servidor smtp d'OVH, i encara que aquest també modifica els finals de línia del body de missatge de correu per programació es corregit a l'origen, i el funcionament és correcte.
