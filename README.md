@@ -20,8 +20,7 @@ S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges
 </pre>
 
 
-3. Comprovam que tenim la versió de **java** adequada.
-Pel desenvolument s'ha utilitzat la versió:
+3. Comprovam que tenim la versió de **java** adequada. Pel desenvolupament s'ha utilitzat la versió:
 <pre>
 #> java -version
 
