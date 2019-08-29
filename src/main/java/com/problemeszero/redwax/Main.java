@@ -72,7 +72,7 @@ public class Main extends Application {
         //carregam el proveidor desde la JVM - https://docs.oracle.com/cd/E19830-01/819-4712/ablsc/index.html
         Security.addProvider(new BouncyCastleFipsProvider());
         CryptoServicesRegistrar.setApprovedOnlyMode(false);
-        System.err.println("Nomes mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
+        System.err.println("Només mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
 
         //Carregam el fitxer de configuracio de l'aplicacio
         System.err.println("Llegint el fitxer de propietats configuration.xml");

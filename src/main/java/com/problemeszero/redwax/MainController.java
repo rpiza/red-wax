@@ -163,10 +163,10 @@ public class MainController {
                     public String toString(Transaction tx) {
                         Coin value = tx.getValue(Main.bitcoin.wallet());
                         if (value.isPositive()) {
-                            return "Entrada de pagament de " + MonetaryFormat.BTC.format(value);
+                            return "Entrada de " + MonetaryFormat.BTC.format(value) + " - " + tx.getUpdateTime();
                         } else  if (value.isNegative()) {
-                            Address address = tx.getOutput(0).getAddressFromP2PKHScript(Main.params);
-                            return "Pagament de sortida de " + MonetaryFormat.BTC.format(value)  +" cap a " + address;
+                            Address address = tx.getOutput(1).getAddressFromP2PKHScript(Main.params);
+                            return "Sortida de " + MonetaryFormat.BTC.format(value)  +" cap a " + address + " - " + tx.getUpdateTime();
                         }
                         return "Pagament amb id " + tx.getHash();
                     }

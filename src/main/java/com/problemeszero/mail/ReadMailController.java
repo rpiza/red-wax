@@ -33,6 +33,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 
+import static com.problemeszero.redwax.JsonReader.readJsonArrayFromUrl;
 import static com.problemeszero.redwax.JsonReader.readJsonFromUrl;
 import static com.problemeszero.redwax.utils.GuiUtils.informationalAlert;
 
@@ -238,7 +239,7 @@ public class ReadMailController {
                             setText("");
                             setGraphic(null);
                         } else {
-                            setText("correu de " + item.getFrom() + " - Assupte:" + item.getSubject() +" - Enviat: " + item.getSentDate());
+                            setText("Remitent: " + item.getFrom() + " - Assumpte:" + item.getSubject() +" - Enviat: " + item.getSentDate());
 //                            ProgressBar bar = new ProgressBar();
 //                            bar.progressProperty().bind(item.depth.divide(3.0));
 //                            setGraphic(bar);
@@ -357,67 +358,70 @@ public class ReadMailController {
 
         System.err.println("HashCEM en Hex = " + new String(Hex.encode(hash)));
         System.err.println("El nombre de confirmacions necessaries per acceptar la tx és de " + depth);
-
+        String  clau [][] = { {"txs","hash","outputs","script","block_height"}, {"","txid","vout","scriptpubkey","block_height"}}; // {{blockcypher.com},{blockstream.info}}
         try {
             //
             // S'HA D'ANALITZAR LES RESPOSTES DE LES APIS PER EVITAR XSS
             //
 //            json = readJsonFromUrl("https://testnet.blockchain.info/rawaddr/" + addr);
 //            json = readJsonFromUrl("http://api.blockcypher.com/v1/btc/test3/addrs/" + addr + "/full");
-          json = readJsonFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
-          System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+
+////////////////**************http://api.blockcypher.com/v1/btc/test3/addrs/******************  ////////////////////////////////////////////////////////
+            int w = 0;  //blockcypher.com
+            json = readJsonFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+            System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+            JSONArray txs = json.getJSONArray(clau[w][0]);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
             // Per obtenir json d'una transaccio: https://testnet.blockchain.info/rawtx/$tx_hash
             //currentBlock = readJsonFromUrl("https://testnet.blockchain.info/q/getblockcount"); //https://testnet.blockchain.info/latestblock"
             //doc = Jsoup.connect("https://testnet.blockchain.info/q/getblockcount").get();
 
             //Obtenim el valor del darrer bloc de la cadena per calcular el nombre de confirmacions de la nostra transaccio
-//            doc = readJsonFromUrl("https://testnet.blockchain.info/latestblock");
+            //doc = readJsonFromUrl("https://testnet.blockchain.info/latestblock");
             doc = readJsonFromUrl(Main.appProps.getProperty("api_currentBlock"));
             currentBlock = Long.valueOf(doc.get("height").toString()); //Long.valueOf(doc.body().text());
             System.err.println("URI de cerca del darrer bloc la xarxa blockchain: "+ Main.appProps.getProperty("api_currentBlock") + "\n" + "Darrer bloc = " + currentBlock );
+            String tx;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        System.err.println("******************************************");
-//        System.err.println(json.toString());
-//        System.err.println("HashCEM en Hex = " + new String(Hex.encode(hash)));
-        //Obtenir el darrer block de la cadena
-//        System.err.println("Block Actual = " + doc.body().text());
-//        System.err.println("URI de cerca del darrer bloc la xarxa blockchain: "+ Main.appProps.getProperty("api_currentBlock") + "\n" + "Darrer bloc = " + currentBlock );
-//        System.err.println("******************************************");
-        //System.err.println("Block Actual = " + currentBlock.toString());
+//////////////////////////////*****************https://blockstream.info/testnet/api/address/************************************///////////////////////////////////
+//          int w = 1;   //blockstream.info
+//          JSONArray txs  = readJsonArrayFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+//          System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            Iterator itT = txs.iterator();
+            while (itT.hasNext()) {
+                JSONObject level = (JSONObject) itT.next();
+                tx = level.get(clau[w][1]).toString();
+                JSONArray out = level.getJSONArray(clau[w][2]);
+                Iterator itO = out.iterator();
+                while (itO.hasNext()) {
+                    JSONObject output = (JSONObject) itO.next();
+                    //System.err.println(output.get(clau[w][3]));
+                    if (output.get(clau[w][3]).toString().startsWith("6a40" + new String(Hex.encode(hash))))  {
+                        String op = output.get(clau[w][3]).toString();
+                        System.err.println("Trobat el HashCEM a la tx: "+ tx +  "\namb el valor d'OPRETURN: " + op);
+                        System.err.println("Obtenim el valor de K1 = " + op.substring(68));
+                        //En el cas de que la tx no estiqui a cap block donam el pes de block = 0
+                        if (level.has(clau[w][4])){
+                            txBlock = level.getLong(clau[w][4]);
+                        } else {txBlock = 0L;}
 
-        String tx;
-        JSONArray txs = json.getJSONArray("txs");
-        Iterator itT = txs.iterator();
-        while (itT.hasNext()) {
-            JSONObject level = (JSONObject) itT.next();
-            tx = level.get("hash").toString();
-            JSONArray out = level.getJSONArray("outputs");
-            Iterator itO = out.iterator();
-            while (itO.hasNext()) {
-                JSONObject output = (JSONObject) itO.next();
-                //System.err.println(output.get("script"));
-                if (output.get("script").toString().startsWith("6a40" + new String(Hex.encode(hash))))  {
-                    System.err.println("Trobat el HashCEM a la tx: "+ tx +  "\namb el valor d'OPRETURN: " + output.get("script"));
-                    System.err.println("Obtenim el valor de K1 = " + output.get("script").toString().substring(68));
-                    //En el cas de que la tx no estiqui a cap block donam el pes de block = 0
-                    if (level.has("block_height")){
-                        txBlock = level.getLong("block_height");
-                    } else {txBlock = 0L;}
-
-                    System.err.println("Block TX del OpReturn = " + txBlock);
-                    Long confirmacions = ((currentBlock - txBlock + 1) <= currentBlock) ? (currentBlock - txBlock + 1) : 0L;
-                    if ((confirmacions>=depth)){ return Hex.decode(output.get("script").toString().substring(68)); }
-                    else {
-                        informationalAlert("Confirmacions insuficients","La transacció té "+ confirmacions +" confirmacions.\nPer obtenir validesa són necessaries " + depth + " confirmacions.");
-                        break;
+                        System.err.println("Block TX del OpReturn = " + txBlock);
+                        Long confirmacions = ((currentBlock - txBlock + 1) <= currentBlock) ? (currentBlock - txBlock + 1) : 0L;
+                        if ((confirmacions>=depth)){ return Hex.decode(op.substring(68)); }
+                        else {
+                            informationalAlert("Confirmacions insuficients","La transacció té "+ confirmacions +" confirmacions.\nPer obtenir validesa són necessaries " + depth + " confirmacions.");
+                            break;
+                        }
                     }
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-     return null;
+        return null;
     }
 
     @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); connectionLabelIMAP.setText(auth_bustia()); }

@@ -36,6 +36,18 @@ public class JsonReader {
         }
     }
 
+    public static JSONArray readJsonArrayFromUrl(String url) throws IOException, JSONException {
+        InputStream is = new URL(url).openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            JSONArray json = new JSONArray(jsonText);
+            return json;
+        } finally {
+            is.close();
+        }
+    }
+
     public static void main(String[] args) throws IOException, JSONException {
         JSONObject json = readJsonFromUrl("https://testnet.blockchain.info/rawaddr/mmjGxJq4teCUXZkgTGLLfncVWhBF37wEBk");
         System.err.println(json.toString());

@@ -218,7 +218,7 @@ public class ReadConfirmationController {
                             setText("");
                             setGraphic(null);
                         } else {
-                            setText("correu de " + item.getFrom() + " - Assupte:" + item.getSubject() +" - Enviat: " + item.getSentDate());
+                            setText("Remitent:" + item.getFrom() + " - Assumpte:" + item.getSubject() +" - Enviat: " + item.getSentDate());
 //                            ProgressBar bar = new ProgressBar();
 //                            bar.progressProperty().bind(item.depth.divide(3.0));
 //                            setGraphic(bar);

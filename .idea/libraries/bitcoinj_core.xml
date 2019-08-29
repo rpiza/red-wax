@@ -4,8 +4,6 @@
       <root url="jar://$PROJECT_DIR$/lib/bitcoinj-core.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib/bitcoinj-core.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>
