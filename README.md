@@ -5,9 +5,11 @@ Desenvolupament d'un client basat en java amb l'objectiu de realitzar una prova 
 [A Solution for Secure Certified Electronic Mail Using Blockchain as a Secure Message Board](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8654617)
 
 Aquest client es basa en el [wallet-template](https://github.com/bitcoinj/wallet-template) de [bitcoinj](https://bitcoinj.github.io/), modificat per implementar el protocol de correu certificat.   
+
 S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges de correu necessari per el correcte funcionament del protocol.
 
-La branca actual del repositori, redwax-0.14.3, es basa en la llibreria bitcoinj-0.14.3. Aquesta llibreria no permet les adreces segwit.   
+La branca actual del repositori, redwax-0.14.3, es basa en la llibreria bitcoinj-0.14.3. Aquesta llibreria no permet les adreces segwit.  
+
 La branca redwax-0.15.3 es basa en a llibreria bitcoinj-0.15.3. Aquesta llibreria si que permet les adreces segwit.
 
 ### Descàrrega i execució
@@ -53,14 +55,11 @@ Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
 
 7. En el següent vídeo s'expliquen les passes a seguir per executar el client i fer l'enviament d'un correu certificat en base les especificacions del protocol:
 
-   [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/experiment/media/tutorial.html)
+   [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/tutorial/media/tutorial.html)
 
    Per simplicitat en el tutorial assumim que n'Alice i en Bob tenen la mateixa adreça de correu, així només utilitzam una instància del client.
 
    Per simular un cas real, s'ha de duplicar el directori **red-wax** descarregat i modificar el **configuration.xml** de cada directori amb les dades de n'Alice i de'n Bob respectivament. Finalment executar una instància del client de cada directori.   
-
-
-
 
 
 ### Problemes detectats
