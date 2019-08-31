@@ -126,7 +126,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
 7. En el següent vídeo s'expliquen les passes a seguir per executar el client i fer l'enviament d'un correu certificat en base les especificacions del protocol:
 
-   [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/experiment/media/tutorial.html)
+   [Video Tutorial](http://htmlpreview.github.io/?https://github.com/rpiza/red-wax/blob/tutorial/media/tutorial.html)
 
    Per simplicitat en el tutorial assumim que n'Alice i en Bob tenen la mateixa adreça de correu, així només utilitzam una instància del client.
 
