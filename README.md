@@ -9,6 +9,13 @@ S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges
 
 ### Descàrrega i execució
 
+Aquesta branca utilitza la version de bitcoinj-0.15.3 que permet l'ús d'adreces segwit.   
+Per la seva correcta execució es necessari empra Java 11, amb l'inconvenient que no ja no incorpora la llibreries de javaFX. Les llibreries openjdk es poden descarregar d'[aquí](https://gluonhq.com/products/javafx/). Les passes a seguir són:
+* descarregar el fitxer SDK corresponent al sistema operatiu desitjat
+* descomprimir el fitxer descarregat
+* recordar la ubicació, ja que serà necessari introduir-la en la comanda d'execució, punt 5, com a paràmetre de **--module-path**
+
+
 1. Primer feim un clone del repositori
 <pre>
 #> git clone --depth=1 --branch=master https://github.com/rpiza/red-wax.git
@@ -19,22 +26,20 @@ S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges
 #> cd red-wax
 </pre>
 
-
 3. Comprovam que tenim la versió de **java** adequada. Pel desenvolupament s'ha utilitzat la versió:
 <pre>
 #> java -version
-
-java version "1.8.0_211"
-Java(TM) SE Runtime Environment (build 1.8.0_211-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.211-b12, mixed mode)
+openjdk version "11.0.4" 2019-07-16
+OpenJDK Runtime Environment 18.9 (build 11.0.4+11)
+OpenJDK 64-Bit Server VM 18.9 (build 11.0.4+11, mixed mode, sharing)
 </pre>
-Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
+Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
 4. Configuram adequadament el fitxer **configuration.xml** amb el valors del compte SMTP i IMAP necessaris per enviar i rebre els missatges de correu.
 
 5. Execució del client amb la comanda:
 <pre>
-  #> java -cp target/*:lib/*:. com.problemeszero.redwax.Main
+ #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/*:lib/*:. com.problemeszero.redwax.Main
 </pre>
 
 6. Carregar el wallet amb bitcoins.
