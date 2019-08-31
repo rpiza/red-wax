@@ -7,6 +7,9 @@ Desenvolupament d'un client basat en java amb l'objectiu de realitzar una prova 
 Aquest client es basa en el [wallet-template](https://github.com/bitcoinj/wallet-template) de [bitcoinj](https://bitcoinj.github.io/), modificat per implementar el protocol de correu certificat.   
 S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges de correu necessari per el correcte funcionament del protocol.
 
+La branca actual del repositori, redwax-0.14.3, es basa en la llibreria bitcoinj-0.14.3. Aquesta llibreria no permet les adreces segwit.
+La branca redwax-0.15.3 es basa en a llibreria bitcoinj-0.15.3. Aquesta llibreria si que permet les adreces segwit.
+
 ### Descàrrega i execució
 
 1. Primer feim un clone del repositori
