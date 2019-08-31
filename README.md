@@ -11,7 +11,7 @@ S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges
 
 1. Primer feim un clone del repositori
 <pre>
-#> git clone --depth=1 --branch=master https://github.com/rpiza/red-wax.git
+#> git clone --depth=1 --branch=redwax-0.14.7 https://github.com/rpiza/red-wax.git
 </pre>
 
 2. Entram al directori **red-wax**

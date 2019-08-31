@@ -9,6 +9,7 @@ target/*
 !com.problemeszero.redwax-shaded.jar
 !lib/*.jar
 .project
+./idea/workspace.xml
 .classpath
 .settings/
 red-max.iml
