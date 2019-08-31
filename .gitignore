@@ -1,12 +1,12 @@
 #.idea
 /bin/
-/build/
+build/**
+!build/libs/*.jar
 target/**/*.class
 *.spvchain
 *.wallet
 *.tmp
 target/*
-!com.problemeszero.redwax-*.jar
 !lib/*.jar
 .project
 .idea/workspace.xml

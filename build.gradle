@@ -31,7 +31,7 @@ task fatJar(type: Jar) {
         	'Implementation-Version': version,
         	'Main-Class': 'com.problemeszero.redwax.Main')
     }
-    baseName = 'com.problemeszero.redwax'
+    baseName = 'com.problemeszero.redwax-' + "${platform}"
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }{
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
