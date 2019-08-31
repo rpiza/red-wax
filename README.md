@@ -9,8 +9,9 @@ S'ha incorporat la part de criptografia i de l'enviament i consulta de missatges
 
 ### Descàrrega i execució
 
-Aquesta branca utilitza la version de bitcoinj-0.15.3 que permet l'ús d'adreces segwit.   
-Per la seva correcta execució es necessari empra Java 11, amb l'inconvenient que no ja no incorpora la llibreries de javaFX. Les llibreries openjdk es poden descarregar d'[aquí](https://gluonhq.com/products/javafx/). Les passes a seguir són:
+Aquesta branca utilitza la version de bitcoinj-0.15.3 que permet l'ús d'adreces SegWit. Per la seva correcta execució es necessari empra Java 11.
+
+Java 11 té l'inconvenient que no ja no incorpora la llibreries de JavaFX.  Les llibreries openjdk es poden descarregar d'[aquí](https://gluonhq.com/products/javafx/) i per realitzar la seva instal·lació hem de seguir les següents passes:
 * descarregar el fitxer SDK corresponent al sistema operatiu desitjat
 * descomprimir el fitxer descarregat
 * recordar la ubicació, ja que serà necessari introduir-la en la comanda d'execució, punt 5, com a paràmetre de **--module-path**
@@ -29,9 +30,9 @@ Per la seva correcta execució es necessari empra Java 11, amb l'inconvenient qu
 3. Comprovam que tenim la versió de **java** adequada. Pel desenvolupament s'ha utilitzat la versió:
 <pre>
 #> java -version
-openjdk version "11.0.4" 2019-07-16
-OpenJDK Runtime Environment 18.9 (build 11.0.4+11)
-OpenJDK 64-Bit Server VM 18.9 (build 11.0.4+11, mixed mode, sharing)
+   openjdk version "11.0.4" 2019-07-16
+   OpenJDK Runtime Environment 18.9 (build 11.0.4+11)
+   OpenJDK 64-Bit Server VM 18.9 (build 11.0.4+11, mixed mode, sharing)
 </pre>
 Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
