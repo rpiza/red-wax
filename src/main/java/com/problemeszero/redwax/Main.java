@@ -6,8 +6,10 @@ import com.problemeszero.crypto.Smime;
 import javafx.scene.input.*;
 import org.apache.log4j.BasicConfigurator;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Utils;
 import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.params.*;
+import org.bitcoinj.script.Script;
 import org.bitcoinj.utils.BriefLogFormatter;
 import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.DeterministicSeed;
@@ -23,11 +25,7 @@ import com.problemeszero.redwax.controls.NotificationBarPane;
 import com.problemeszero.redwax.utils.GuiUtils;
 import com.problemeszero.redwax.utils.TextFieldValidator;
 import org.bouncycastle.crypto.CryptoServicesRegistrar;
-import org.bouncycastle.crypto.fips.FipsDRBG;
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
-import org.bouncycastle.crypto.util.BasicEntropySourceProvider;
-
-import java.security.SecureRandom;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,10 +38,15 @@ import java.util.Properties;
 import static com.problemeszero.redwax.utils.GuiUtils.*;
 
 public class Main extends Application {
-    public static String APP_NAME = "RedWax";
+    public static final Script.ScriptType PREFERRED_OUTPUT_SCRIPT_TYPE = Script.ScriptType.P2WPKH;
+    public static final String APP_NAME = "RedWax";
+
+
     public static Properties appProps = new Properties();
 
-    public static NetworkParameters params; // = TestNet3Params.get(); // RegTestParams.get(); // //MainNetParams.get();
+    public static NetworkParameters params = TestNet3Params.get(); // RegTestParams.get(); // //MainNetParams.get();
+    private static final String WALLET_FILE_NAME = APP_NAME.replaceAll("[^a-zA-Z0-9.-]", "_") + "-"
+            + params.getPaymentProtocolId();
     public static WalletAppKit bitcoin;
     public static Main instance;
 
@@ -99,7 +102,8 @@ public class Main extends Application {
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
 
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+        if (Utils.isMac()) {
+//        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             // We could match the Mac Aqua style here, except that (a) Modena doesn't look that bad, and (b)
             // the date picker widget is kinda broken in AquaFx and I can't be bothered fixing it.
             // AquaFx.style();
@@ -156,7 +160,8 @@ public class Main extends Application {
 
     public void setupWalletKit(@Nullable DeterministicSeed seed) {
         // If seed is non-null it means we are restoring from backup.
-        bitcoin = new WalletAppKit(params, new File("."), APP_NAME + "-" + params.getPaymentProtocolId()) {
+       // bitcoin = new WalletAppKit(params, new File("."), APP_NAME + "-" + params.getPaymentProtocolId()) {
+        bitcoin = new WalletAppKit(params, PREFERRED_OUTPUT_SCRIPT_TYPE, null, new File("."), WALLET_FILE_NAME) {
             @Override
             protected void onSetupCompleted() {
                 // Don't make the user wait for confirmations for now, as the intention is they're sending it

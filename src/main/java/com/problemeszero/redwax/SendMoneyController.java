@@ -1,22 +1,29 @@
 package com.problemeszero.redwax;
 
+import javafx.scene.layout.HBox;
+import org.bitcoinj.core.*;
+import org.bitcoinj.wallet.SendRequest;
+import org.bitcoinj.wallet.Wallet;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
+
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import org.bitcoinj.core.*;
-import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.SendRequest;
-import org.spongycastle.crypto.params.KeyParameter;
+//import org.spongycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.KeyParameter;
 import com.problemeszero.redwax.controls.BitcoinAddressValidator;
 import com.problemeszero.redwax.utils.TextFieldValidator;
 import com.problemeszero.redwax.utils.WTUtils;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.problemeszero.redwax.utils.GuiUtils.*;
+
+import javax.annotation.Nullable;
 
 public class SendMoneyController {
     public Button sendBtn;
@@ -39,6 +46,7 @@ public class SendMoneyController {
         new TextFieldValidator(amountEdit, text ->
                 !WTUtils.didThrow(() -> checkState(Coin.parseCoin(text).compareTo(balance) <= 0)));
         amountEdit.setText(balance.toPlainString());
+        address.setPromptText(Address.fromKey(Main.params, new ECKey(), Main.PREFERRED_OUTPUT_SCRIPT_TYPE).toString());
     }
 
     public void cancel(ActionEvent event) {
@@ -49,7 +57,7 @@ public class SendMoneyController {
         // Address exception cannot happen as we validated it beforehand.
         try {
             Coin amount = Coin.parseCoin(amountEdit.getText());
-            Address destination = new Address(Main.params, address.getText());
+            Address destination = Address.fromString(Main.params, address.getText());
             SendRequest req;
             if (amount.equals(Main.bitcoin.wallet().getBalance()))
                 req = SendRequest.emptyWallet(destination);
@@ -59,7 +67,7 @@ public class SendMoneyController {
             sendResult = Main.bitcoin.wallet().sendCoins(req);
             Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
                 @Override
-                public void onSuccess(Transaction result) {
+                public void onSuccess(@Nullable Transaction result) {
                     checkGuiThread();
                     overlayUI.done();
                 }
@@ -69,7 +77,7 @@ public class SendMoneyController {
                     // We died trying to empty the wallet.
                     crashAlert(t);
                 }
-            });
+            }, MoreExecutors.directExecutor());
             sendResult.tx.getConfidence().addEventListener((tx, reason) -> {
                 if (reason == TransactionConfidence.Listener.ChangeReason.SEEN_PEERS)
                     updateTitleForBroadcast();
@@ -85,9 +93,6 @@ public class SendMoneyController {
             overlayUI.done();
         } catch (ECKey.KeyIsEncryptedException e) {
             askForPasswordAndRetry();
-        } catch (AddressFormatException e) {
-            // Cannot happen because we already validated it when the text field changed.
-            throw new RuntimeException(e);
         }
     }
 

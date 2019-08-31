@@ -178,7 +178,7 @@ public class ReadConfirmationController {
             System.err.println("Addr de n'Alice: " + rwm.getAddrAlice());
             if (!rwm.getAddrAlice().equals(Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString())){
                 Main.bitcoin.wallet().reuseAddress(KeyChain.KeyPurpose.CHANGE,
-                        Main.bitcoin.wallet().findKeyFromPubHash(new Address(Main.params, rwm.getAddrAlice()).getHash160()));
+                        Main.bitcoin.wallet().findKeyFromPubKeyHash(Address.fromString(Main.params, rwm.getAddrAlice()).getHash(),Address.fromString(Main.params, rwm.getAddrAlice()).getOutputScriptType()));
                 System.err.println("Actualitzam ChangeAddress a l'adreça de n'Alice. ChangeAddress: " + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString());
             } else {
                 System.err.println("ChangeAddress és correspon amb l'adreça de n'Alice");
@@ -218,7 +218,7 @@ public class ReadConfirmationController {
                             setText("");
                             setGraphic(null);
                         } else {
-                            setText("Remitent:" + item.getFrom() + " - Assumpte:" + item.getSubject() +" - Enviat: " + item.getSentDate());
+                            setText("Remitent: " + item.getFrom() + " - Assumpte: " + item.getSubject() +" - Enviat: " + item.getSentDate());
 //                            ProgressBar bar = new ProgressBar();
 //                            bar.progressProperty().bind(item.depth.divide(3.0));
 //                            setGraphic(bar);

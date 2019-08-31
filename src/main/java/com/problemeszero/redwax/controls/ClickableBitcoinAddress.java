@@ -45,7 +45,7 @@ public class ClickableBitcoinAddress extends AnchorPane {
     @FXML protected Label copyWidget;
     @FXML protected Label qrCode;
 
-    protected  SimpleObjectProperty<Address> address = new SimpleObjectProperty<>();
+    protected SimpleObjectProperty<Address> address = new SimpleObjectProperty<>();
     private final StringExpression addressStr;
 
     public ClickableBitcoinAddress() {

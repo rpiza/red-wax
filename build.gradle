@@ -1,0 +1,109 @@
+plugins {
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+    id 'org.beryx.jlink' version '2.12.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+apply plugin: 'org.openjfx.javafxplugin'
+
+eclipse.project.name = 'bitcoinj-redwax'
+version = '0.15.3'
+sourceCompatibility = 1.11
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+def currentOS = org.gradle.internal.os.OperatingSystem.current()
+def platform
+if (currentOS.isWindows()) {
+    platform = 'win'
+} else if (currentOS.isLinux()) {
+    platform = 'linux'
+} else if (currentOS.isMacOsX()) {
+    platform = 'mac'
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+        attributes ('Implementation-Title': 'Red-Wax Jar',
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.problemeszero.redwax.Main')
+    }
+    baseName = 'com.problemeszero.redwax'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }{
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+    with jar
+}
+
+
+repositories {
+    jcenter()
+}
+dependencies {
+    //   implementation project(':core')
+    implementation files('lib/bitcoinj-core-0.15.3.jar')
+    //   compile 'org.bouncycastle:bcprov-jdk15on:1.60'
+    implementation files('lib/bcprov-jdk15on-1.60.jar')
+    implementation files('lib/bc-fips-1.0.1.jar')
+    implementation files('lib/bcmail-fips-1.0.1.jar')
+    implementation files('lib/bcpkix-fips-1.0.2.jar')
+    compile 'com.google.protobuf:protobuf-java:3.6.1'
+    compile 'com.sun.xml.bind:jaxb-impl:2.2'
+    compile 'javax.xml.bind:jaxb-api:2.2.12'
+    compile 'com.google.guava:guava:27.0.1-android'
+    compile 'org.fxmisc.easybind:easybind:1.0.2'
+    compile 'de.jensd:fontawesomefx:8.0.0'
+    compile 'net.glxn:qrgen:1.3'
+    compile 'org.slf4j:slf4j-jdk14:1.7.25'
+    compile 'org.slf4j:slf4j-log4j12:1.7.25'
+//    compile 'org.bouncycastle:bcmail-fips:1.0.1'
+//    compile 'org.bouncycastle:bcpkix-fips:1.0.1'
+//    compile 'org.bouncycastle:bc-fips:1.0.1'
+    compile 'org.bitcoinj:orchid:1.2.1'
+    compile 'org.fxmisc.easybind:easybind:1.0.2'
+    //compile 'com.madgag.spongycastle:core:1.54.0.0'
+    compile 'javax.xml.bind:jaxb-api:2.2.4'
+    compile 'de.jensd:fontawesomefx:8.0.0'
+    compile 'net.glxn:qrgen:1.3'
+    compile 'com.sun.mail:javax.mail:1.6.2'
+    compile 'commons-io:commons-io:2.6'
+    compile 'org.json:json:20180813'
+    compile 'org.jsoup:jsoup:1.11.3'
+    compile "org.openjfx:javafx-base:11:${platform}"
+    compile "org.openjfx:javafx-graphics:11:${platform}"
+    compile "org.openjfx:javafx-controls:11:${platform}"
+    compile "org.openjfx:javafx-fxml:11:${platform}"
+
+}
+
+javafx {
+    version = '11.0.2'
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+mainClassName = 'com.problemeszero.redwax.Main'
+
+// task wallet_template can be replaced with the 'run' task
+//task wallet_template(dependsOn: 'run') {
+//}
+
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+//
+//task sourcesJar(type: Jar, dependsOn: classes) {
+//    classifier = 'sources'
+//    from sourceSets.main.allSource
+//}
+//
+//artifacts {
+//    archives sourcesJar
+//    archives javadocJar
+//}
+
+
+// /usr/lib/jvm/java-11-openjdk-11.0.4.11-0.fc30.x86_64/bin/java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/*:lib/*:. com.problemeszero.redwax.Main

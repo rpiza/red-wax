@@ -359,18 +359,20 @@ public class ReadMailController {
         System.err.println("HashCEM en Hex = " + new String(Hex.encode(hash)));
         System.err.println("El nombre de confirmacions necessaries per acceptar la tx és de " + depth);
         String  clau [][] = { {"txs","hash","outputs","script","block_height"}, {"","txid","vout","scriptpubkey","block_height"}}; // {{blockcypher.com},{blockstream.info}}
+
+
         try {
             //
             // S'HA D'ANALITZAR LES RESPOSTES DE LES APIS PER EVITAR XSS
             //
-//            json = readJsonFromUrl("https://testnet.blockchain.info/rawaddr/" + addr);
-//            json = readJsonFromUrl("http://api.blockcypher.com/v1/btc/test3/addrs/" + addr + "/full");
+            // json = readJsonFromUrl("https://testnet.blockchain.info/rawaddr/" + addr);
+            // json = readJsonFromUrl("http://api.blockcypher.com/v1/btc/test3/addrs/" + addr + "/full");
 
 ////////////////**************http://api.blockcypher.com/v1/btc/test3/addrs/******************  ////////////////////////////////////////////////////////
-            int w = 0;  //blockcypher.com
-            json = readJsonFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
-            System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
-            JSONArray txs = json.getJSONArray(clau[w][0]);
+//            int w = 0;  //blockcypher.com
+//           json = readJsonFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+//           System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+//           JSONArray txs = json.getJSONArray(clau[w][0]);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -383,12 +385,12 @@ public class ReadMailController {
             doc = readJsonFromUrl(Main.appProps.getProperty("api_currentBlock"));
             currentBlock = Long.valueOf(doc.get("height").toString()); //Long.valueOf(doc.body().text());
             System.err.println("URI de cerca del darrer bloc la xarxa blockchain: "+ Main.appProps.getProperty("api_currentBlock") + "\n" + "Darrer bloc = " + currentBlock );
-            String tx;
 
+            String tx;
 //////////////////////////////*****************https://blockstream.info/testnet/api/address/************************************///////////////////////////////////
-//          int w = 1;   //blockstream.info
-//          JSONArray txs  = readJsonArrayFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
-//          System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+             int w = 1;   //blockstream.info
+             JSONArray txs = readJsonArrayFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+             System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Iterator itT = txs.iterator();
             while (itT.hasNext()) {

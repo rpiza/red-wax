@@ -6,39 +6,26 @@ import com.problemeszero.crypto.Pem;
 import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.Main;
 import com.problemeszero.redwax.RedWaxMessage;
-import com.problemeszero.redwax.controls.ClickableBitcoinAddress;
-import javafx.beans.binding.StringExpression;
-import jdk.nashorn.internal.runtime.RewriteException;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.crypto.CryptoServicesRegistrar;
-import org.bouncycastle.crypto.KeyUnwrapperUsingSecureRandom;
-import org.bouncycastle.crypto.PlainInputProcessingException;
-import org.bouncycastle.crypto.asymmetric.AsymmetricRSAKey;
 import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPublicKey;
-import org.bouncycastle.crypto.fips.FipsKeyUnwrapperUsingSecureRandom;
-import org.bouncycastle.crypto.fips.FipsKeyWrapperUsingSecureRandom;
 import org.bouncycastle.crypto.fips.FipsRSA;
-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.encoders.Hex;
-import org.spongycastle.crypto.params.AsymmetricKeyParameter;
-import org.spongycastle.crypto.util.PublicKeyFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.crypto.Cipher;
+
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.*;
 import java.security.*;
 import java.security.cert.X509Certificate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+
 import java.util.Base64;
 import java.util.Date;
-import java.util.Enumeration;
+
 import java.util.Properties;
 
 import static com.problemeszero.time.TimePickerController.selectTimeAlert;

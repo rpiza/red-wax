@@ -1,6 +1,5 @@
 package com.problemeszero.redwax;
 
-import com.google.protobuf.*;
 import javafx.application.*;
 import javafx.event.*;
 import javafx.fxml.*;
@@ -9,10 +8,13 @@ import javafx.scene.layout.*;
 import org.bitcoinj.crypto.*;
 import org.bitcoinj.wallet.*;
 import org.slf4j.*;
-import org.spongycastle.crypto.params.*;
+import org.bouncycastle.crypto.params.*;
+
+import com.google.protobuf.ByteString;
+
 import com.problemeszero.redwax.utils.*;
 
-import java.time.*;
+import java.time.Duration;
 import java.util.concurrent.*;
 
 import static com.problemeszero.redwax.utils.GuiUtils.*;

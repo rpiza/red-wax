@@ -19,6 +19,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.bitcoinj.core.*;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
+import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.params.TestNet3Params;
@@ -45,7 +46,7 @@ import com.problemeszero.redwax.controls.ClickableBitcoinAddress;
 import com.problemeszero.redwax.controls.NotificationBarPane;
 import com.problemeszero.redwax.utils.*;
 import com.problemeszero.redwax.utils.easing.*;
-
+import com.problemeszero.redwax.utils.easing.ElasticInterpolator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -118,31 +119,31 @@ public class MainController {
         // Don't let the user click send money when the wallet is empty.
         sendMoneyOutBtn.disableProperty().bind(model.balanceProperty().isEqualTo(Coin.ZERO));
 
-        TorClient torClient = Main.bitcoin.peerGroup().getTorClient();
-        if (torClient != null) {
-            SimpleDoubleProperty torProgress = new SimpleDoubleProperty(-1);
-            String torMsg = "Initialising Tor";
-            syncItem = Main.instance.notificationBar.pushItem(torMsg, torProgress);
-            torClient.addInitializationListener(new TorInitializationListener() {
-                @Override
-                public void initializationProgress(String message, int percent) {
-                    Platform.runLater(() -> {
-                        syncItem.label.set(torMsg + ": " + message);
-                        torProgress.set(percent / 100.0);
-                    });
-                }
-
-                @Override
-                public void initializationCompleted() {
-                    Platform.runLater(() -> {
-                        syncItem.cancel();
-                        showBitcoinSyncMessage();
-                    });
-                }
-            });
-        } else {
+//        TorClient torClient = Main.bitcoin.peerGroup().getTorClient();
+//        if (torClient != null) {
+//            SimpleDoubleProperty torProgress = new SimpleDoubleProperty(-1);
+//            String torMsg = "Initialising Tor";
+//            syncItem = Main.instance.notificationBar.pushItem(torMsg, torProgress);
+//            torClient.addInitializationListener(new TorInitializationListener() {
+//                @Override
+//                public void initializationProgress(String message, int percent) {
+//                    Platform.runLater(() -> {
+//                        syncItem.label.set(torMsg + ": " + message);
+//                        torProgress.set(percent / 100.0);
+//                    });
+//                }
+//
+//                @Override
+//                public void initializationCompleted() {
+//                    Platform.runLater(() -> {
+//                        syncItem.cancel();
+//                        showBitcoinSyncMessage();
+//                    });
+//                }
+//            });
+//        } else {
             showBitcoinSyncMessage();
-        }
+//        }
         model.syncProgressProperty().addListener(x -> {
             if (model.syncProgressProperty().get() >= 1.0) {
                 readyToGoAnimation();
@@ -162,10 +163,10 @@ public class MainController {
                     @Override
                     public String toString(Transaction tx) {
                         Coin value = tx.getValue(Main.bitcoin.wallet());
+                        Address address = tx.getOutput(0).getScriptPubKey().getToAddress(Main.params);
                         if (value.isPositive()) {
-                            return "Entrada de " + MonetaryFormat.BTC.format(value) + " - " + tx.getUpdateTime();
+                            return "Entrada  de " + MonetaryFormat.BTC.format(value) +" cap a " + address + " - " + tx.getUpdateTime();
                         } else  if (value.isNegative()) {
-                            Address address = tx.getOutput(1).getAddressFromP2PKHScript(Main.params);
                             return "Sortida de " + MonetaryFormat.BTC.format(value)  +" cap a " + address + " - " + tx.getUpdateTime();
                         }
                         return "Pagament amb id " + tx.getHash();

@@ -1,11 +1,13 @@
 package com.problemeszero.redwax.utils;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.bitcoinj.core.*;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.AbstractWalletEventListener;
+
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
+import org.bitcoinj.wallet.Wallet;
+import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -31,11 +33,11 @@ public class BitcoinUIModel {
         setWallet(wallet);
     }
 
-    public void setWallet(Wallet wallet) {
-        wallet.addEventListener(new AbstractWalletEventListener() {
+    public final void setWallet(Wallet wallet) {
+        wallet.addChangeEventListener(Platform::runLater, new WalletChangeEventListener() {
             @Override
             public void onWalletChanged(Wallet wallet) {
-                super.onWalletChanged(wallet);
+                //super.onWalletChanged(wallet);
                 update(wallet);
             }
         });

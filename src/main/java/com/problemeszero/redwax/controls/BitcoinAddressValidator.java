@@ -3,6 +3,7 @@ package com.problemeszero.redwax.controls;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
+
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import com.problemeszero.redwax.utils.TextFieldValidator;
@@ -36,7 +37,7 @@ public class BitcoinAddressValidator {
 
     private boolean testAddr(String text) {
         try {
-            new Address(params, text);
+            Address.fromString(params, text);
             return true;
         } catch (AddressFormatException e) {
             return false;

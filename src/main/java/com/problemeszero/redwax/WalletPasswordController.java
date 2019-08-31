@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.KeyParameter;
 import com.problemeszero.redwax.utils.KeyDerivationTasks;
 
 import java.time.Duration;
@@ -58,7 +58,7 @@ public class WalletPasswordController {
         checkNotNull(keyCrypter);   // We should never arrive at this GUI if the wallet isn't actually encrypted.
         KeyDerivationTasks tasks = new KeyDerivationTasks(keyCrypter, password, getTargetTime()) {
             @Override
-            protected void onFinish(KeyParameter aesKey, int timeTakenMsec) {
+            protected final void onFinish(KeyParameter aesKey, int timeTakenMsec) {
                 checkGuiThread();
                 if (Main.bitcoin.wallet().checkAESKey(aesKey)) {
                     WalletPasswordController.this.aesKey.set(aesKey);
