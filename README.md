@@ -44,7 +44,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java8** d'Oracle
 
 6. Carregar el wallet amb bitcoins.
 
-   Quan s'executa per primera vegada el client es realitza la sincronitació amb la xarxa blockchain de bitcoin. Per poder enviar tx al blockchain es necessari tenir bitcoins associats a l'adreça que apareix a la part superior. El wallet informa del valor de bitoins associats. Inicalment aquest valor serà **0.00**.
+   Quan s'executa per primera vegada el client es realitza la sincronització amb la xarxa blockchain de bitcoin. Per poder enviar tx al blockchain es necessari tenir bitcoins associats a l'adreça que apareix a la part superior. El wallet informa del valor de bitcoins associats. Inicialment aquest valor serà **0.00**.
 
    6.1 Llocs web on obtenir bitcoins per a la testnet:
 
