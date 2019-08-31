@@ -20,71 +20,6 @@ Per realitzar la instal·lació d'aquestes llibreries hem de seguir les següent
 * descomprimir el fitxer descarregat
 * recordar la ubicació, ja que serà necessari introduir-la en la comanda del punt 5, com a paràmetre de **--module-path**
 
-A més d'instal·lar les llibreries necessàries en temps d'execució també és necessari emprar les llibreries adequades en temps de compilació.
-
-##### Llibreries openjfx-11 en temps de compilació:
-
-En aquest cas, el fitxer build.gradle conté les instruccions adequades per detectar el sistema operatiu de l'ordinador i compilar amb les llibreries adequades al sistema operatiu.
-
-Segment del fitxer build.gradle:
-```
-...
-
-def currentOS = org.gradle.internal.os.OperatingSystem.current()
-def platform
-if (currentOS.isWindows()) {
-    platform = 'win'
-} else if (currentOS.isLinux()) {
-    platform = 'linux'
-} else if (currentOS.isMacOsX()) {
-    platform = 'mac'
-}
-
-...
-
-dependencies {
-
-...
-
-    compile "org.openjfx:javafx-base:11:${platform}"
-    compile "org.openjfx:javafx-graphics:11:${platform}"
-    compile "org.openjfx:javafx-controls:11:${platform}"
-    compile "org.openjfx:javafx-fxml:11:${platform}"
-
-}
-....
-
-```
-
-##### Generació del Jar
-
-El fitxer build.gradle incorpora la tasca **fatJar**, que genera un jar amb la gran part de les llibreries necessàries per a l'execució de l'aplicació.
-
-Segment del fitxer build.gradle:
-```
-
-...
-
-//create a single Jar with all dependencies
-task fatJar(type: Jar) {
-	manifest {
-        attributes ('Implementation-Title': 'Red-Wax Jar',
-        	'Implementation-Version': version,
-        	'Main-Class': 'com.problemeszero.redwax.Main')
-    }
-    baseName = 'com.problemeszero.redwax-' + "${platform}"
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }{
-
-}
-    with jar
-}
-
-...
-
-```
-
-Per facilitar l'execució, i evitar d'haver de generar el jar pel sistema operatiu desitjat, el directori build/libs conté un jar per cada sistema operatiu. A la comanda del punt 5, en la definició del classpath, introduïu el jar adequat al vostre sistema operatiu.
-
 ### Descàrrega i execució
 
 1. Primer feim un clone del repositori
@@ -110,7 +45,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
 5. Execució del client amb la comanda:
 <pre>
- #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/com.problemeszero.redwax-linux-0.15.3.jar:lib/*:. com.problemeszero.redwax.Main
+ #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/com.problemeszero.redwax-0.15.3.jar:lib/*:. com.problemeszero.redwax.Main
 </pre>
 
 6. Carregar el wallet amb bitcoins.

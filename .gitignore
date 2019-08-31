@@ -9,7 +9,6 @@ target/**/*.class
 target/*
 !lib/*.jar
 .project
-.idea/workspace.xml
 .classpath
 .settings/
 /.gradle/
