@@ -355,10 +355,10 @@ public class ReadMailController {
         Long currentBlock = 0L;
         Long txBlock = 0L;
         int depth = Integer.parseInt(Main.appProps.getProperty("depth")); //nombre de confirmacions necessaries per acceptar la tx
-
+        String []  clau  = Main.appProps.getProperty("keys_api").split(",");
         System.err.println("HashCEM en Hex = " + new String(Hex.encode(hash)));
         System.err.println("El nombre de confirmacions necessaries per acceptar la tx és de " + depth);
-        String  clau [][] = { {"txs","hash","outputs","script","block_height"}, {"","txid","vout","scriptpubkey","block_height"}}; // {{blockcypher.com},{blockstream.info}}
+//        String  clau [][] = { {"txs","hash","outputs","script","block_height"}, {"","txid","vout","scriptpubkey","block_height"}}; // {{blockcypher.com},{blockstream.info}}
         try {
             //
             // S'HA D'ANALITZAR LES RESPOSTES DE LES APIS PER EVITAR XSS
@@ -367,10 +367,10 @@ public class ReadMailController {
 //            json = readJsonFromUrl("http://api.blockcypher.com/v1/btc/test3/addrs/" + addr + "/full");
 
 ////////////////**************http://api.blockcypher.com/v1/btc/test3/addrs/******************  ////////////////////////////////////////////////////////
-            int w = 0;  //blockcypher.com
-            json = readJsonFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
-            System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
-            JSONArray txs = json.getJSONArray(clau[w][0]);
+//            json = readJsonFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+//            System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+//            System.err.println("Claus del json = " + Arrays.toString(clau));
+//            JSONArray txs = json.getJSONArray(clau[0]);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -386,26 +386,26 @@ public class ReadMailController {
             String tx;
 
 //////////////////////////////*****************https://blockstream.info/testnet/api/address/************************************///////////////////////////////////
-//          int w = 1;   //blockstream.info
-//          JSONArray txs  = readJsonArrayFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
-//          System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+            JSONArray txs  = readJsonArrayFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+            System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
+            System.err.println("Claus del json = " + Arrays.toString(clau));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Iterator itT = txs.iterator();
             while (itT.hasNext()) {
                 JSONObject level = (JSONObject) itT.next();
-                tx = level.get(clau[w][1]).toString();
-                JSONArray out = level.getJSONArray(clau[w][2]);
+                tx = level.get(clau[1]).toString();
+                JSONArray out = level.getJSONArray(clau[2]);
                 Iterator itO = out.iterator();
                 while (itO.hasNext()) {
                     JSONObject output = (JSONObject) itO.next();
-                    //System.err.println(output.get(clau[w][3]));
-                    if (output.get(clau[w][3]).toString().startsWith("6a40" + new String(Hex.encode(hash))))  {
-                        String op = output.get(clau[w][3]).toString();
+                    //System.err.println(output.get(clau[3]));
+                    if (output.get(clau[3]).toString().startsWith("6a40" + new String(Hex.encode(hash))))  {
+                        String op = output.get(clau[3]).toString();
                         System.err.println("Trobat el HashCEM a la tx: "+ tx +  "\namb el valor d'OPRETURN: " + op);
                         System.err.println("Obtenim el valor de K1 = " + op.substring(68));
                         //En el cas de que la tx no estiqui a cap block donam el pes de block = 0
-                        if (level.has(clau[w][4])){
-                            txBlock = level.getLong(clau[w][4]);
+                        if (level.has(clau[4])){
+                            txBlock = level.getLong(clau[4]);
                         } else {txBlock = 0L;}
 
                         System.err.println("Block TX del OpReturn = " + txBlock);

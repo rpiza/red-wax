@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="96f99e7f-ac4a-4cf1-8514-e56e3612de13" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/bc_fips.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/bitcoinj_core.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,7 +25,7 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectId" id="1QCVq573LwnQo1Z5dxJcp5kxhqG" />
+  <component name="ProjectId" id="1QEMaKW34SHApVmEJORYcVDrha0" />
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/bcpkix-fips-1.0.2.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
@@ -41,7 +45,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Maven.com.problemeszero.redwax [package]">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.problemeszero.redwax.Main" />
       <module name="com.problemeszero.redwax" />
@@ -55,19 +59,45 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="com.problemeszero.redwax [package]" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="package" />
+              </list>
+            </option>
+            <option name="pomFileName" value="pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Maven.com.problemeszero.redwax [package]" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="96f99e7f-ac4a-4cf1-8514-e56e3612de13" name="Default Changelist" comment="" />
-      <created>1567274752674</created>
+      <changelist id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="" />
+      <created>1567331364550</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1567274752674</updated>
+      <updated>1567331364550</updated>
     </task>
     <servers />
   </component>
