@@ -163,7 +163,13 @@ public class MainController {
                     @Override
                     public String toString(Transaction tx) {
                         Coin value = tx.getValue(Main.bitcoin.wallet());
-                        Address address = tx.getOutput(0).getScriptPubKey().getToAddress(Main.params);
+                        Address address;
+                         try {
+                                address = tx.getOutput(0).getScriptPubKey().getToAddress(Main.params);
+                         } catch (Exception e){
+                             address = null;
+                             System.err.println("Excepcio llegint tx: " + e.toString());
+                         }
                         if (value.isPositive()) {
                             return "Entrada  de " + MonetaryFormat.BTC.format(value) +" cap a " + address + " - " + tx.getUpdateTime();
                         } else  if (value.isNegative()) {
