@@ -5,8 +5,12 @@
     <entry key="env">Testnet3</entry>
     <entry key="depth">0</entry>
     <!--Consulta les txs de la addrAlice-->
+    <!--<entry key="keys_api">txs,hash,outputs,script,block_height</entry>
     <entry key="api_addr">http://api.blockcypher.com/v1/btc/test3/addrs/</entry>
-    <entry key="api_addr_sufix">/full</entry>
+    <entry key="api_addr_sufix">/full</entry>-->
+    <entry key="keys_api">,txid,vout,scriptpubkey,block_height</entry>
+    <entry key="api_addr">https://blockstream.info/testnet/api/address/</entry>
+    <entry key="api_addr_sufix">/txs</entry>
     <!--Conslutla el darrer bloc de la xarxa blockchain-->
     <entry key="api_currentBlock">https://testnet.blockchain.info/latestblock</entry>
     <entry key="line_break">true</entry>
