@@ -3,10 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configuration.xml" beforeDir="false" afterPath="$PROJECT_DIR$/configuration.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/Main.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
