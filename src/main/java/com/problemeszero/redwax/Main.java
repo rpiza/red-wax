@@ -44,7 +44,7 @@ public class Main extends Application {
 
     public static Properties appProps = new Properties();
 
-    public static NetworkParameters params = TestNet3Params.get(); // RegTestParams.get(); // //MainNetParams.get();
+    public static NetworkParameters params = netParams(); //TestNet3Params.get(); // RegTestParams.get(); // //MainNetParams.get();
     private static final String WALLET_FILE_NAME = APP_NAME.replaceAll("[^a-zA-Z0-9.-]", "_") + "-"
             + params.getPaymentProtocolId();
     public static WalletAppKit bitcoin;
@@ -67,6 +67,33 @@ public class Main extends Application {
         }
     }
 
+    //Carregam el fitxer de configuracio de l'aplicacio
+    private static void  propsLoad(){
+        System.err.println("Llegint el fitxer de propietats configuration.xml");
+        try {
+            InputStream in = new FileInputStream("configuration.xml");
+            appProps.loadFromXML(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Configuram la xarxa bitcoin
+    private static NetworkParameters netParams(){
+        NetworkParameters p;
+        propsLoad();
+        System.err.println("Connectant a la xarxa " + appProps.getProperty("env"));
+
+        if ("Testnet3".equals(appProps.getProperty("env"))) {
+            System.err.println("OK a la xarxa Testnet3");
+            p = TestNet3Params.get();
+        } else {
+            if ("Mainnet".equals(appProps.getProperty("env"))) { p = MainNetParams.get(); System.err.println("OK a la xarxa Mainnet");}
+            else p = RegTestParams.get();
+        }
+        return p;
+    }
+
     private void realStart(Stage mainWindow) throws IOException {
 
         BasicConfigurator.configure();
@@ -77,25 +104,25 @@ public class Main extends Application {
         CryptoServicesRegistrar.setApprovedOnlyMode(false);
         System.err.println("Només mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
 
-        //Carregam el fitxer de configuracio de l'aplicacio
-        System.err.println("Llegint el fitxer de propietats configuration.xml");
-        try {
-            InputStream in = new FileInputStream("configuration.xml");
-            appProps.loadFromXML(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        //Carregam el fitxer de configuracio de l'aplicacio
+//        System.err.println("Llegint el fitxer de propietats configuration.xml");
+//        try {
+//            InputStream in = new FileInputStream("configuration.xml");
+//            appProps.loadFromXML(in);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         Smime.crearDirectoris();
 
-        System.err.println("Connectant a la xarxa " + appProps.getProperty("env"));
-
-        if ("Testnet3".equals(appProps.getProperty("env"))) {
-            System.err.println("OK a la xarxa Testnet3");
-            params = TestNet3Params.get();
-        } else {
-            if ("Mainnet".equals(appProps.getProperty("env"))) { params = MainNetParams.get(); System.err.println("OK a la xarxa Mainnet");}
-            else params = RegTestParams.get();
-        }
+//        System.err.println("Connectant a la xarxa " + appProps.getProperty("env"));
+//
+//        if ("Testnet3".equals(appProps.getProperty("env"))) {
+//            System.err.println("OK a la xarxa Testnet3");
+//            params = TestNet3Params.get();
+//        } else {
+//            if ("Mainnet".equals(appProps.getProperty("env"))) { params = MainNetParams.get(); System.err.println("OK a la xarxa Mainnet");}
+//            else params = RegTestParams.get();
+//        }
 
         this.mainWindow = mainWindow;
         instance = this;
