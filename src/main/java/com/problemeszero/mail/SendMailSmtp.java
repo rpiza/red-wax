@@ -144,17 +144,20 @@ public class SendMailSmtp {
             messageObject.setSentDate(m.getSentDate());
 
             // Create the message part
-            BodyPart messageBodyPart = new MimeBodyPart();
+// Enrecordar            BodyPart messageBodyPart = new MimeBodyPart();
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
 
             // Now set the actual message
             messageBodyPart.setText(cont);
             messageBodyPart.setHeader("Content-ID","mailBody");
 
             // Create a multipart message on hi afegim les diferents parts del missatge (COS del correu, fitxer xifrat, deadTime, la clau K2 signada amb PubKey de'n Bob, addrAlice)
-            Multipart multipart = new MimeMultipart();
+//            Multipart multipart = new MimeMultipart();
+            RedWaxSMime missatgeAlice = new RedWaxSMime();
 
             // Set text message part
-            multipart.addBodyPart(messageBodyPart);
+//            multipart.addBodyPart(messageBodyPart);
+            missatgeAlice.addPartToCem(messageBodyPart);
             System.err.println("####################################################################################################################");
             System.err.println("########################## PHASE I - Delivery");
             System.err.println("####################################################################################################################");
@@ -185,7 +188,8 @@ public class SendMailSmtp {
             messageBodyPart.setHeader("Content-ID","fitxerXifrat");
             // messageBodyPart.setDisposition(MimeBodyPart.INLINE);
             // messageBodyPart.setFileName("logo inline image");
-            multipart.addBodyPart(messageBodyPart);
+//            multipart.addBodyPart(messageBodyPart);
+            missatgeAlice.addPartToCem(messageBodyPart);
             messageObject.setCertFile(certFile);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +209,8 @@ public class SendMailSmtp {
             messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText(Long.toString(messageObject.getDeadTimeMillis()));
             messageBodyPart.setHeader("Content-ID","deadTime");
-            multipart.addBodyPart(messageBodyPart);
+//            multipart.addBodyPart(messageBodyPart);
+            missatgeAlice.addPartToCem(messageBodyPart);
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,7 +236,8 @@ public class SendMailSmtp {
                 messageBodyPart = new MimeBodyPart();
                 messageBodyPart.setText(new String(Hex.encode(kPrima)));
                 messageBodyPart.setHeader("Content-ID","kPrima");
-                multipart.addBodyPart(messageBodyPart);
+//                multipart.addBodyPart(messageBodyPart);
+                missatgeAlice.addPartToCem(messageBodyPart);
                 messageObject.setK2(aes.getK2());
                 messageObject.setkPrima(kPrima);
                 messageObject.setK1(aes.getK1());
@@ -260,12 +266,14 @@ public class SendMailSmtp {
             messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText(messageObject.getAddrAlice());
             messageBodyPart.setHeader("Content-ID","addrAlice");
-            multipart.addBodyPart(messageBodyPart);
+//            multipart.addBodyPart(messageBodyPart);
+            missatgeAlice.addPartToCem(messageBodyPart);
             System.err.println("####################################################################################################################");
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //            System.out.println("Multipart Content-Type= " +  multipart.getContentType());
-            messageObject.setCemCT(multipart.getContentType());
+//            messageObject.setCemCT(multipart.getContentType());
+            messageObject.setCemCT(missatgeAlice.getCem().getContentType());
 
 //            try {
 //                Smime.byteToFile(Smime.PartToBAOS(multipart), "Guardar multipart", new File(Main.appProps.getProperty("Fitxers")));
@@ -276,8 +284,8 @@ public class SendMailSmtp {
             // Preparam per a signar el missatge, per aixo convertim multiPart amb un MimeBodyPart, que es el que signarem
             try {
 //                ByteArrayOutputStream bodyPartBaos = new ByteArrayOutputStream();
-                javax.mail.internet.MimeBodyPart bodyPart = new MimeBodyPart();
-                bodyPart.setContent(multipart);
+//                javax.mail.internet.MimeBodyPart bodyPart = new MimeBodyPart();
+//                bodyPart.setContent(multipart);
 
 //                Smime.byteToFile(Smime.PartToBAOS(bodyPart), "Guardar bodypartCem",new File(Main.appProps.getProperty("Fitxers")));
 
@@ -288,56 +296,65 @@ public class SendMailSmtp {
                 //MimeMultipart mPart;
                 // Obtendrem el missatge signat a un MultiPart, que contendra el CEM i el missatge signat
                 //Signam el missatge
-                MimeMultipart mPart = Smime.createSignedMultipart(priKeyAlice,aliceCert,bodyPart);
+//                MimeMultipart mPart = Smime.createSignedMultipart(priKeyAlice,aliceCert,bodyPart);
+                missatgeAlice.setmPartAndSignedPart(missatgeAlice.createSignedMultipart(priKeyAlice,aliceCert));
+
 //
                 //comprovam que la signatura es correcta
-                try {
-                    System.err.println("La validacio de la signatura es: " + Smime.verifySignedMultipart(mPart));
-                } catch (CMSException e) {
-                    e.printStackTrace();
-                }
+//                System.err.println("La validacio de la signatura es: " + Smime.verifySignedMultipart(mPart));
+                missatgeAlice.verifySignedMultipart();
+                System.err.println("La validacio de la signatura es: " + missatgeAlice.isOkSignatura());
+                System.err.println("Certificat de " + missatgeAlice.getCert().getSubject() + ", expedit per " + missatgeAlice.getCert().getIssuer() +
+                        ". Vàlid des de " + missatgeAlice.getCert().getNotBefore() +  " fins a"  + missatgeAlice.getCert().getNotAfter()+ ".");
+
 
                 //Guardar a un fitxer tot el multipart : cem + signatura
                 //mPart  conte dos MimeBobyPart: 1r que es el cem i el 2n que es el missatge signat
 
 //                System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
 //                Smime.byteToFile(Smime.PartToBAOS(mPart), "Guardar cemSignat", new File(Main.appProps.getProperty("Fitxers")));
+//                Smime.byteToFile(Smime.PartToBAOS(missatgeAlice.getmPart()), "Guardar cemSignat", new File(Main.appProps.getProperty("Fitxers")));
 
                 //Obtenim el Cem del multipart signat. Es el primera part del multipart resultat del proces de signatura
-                Multipart multi=(Multipart) mPart.getBodyPart(0).getContent();
-                byte [] cem = Smime.PartToBAOS(multi);
+//                Multipart multi=(Multipart) mPart.getBodyPart(0).getContent();
+//                byte [] cem = Smime.PartToBAOS(multi);
 
-                //cream el hash del missatge cem
-                byte[] hashCem = Smime.calculateDigest(cem); //SHA2-256 - Tambe pot ser SHA2-384
-                System.err.println("HashCEM = " + new String(Hex.encode(hashCem)));
+//                //cream el hash del missatge cem
+//                byte[] hashCem = Smime.calculateDigest(cem); //SHA2-256 - Tambe pot ser SHA2-384
+////                System.err.println("HashCEM = " + new String(Hex.encode(hashCem)));
+                System.err.println("HashCEM = " + new String(Hex.encode(missatgeAlice.getHashCem())));
                 //System.err.println("HashCEM = " + java.util.Arrays.toString(hashCem));
-                messageObject.setCem(cem);
+//                messageObject.setCem(cem);
+                messageObject.setCem(Smime.PartToBAOS(missatgeAlice.getCem()));
 //                Smime.byteToFile(cem, "Guardar cem", new File(Main.appProps.getProperty("Fitxers")));
-                messageObject.setHashCem(hashCem);
-
-                //Obtenim el MimeBodyPart de la signatura del missatge. Es la segona part del multipart resultat del proces de sigantura
-                MimeBodyPart bPart = (MimeBodyPart) mPart.getBodyPart(1);
+//                messageObject.setHashCem(hashCem);
+                messageObject.setHashCem(missatgeAlice.getHashCem());
+//                //Obtenim el MimeBodyPart de la signatura del missatge. Es la segona part del multipart resultat del proces de sigantura
+//                MimeBodyPart bPart = (MimeBodyPart) mPart.getBodyPart(1);
 
                 //Guardar el bodypart de la signatura a un fitxer
 //                Smime.byteToFile(Smime.PartToBAOS(bPart), "Guardar signaturaCem",new File(Main.appProps.getProperty("Fitxers")));
 
                 // Obtenir la signatura base64. Sense les capsaleres del bodyPart
-                ByteArrayOutputStream out = null;
-                InputStream in = null;
-                out = new ByteArrayOutputStream();
-                in = bPart.getInputStream();
-                int k;
-                while ((k = in.read()) != -1) {
-                    out.write(k);
-                }
-                System.err.println("Signatura: "+ new String(Base64.getEncoder().encode(out.toByteArray())));
-                messageObject.setMailSign(out.toByteArray());
-                out.close();
-                in.close();
+//                ByteArrayOutputStream out = null;
+//                InputStream in = null;
+//                out = new ByteArrayOutputStream();
+//                in = bPart.getInputStream();
+//                int k;
+//                while ((k = in.read()) != -1) {
+//                    out.write(k);
+//                }
+//                System.err.println("Signatura: "+ new String(Base64.getEncoder().encode(out.toByteArray())));
+                System.err.println("Signatura: "+ missatgeAlice.getSignaturaBase64());
+//                messageObject.setMailSign(out.toByteArray());
+                messageObject.setMailSign(missatgeAlice.getSignaturaBytes());
+//                out.close();
+//                in.close();
 
                 //System.err.println(mPart.getContentType());
                 //Afegim el mPart com a part del contingut del missatge de correu
-                m.setContent(mPart,mPart.getContentType());
+//                m.setContent(mPart,mPart.getContentType());
+                m.setContent(missatgeAlice.getmPart(),missatgeAlice.getmPart().getContentType());
                 //Afegim una capçalera que permet identificar les correus
                 m.setHeader("Content-ID","redWax");
 
@@ -345,7 +362,7 @@ public class SendMailSmtp {
                 System.err.println("####################################################################################################################");
                 System.err.println("####################################################################################################################");
 
-            } catch (GeneralSecurityException | SMIMEException | IOException | OperatorCreationException e) {
+            } catch (GeneralSecurityException | SMIMEException | IOException | OperatorCreationException | CMSException e) {
                 e.printStackTrace();
             }
 

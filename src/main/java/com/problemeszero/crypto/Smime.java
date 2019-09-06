@@ -72,7 +72,7 @@ public class Smime {
         return message;
     }
 
-    private static ASN1EncodableVector generateSignedAttributes() {
+    public static ASN1EncodableVector generateSignedAttributes() {
 
         ASN1EncodableVector signedAttrs = new ASN1EncodableVector();
         SMIMECapabilityVector caps = new SMIMECapabilityVector();
@@ -112,6 +112,9 @@ public class Smime {
             Collection certCollection = certStore.getMatches(signer.getSID());
             Iterator certIt = certCollection.iterator();
             X509CertificateHolder cert = (X509CertificateHolder) certIt.next();
+            System.err.println("Certificat de " + cert.getSubject() + ", expedit per " + cert.getIssuer()+
+                    ". Vàlid des de \"" + cert.getNotBefore() + "\" fins a \"" + cert.getNotAfter()+ "\".");
+
             if (!signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BCFIPS").build(cert))) {
                 return false;
             }
@@ -119,6 +122,33 @@ public class Smime {
         return true;
     }
 
+
+    public static boolean verifySignedMultipart(MimeMultipart signedMessage, Object cert1)
+            throws GeneralSecurityException, OperatorCreationException, CMSException, SMIMEException, MessagingException {
+
+        SMIMESigned signedData = new SMIMESigned(signedMessage);
+        Store certStore = signedData.getCertificates();
+        SignerInformationStore signers = signedData.getSignerInfos();
+        X509CertificateHolder cert = null;
+
+        Collection c = signers.getSigners();
+        Iterator it = c.iterator();
+
+        while (it.hasNext()) {
+            SignerInformation signer = (SignerInformation) it.next();
+            Collection certCollection = certStore.getMatches(signer.getSID());
+            Iterator certIt = certCollection.iterator();
+            cert1 = (X509CertificateHolder) certIt.next();
+            cert = (X509CertificateHolder) cert1;
+            System.err.println("Certificat de " + cert.getSubject() + ", expedit per " + cert.getIssuer()+
+                    ". Vàlid des de \"" + cert.getNotBefore() + "\" fins a \"" + cert.getNotAfter()+ "\".");
+
+            if (!signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BCFIPS").build(cert))) {
+                return false;
+            }
+        }
+        return true;
+    }
 //    public static MimeBodyPart createSignedEncryptedBodyPart(PrivateKey signingKey, X509Certificate signingCert, X509Certificate encryptionCert, MimeBodyPart message)
 //            throws GeneralSecurityException, SMIMEException, CMSException, IOException,OperatorCreationException, MessagingException {
 //        SMIMEEnvelopedGenerator gen = new SMIMEEnvelopedGenerator();

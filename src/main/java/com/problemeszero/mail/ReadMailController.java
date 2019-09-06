@@ -59,37 +59,51 @@ public class ReadMailController {
         String no = "";
         RedWaxMessage rwm = (RedWaxMessage) redWaxList.getFocusModel().getFocusedItem();
        // rwm.redWaxToPersistent();
+        RedWaxSMime missatgeAlice = new RedWaxSMime(rwm.getMailSignedMultiPart());
 
-        //validar la signatura del correu rebut
-        ContentType cType = new ContentType("multipart", "signed", null);
-        cType.setParameter("boundary", obtenir_boundary(rwm.getMailSignedMultiPart()));
-
-        DataSource dataSource = new ByteArrayDataSource(Smime.tractar_smtp(rwm.getMailSignedMultiPart()),cType.toString());
-//        System.err.println(java.util.Arrays.toString(rwm.getMailSignedMultiPart()));
-        MimeMultipart mPart = null;
         try {
-            mPart = new MimeMultipart(dataSource);
-
-//            try {
-//                System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
-//                Smime.byteToFile(Smime.PartToBAOS(mPart), "Guardar cemSignat",new File(Main.appProps.getProperty("Fitxers")));
-//            } catch (IOException | MessagingException e) {
-//               e.printStackTrace();
-//            }
-
-            //comprovam que la signatura es correcta
-            okSignatura = Smime.verifySignedMultipart(mPart);
-
-        } catch (GeneralSecurityException |  OperatorCreationException | CMSException | SMIMEException | MessagingException e) {
+            missatgeAlice.verifySignedMultipart();
+        } catch (GeneralSecurityException | OperatorCreationException | CMSException | SMIMEException | MessagingException e) {
             e.printStackTrace();
         }
+        okSignatura = missatgeAlice.isOkSignatura();
+
+//        //validar la signatura del correu rebut
+//        ContentType cType = new ContentType("multipart", "signed", null);
+//        cType.setParameter("boundary", obtenir_boundary(rwm.getMailSignedMultiPart()));
+//
+//        DataSource dataSource = new ByteArrayDataSource(Smime.tractar_smtp(rwm.getMailSignedMultiPart()),cType.toString());
+////        System.err.println(java.util.Arrays.toString(rwm.getMailSignedMultiPart()));
+//        MimeMultipart mPart = null;
+//        try {
+//            mPart = new MimeMultipart(dataSource);
+//
+////            try {
+////                System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
+////                Smime.byteToFile(Smime.PartToBAOS(mPart), "Guardar cemSignat",new File(Main.appProps.getProperty("Fitxers")));
+////            } catch (IOException | MessagingException e) {
+////               e.printStackTrace();
+////            }
+//
+//            //comprovam que la signatura es correcta
+//            okSignatura = Smime.verifySignedMultipart(mPart);
+//
+//
+//        } catch (GeneralSecurityException |  OperatorCreationException | CMSException | SMIMEException | MessagingException e) {
+//            e.printStackTrace();
+//        }
         System.err.println("####################################################################################################################");
         System.err.println("########################## Step 2: NRR enviat per en Bob");
         System.err.println("####################################################################################################################");
         System.err.println("La validació de la signatura del correu rebut és: " + okSignatura );
+        System.err.println("Certificat de " + missatgeAlice.getCert().getSubject() + ", expedit per " + missatgeAlice.getCert().getIssuer()+
+                ". Vàlid des de \"" + missatgeAlice.getCert().getNotBefore().toLocaleString() + "\" fins a \"" +
+                missatgeAlice.getCert().getNotAfter().toLocaleString()+ "\".");
         no = "";
         if (!okSignatura) {no = "NO ";}
-        informationalAlert("Validació de la signatura","En Bob determina que la signatura del missatge enviat per n'Alice " + no + "és correcta");
+        informationalAlert("Validació de la signatura","En Bob determina que la signatura del missatge enviat per n'Alice " + no + "és correcta\n\n" +
+                "Nom del certificat: " + missatgeAlice.getCert().getSubject() +"\nExpedit per: " + missatgeAlice.getCert().getIssuer() + "\n" +
+                "Vàlid des de " + missatgeAlice.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeAlice.getCert().getNotAfter().toLocaleString() +".");
 
 //        try {
 //            System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
@@ -122,20 +136,20 @@ public class ReadMailController {
 
 //       if (okSignatura) {
 
-            //Obtenim el cem del missatge enviat per Alice contingut dins l'objecte rwm
-            cType = new ContentType("multipart", "mixed", null);
-            cType.setParameter("boundary", obtenir_boundary(rwm.getCem()));
-            dataSource = new ByteArrayDataSource(rwm.getCem(),cType.toString());
-            MimeBodyPart bodyPart = null;
-            MimeMultipart multiPart;
-            try {
-                multiPart = new MimeMultipart(dataSource);
-                bodyPart = new MimeBodyPart();
-                bodyPart.setContent(multiPart);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            }
-
+//            //Obtenim el cem del missatge enviat per Alice contingut dins l'objecte rwm
+//            cType = new ContentType("multipart", "mixed", null);
+//            cType.setParameter("boundary", obtenir_boundary(rwm.getCem()));
+//            dataSource = new ByteArrayDataSource(rwm.getCem(),cType.toString());
+//            MimeBodyPart bodyPart = null;
+//            MimeMultipart multiPart = null;
+//            try {
+////                multiPart = new MimeMultipart(dataSource);
+//                multiPart = missatgeAlice.getCem();
+//                bodyPart = new MimeBodyPart();
+//                bodyPart.setContent(missatgeAlice.getCem());
+//            } catch (MessagingException  e) {
+//                e.printStackTrace();
+//            }
 
 //            try {
 //               System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(bodyPart)));
@@ -146,23 +160,27 @@ public class ReadMailController {
 
             // Calculam el hash del cem que signara en Bob, simplement per mostrar-ho per pantalla
             try {
-                System.err.println("HashCEM = " + new String(Hex.encode(Smime.calculateDigest(rwm.getCem()))));
-            } catch (GeneralSecurityException e) {
+//                System.err.println("HashCEM = " + new String(Hex.encode(Smime.calculateDigest(rwm.getCem()))));
+                System.err.println("HashCEM = " + new String(Hex.encode(missatgeAlice.getHashCem())));
+            } catch (GeneralSecurityException | IOException | MessagingException e) {
                 e.printStackTrace();
             }
 
 
             //Preparam per signar el missatge
             X509Certificate bobCert = null;
+            RedWaxSMime missatgeBob = null;
+
             try {
                 bobCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de'n Bob",new File(Main.appProps.getProperty("Certificats"))));
                 PrivateKey priKeyBob = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de'n Bob",new File(Main.appProps.getProperty("Certificats"))));
-                //Obtendrem el missatge signat a un MultiPart, que contendra el CEM i el missatge signat
-                //Signam el missatge
-                mPart = Smime.createSignedMultipart(priKeyBob,bobCert,bodyPart);
+//                Obtendrem el missatge signat a un MultiPart, que contendra el CEM i el missatge signat
+//                Signam el missatge
+//                mPart = Smime.createSignedMultipart(priKeyBob,bobCert,bodyPart);
+                missatgeBob = missatgeAlice.createSignedMultipart(priKeyBob,bobCert);
 
-                //Obtenim el MimeBodyPart de la signatura del missatge. Es la segona part del multipart resultat del proces de sigantura
-                MimeBodyPart bPart = (MimeBodyPart) mPart.getBodyPart(1);
+//                //Obtenim el MimeBodyPart de la signatura del missatge. Es la segona part del multipart resultat del proces de sigantura
+//                MimeBodyPart bPart = (MimeBodyPart) mPart.getBodyPart(1);
 
 //                //Guardar el bodypart de la signatura a un fitxer
 //                try {
@@ -173,22 +191,24 @@ public class ReadMailController {
 //                }
 
 
-                // Obtenir la signatura base64. Sense les capsaleres del bodyPart
-                ByteArrayOutputStream out = null;
-                InputStream in = null;
-                out = new ByteArrayOutputStream();
-                in = bPart.getInputStream();
-                int k;
-                while ((k = in.read()) != -1) {
-                    out.write(k);
-                }
-                out.close();
-                in.close();
-                System.err.println("Signatura: "+ new String(Base64.getEncoder().encode(out.toByteArray())));
-
+//                // Obtenir la signatura base64. Sense les capsaleres del bodyPart
+//                ByteArrayOutputStream out = null;
+//                InputStream in = null;
+//                out = new ByteArrayOutputStream();
+//                in = bPart.getInputStream();
+//                int k;
+//                while ((k = in.read()) != -1) {
+//                    out.write(k);
+//                }
+//                out.close();
+//                in.close();
+//                System.err.println("Signatura: "+ new String(Base64.getEncoder().encode(out.toByteArray())));
+                System.err.println("Signatura: "+ missatgeBob.getSignaturaBase64());
 
                 //comprovam que la signatura es correcta
-                System.err.println("La validació de la signatura del correu NRR d'en Bob és: " + Smime.verifySignedMultipart(mPart));
+//                System.err.println("La validació de la signatura del correu NRR d'en Bob és: " + Smime.verifySignedMultipart(mPart));
+                missatgeBob.verifySignedMultipart();
+                System.err.println("La validació de la signatura del correu NRR d'en Bob és: " + missatgeBob.isOkSignatura());
             } catch (IOException | GeneralSecurityException | CMSException | MessagingException | OperatorCreationException | SMIMEException e) {
                 e.printStackTrace();
             }
@@ -209,9 +229,11 @@ public class ReadMailController {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-            enviaCorreu.mail(rwm,mPart);
-            informationalAlert("Enviat missatge NRR", "En Bob ha enviat el missatge NRR a n'Alice");
-
+           // enviaCorreu.mail(rwm,mPart);
+            enviaCorreu.mail(rwm,missatgeBob.getmPart());
+            informationalAlert("Enviat missatge NRR", "En Bob ha enviat el missatge NRR a n'Alice\n\n" +
+                    "Nom del certificat: " + missatgeBob.getCert().getSubject() + "\nExpedit per: " + missatgeBob.getCert().getIssuer() + "\n" +
+                    "Vàlid des de " + missatgeBob.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeBob.getCert().getNotAfter().toLocaleString() );
         }
     }
 
@@ -256,23 +278,23 @@ public class ReadMailController {
         closeButton.getScene().getWindow().hide();
     }
 
-    private String obtenir_boundary(byte[] m){
-
-        ByteArrayInputStream in = new ByteArrayInputStream(m);
-        LineInputStream lin = new LineInputStream(in);
-        String line = null;
-        try {
-            line = lin.readLine();
-            lin.close();
-            in.close();
-//            System.err.println(line);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //boundary = line. Es la marca dins dels diferents multiparts
-        return line.substring(2,line.length());
-
-    }
+//    private String obtenir_boundary(byte[] m){
+//
+//        ByteArrayInputStream in = new ByteArrayInputStream(m);
+//        LineInputStream lin = new LineInputStream(in);
+//        String line = null;
+//        try {
+//            line = lin.readLine();
+//            lin.close();
+//            in.close();
+////            System.err.println(line);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        //boundary = line. Es la marca dins dels diferents multiparts
+//        return line.substring(2,line.length());
+//
+//    }
 
 
     public void onDecryptClicked(ActionEvent actionEvent) {
