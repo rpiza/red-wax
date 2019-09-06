@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxSMime.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadConfirmationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadConfirmationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/SendMailSmtp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/SendMailSmtp.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,6 +56,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -69,7 +79,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.red-wax [fatJar]">
+  <component name="RunManager" selected="Gradle.red-wax [run]">
     <configuration name="red-wax [fatJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -110,8 +120,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.red-wax [fatJar]" />
         <item itemvalue="Gradle.red-wax [run]" />
+        <item itemvalue="Gradle.red-wax [fatJar]" />
       </list>
     </recent_temporary>
   </component>
@@ -143,7 +153,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java</url>
-          <line>399</line>
+          <line>421</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

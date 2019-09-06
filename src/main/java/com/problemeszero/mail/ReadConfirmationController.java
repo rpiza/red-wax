@@ -98,17 +98,20 @@ public class ReadConfirmationController {
         }
 
         //validar la signatura del correu d'en Bob
-        ContentType cType = new ContentType("multipart", "signed", null);
-        cType.setParameter("boundary", obtenir_boundary(rwm.getMailSignedMultiPart()));
-        DataSource dataSource = new ByteArrayDataSource(Smime.tractar_smtp(rwm.getMailSignedMultiPart()),cType.toString());
+        RedWaxSMime missatgeBob = new RedWaxSMime(rwm.getMailSignedMultiPart());
+//        ContentType cType = new ContentType("multipart", "signed", null);
+//        cType.setParameter("boundary", obtenir_boundary(rwm.getMailSignedMultiPart()));
+//        DataSource dataSource = new ByteArrayDataSource(Smime.tractar_smtp(rwm.getMailSignedMultiPart()),cType.toString());
 
-        MimeMultipart mPart = null;
+//        MimeMultipart mPart = null;
 //        MimeMultipart mPartAB = new MimeMultipart();
         try {
-            mPart = new MimeMultipart(dataSource);
+//            mPart = new MimeMultipart(dataSource);
 
            //comprovam que la signatura es correcta
-            okSignatura = Smime.verifySignedMultipart(mPart);
+            missatgeBob.verifySignedMultipart();
+//            okSignatura = Smime.verifySignedMultipart(mPart);
+            okSignatura = missatgeBob.isOkSignatura();
             System.err.println("La validacio de la signatura del correu rebut es: " + okSignatura );
 
             no = "";
@@ -235,24 +238,24 @@ public class ReadConfirmationController {
         closeButton.getScene().getWindow().hide();
     }
 
-    private String obtenir_boundary(byte[] m){
-
-        ByteArrayInputStream in = new ByteArrayInputStream(m);
-        LineInputStream lin = new LineInputStream(in);
-        String line = null;
-        try {
-            line = lin.readLine();
-            lin.close();
-            in.close();
-//            System.err.println(line);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //boundary = line. Es la marca dins dels diferents multiparts
-        //Llevam els dos primers -- del boundary.
-        return line.substring(2,line.length());
-
-    }
+//    private String obtenir_boundary(byte[] m){
+//
+//        ByteArrayInputStream in = new ByteArrayInputStream(m);
+//        LineInputStream lin = new LineInputStream(in);
+//        String line = null;
+//        try {
+//            line = lin.readLine();
+//            lin.close();
+//            in.close();
+////            System.err.println(line);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        //boundary = line. Es la marca dins dels diferents multiparts
+//        //Llevam els dos primers -- del boundary.
+//        return line.substring(2,line.length());
+//
+//    }
 
     @FXML public void initialize() throws IOException { connectionLabelIMAP.setText(auth_bustia()); }
 
