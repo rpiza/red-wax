@@ -16,17 +16,18 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.problemeszero.redwax.utils.GuiUtils.informationalAlert;
+
 public class MailEditController {
 
     @FXML private ComboBox<String> cmbTYPE;
     @FXML protected TextField tto;
-    @FXML protected TextField thead;
     @FXML protected TextField tsub;
     @FXML protected TextArea ttext;
     @FXML private Button btn1;
     @FXML private Button btnClose;
 
-    @FXML private TextField tUN, tPW;
+//    @FXML private TextField tUN, tPW;
     @FXML private Label connectionLabel;
 
     public Main.OverlayUI overlayUI;
@@ -48,14 +49,21 @@ public class MailEditController {
             //Carregam les propietats a l'escena mailconf.fxml
             prop.stringPropertyNames().forEach(key -> loader.getNamespace().put(key, prop.getProperty(key)));
 
+            loader.load();
+            Parent p = loader.getRoot();
+
             Stage stage = new Stage();
             stage.initOwner(btn1.getScene().getWindow());
-            stage.setScene(new Scene((Parent) loader.load()));
+//            stage.setScene(new Scene((Parent) loader.load()));
+            stage.setScene(new Scene(p));
+
+            MailConfController controller = loader.getController();
+            controller.setSendMailSmtp(enviaCorreu);
 
             // showAndWait will block execution until the window closes...
             stage.showAndWait();
 
-            MailConfController controller = loader.getController();
+
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -65,21 +73,30 @@ public class MailEditController {
 
     @FXML protected void handleSendButton(ActionEvent e) throws IOException {
 
-       // enviaCorreu.auth();
-        enviaCorreu.mail(tto.getText(), tsub.getText(), ttext.getText());
-        if(!tto.getText().isEmpty() || !ttext.getText().isEmpty() || !tsub.getText().isEmpty()){
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("mailsent.fxml"));
-            //Carregam les propietats a l'escena mailconf.fxml
-            Stage stage = new Stage();
-            stage.initOwner(btn1.getScene().getWindow());
-            stage.setScene(new Scene((Parent) loader.load()));
-            // showAndWait will block execution until the window closes...
-            stage.showAndWait();
-            MailSentController controller = loader.getController();
+        if (!enviaCorreu.isAuth()) {
+            informationalAlert( "Error en l'autenticació SMTP", "Revisa la configuració del compte SMTP.\n" +
+                "No és possible connectar adequadement amb el servidor SMTP: " + enviaCorreu.getHost());
+        } else {
+            if (!tto.getText().isEmpty()) {
+                enviaCorreu.mail(tto.getText(), tsub.getText(), ttext.getText());
+//                if (!tto.getText().isEmpty() || !ttext.getText().isEmpty() || !tsub.getText().isEmpty()) {
+//                    FXMLLoader loader = new FXMLLoader(getClass().getResource("mailsent.fxml"));
+//                    //Carregam les propietats a l'escena mailconf.fxml
+//                    Stage stage = new Stage();
+//                    stage.initOwner(btn1.getScene().getWindow());
+//                    stage.setScene(new Scene((Parent) loader.load()));
+//                    // showAndWait will block execution until the window closes...
+//                    stage.showAndWait();
+//                    MailSentController controller = loader.getController();
+//                }
+            } else informationalAlert( "No és pot enviar el missatge", "Has d'afegir almanco un destinatari!!!");
         }
     }
 
-    @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); }
+    @FXML public void initialize() throws IOException {
+        connectionLabel.setText(enviaCorreu.auth());
+//        connectionLabel.textProperty().bind(enviaCorreu.authLabel);
+    }
 
 //    public void initialize(Object o) throws IOException {
 ////        //carregam el fitxer properties
