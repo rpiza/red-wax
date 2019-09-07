@@ -8,10 +8,9 @@ import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientId;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
-import org.bouncycastle.crypto.CipherOutputStream;
-import org.bouncycastle.crypto.CryptoServicesRegistrar;
-import org.bouncycastle.crypto.EntropySourceProvider;
-import org.bouncycastle.crypto.SymmetricSecretKey;
+import org.bouncycastle.crypto.*;
+import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPrivateKey;
+import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPublicKey;
 import org.bouncycastle.crypto.fips.*;
 import org.bouncycastle.crypto.util.BasicEntropySourceProvider;
 import org.bouncycastle.operator.jcajce.JcaAlgorithmParametersConverter;
@@ -22,6 +21,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -139,6 +139,32 @@ public class AESCrypto2 {
             e.printStackTrace();
         }
         return bOut.toByteArray();
+    }
+
+    public byte[] signPubKey (PublicKey pubKey, byte[] inputKeyBytes) throws PlainInputProcessingException {
+        AsymmetricRSAPublicKey rsaPubKey = new AsymmetricRSAPublicKey(FipsRSA.ALGORITHM, pubKey.getEncoded());
+        return wrapKey(rsaPubKey,inputKeyBytes);
+    }
+
+    private byte[] wrapKey(AsymmetricRSAPublicKey pubKey, byte[] inputKeyBytes) throws PlainInputProcessingException {
+        FipsRSA.KeyWrapOperatorFactory wrapFact = new FipsRSA.KeyWrapOperatorFactory();
+        FipsKeyWrapperUsingSecureRandom wrapper = (FipsKeyWrapperUsingSecureRandom) wrapFact.createKeyWrapper( pubKey,FipsRSA.WRAP_OAEP)
+                .withSecureRandom(CryptoServicesRegistrar.getSecureRandom());
+
+        return wrapper.wrap(inputKeyBytes, 0, inputKeyBytes.length);
+    }
+
+    public byte[] unSignPrivKey (PrivateKey priKey, byte[] wrappedKeyBytes) throws InvalidWrappingException {
+        AsymmetricRSAPrivateKey rsaPriKey = new AsymmetricRSAPrivateKey(FipsRSA.ALGORITHM, priKey.getEncoded());
+        return unwrapKey(rsaPriKey,wrappedKeyBytes);
+    }
+
+    private byte[] unwrapKey(AsymmetricRSAPrivateKey privKey, byte[] wrappedKeyBytes) throws InvalidWrappingException {
+        FipsRSA.KeyWrapOperatorFactory wrapFact = new FipsRSA.KeyWrapOperatorFactory();
+        FipsKeyUnwrapperUsingSecureRandom unwrapper = (FipsKeyUnwrapperUsingSecureRandom) wrapFact.createKeyUnwrapper(privKey,FipsRSA.WRAP_OAEP)
+                .withSecureRandom(CryptoServicesRegistrar.getSecureRandom());
+
+        return unwrapper.unwrap(wrappedKeyBytes, 0, wrappedKeyBytes.length);
     }
 
 //    public static SecureRandom buildDrbg(){

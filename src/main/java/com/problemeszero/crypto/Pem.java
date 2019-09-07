@@ -92,9 +92,7 @@ public class Pem extends Application {
         return sWrt.toString();
     }
 
-    public static X509Certificate readCertificate(String pemEncoding)
-            throws IOException, CertificateException
-    {
+    public static X509Certificate readCertificate(String pemEncoding) throws IOException, CertificateException {
         PEMParser parser = new PEMParser(new StringReader(pemEncoding));
 
         X509CertificateHolder certHolder = (X509CertificateHolder)parser.readObject();

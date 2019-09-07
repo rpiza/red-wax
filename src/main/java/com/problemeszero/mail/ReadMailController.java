@@ -5,28 +5,20 @@ import com.problemeszero.crypto.Pem;
 import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.Main;
 import com.problemeszero.redwax.RedWaxMessage;
-import com.sun.mail.util.LineInputStream;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.crypto.InvalidWrappingException;
-import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPrivateKey;
-import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPublicKey;
-import org.bouncycastle.crypto.fips.FipsRSA;
 import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import javax.activation.DataSource;
-import javax.crypto.Cipher;
+
 import javax.mail.*;
-import javax.mail.internet.*;
-import javax.mail.util.ByteArrayDataSource;
+
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -54,13 +46,13 @@ public class ReadMailController {
             return ;
         }
 
-
         boolean okSignatura = false;
         String no = "";
         RedWaxMessage rwm = (RedWaxMessage) redWaxList.getFocusModel().getFocusedItem();
        // rwm.redWaxToPersistent();
         RedWaxSMime missatgeAlice = new RedWaxSMime(rwm.getMailSignedMultiPart());
 
+        //validar la signatura del correu rebut
         try {
             missatgeAlice.verifySignedMultipart();
         } catch (GeneralSecurityException | OperatorCreationException | CMSException | SMIMEException | MessagingException e) {
@@ -68,30 +60,7 @@ public class ReadMailController {
         }
         okSignatura = missatgeAlice.isOkSignatura();
 
-//        //validar la signatura del correu rebut
-//        ContentType cType = new ContentType("multipart", "signed", null);
-//        cType.setParameter("boundary", obtenir_boundary(rwm.getMailSignedMultiPart()));
-//
-//        DataSource dataSource = new ByteArrayDataSource(Smime.tractar_smtp(rwm.getMailSignedMultiPart()),cType.toString());
-////        System.err.println(java.util.Arrays.toString(rwm.getMailSignedMultiPart()));
-//        MimeMultipart mPart = null;
-//        try {
-//            mPart = new MimeMultipart(dataSource);
-//
-////            try {
-////                System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
-////                Smime.byteToFile(Smime.PartToBAOS(mPart), "Guardar cemSignat",new File(Main.appProps.getProperty("Fitxers")));
-////            } catch (IOException | MessagingException e) {
-////               e.printStackTrace();
-////            }
-//
-//            //comprovam que la signatura es correcta
-//            okSignatura = Smime.verifySignedMultipart(mPart);
-//
-//
-//        } catch (GeneralSecurityException |  OperatorCreationException | CMSException | SMIMEException | MessagingException e) {
-//            e.printStackTrace();
-//        }
+
         System.err.println("####################################################################################################################");
         System.err.println("########################## Step 2: NRR enviat per en Bob");
         System.err.println("####################################################################################################################");
@@ -105,12 +74,7 @@ public class ReadMailController {
                 "Nom del certificat: " + missatgeAlice.getCert().getSubject() +"\nExpedit per: " + missatgeAlice.getCert().getIssuer() + "\n" +
                 "Vàlid des de " + missatgeAlice.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeAlice.getCert().getNotAfter().toLocaleString() +".");
 
-//        try {
-//            System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
-//            Smime.byteToFile(Smime.PartToBAOS(mPart), "Guardar cemSignat",new File(Main.appProps.getProperty("Fitxers")));
-//        } catch (IOException | MessagingException e) {
-//            e.printStackTrace();
-//        }
+
 
         //envia confirmacio
         String titol;
@@ -132,36 +96,10 @@ public class ReadMailController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            // ... user chose OK
-
-//       if (okSignatura) {
-
-//            //Obtenim el cem del missatge enviat per Alice contingut dins l'objecte rwm
-//            cType = new ContentType("multipart", "mixed", null);
-//            cType.setParameter("boundary", obtenir_boundary(rwm.getCem()));
-//            dataSource = new ByteArrayDataSource(rwm.getCem(),cType.toString());
-//            MimeBodyPart bodyPart = null;
-//            MimeMultipart multiPart = null;
-//            try {
-////                multiPart = new MimeMultipart(dataSource);
-//                multiPart = missatgeAlice.getCem();
-//                bodyPart = new MimeBodyPart();
-//                bodyPart.setContent(missatgeAlice.getCem());
-//            } catch (MessagingException  e) {
-//                e.printStackTrace();
-//            }
-
-//            try {
-//               System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(bodyPart)));
-//               Smime.byteToFile(Smime.PartToBAOS(bodyPart), "Guardar cem recuperat per Bob",new File(Main.appProps.getProperty("Fitxers")));
-//            } catch (IOException | MessagingException e) {
-//                e.printStackTrace();
-//            }
 
             // Calculam el hash del cem que signara en Bob, simplement per mostrar-ho per pantalla
             try {
-//                System.err.println("HashCEM = " + new String(Hex.encode(Smime.calculateDigest(rwm.getCem()))));
-                System.err.println("HashCEM = " + new String(Hex.encode(missatgeAlice.getHashCem())));
+                System.err.println("HashCEM = " + new String(Hex.encode(missatgeAlice.getHashCem("SHA256"))));
             } catch (GeneralSecurityException | IOException | MessagingException e) {
                 e.printStackTrace();
             }
@@ -172,15 +110,10 @@ public class ReadMailController {
             RedWaxSMime missatgeBob = null;
 
             try {
-                bobCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de'n Bob",new File(Main.appProps.getProperty("Certificats"))));
-                PrivateKey priKeyBob = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de'n Bob",new File(Main.appProps.getProperty("Certificats"))));
-//                Obtendrem el missatge signat a un MultiPart, que contendra el CEM i el missatge signat
+                bobCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de'n Bob", new File(Main.appProps.getProperty("Certificats"))));
+                PrivateKey priKeyBob = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de'n Bob", new File(Main.appProps.getProperty("Certificats"))));
 //                Signam el missatge
-//                mPart = Smime.createSignedMultipart(priKeyBob,bobCert,bodyPart);
-                missatgeBob = missatgeAlice.createSignedMultipart(priKeyBob,bobCert);
-
-//                //Obtenim el MimeBodyPart de la signatura del missatge. Es la segona part del multipart resultat del proces de sigantura
-//                MimeBodyPart bPart = (MimeBodyPart) mPart.getBodyPart(1);
+                missatgeBob = missatgeAlice.createSignedMultipart(priKeyBob, bobCert);
 
 //                //Guardar el bodypart de la signatura a un fitxer
 //                try {
@@ -190,30 +123,17 @@ public class ReadMailController {
 //                   e.printStackTrace();
 //                }
 
-
-//                // Obtenir la signatura base64. Sense les capsaleres del bodyPart
-//                ByteArrayOutputStream out = null;
-//                InputStream in = null;
-//                out = new ByteArrayOutputStream();
-//                in = bPart.getInputStream();
-//                int k;
-//                while ((k = in.read()) != -1) {
-//                    out.write(k);
-//                }
-//                out.close();
-//                in.close();
-//                System.err.println("Signatura: "+ new String(Base64.getEncoder().encode(out.toByteArray())));
-                System.err.println("Signatura: "+ missatgeBob.getSignaturaBase64());
+                System.err.println("Signatura: " + missatgeBob.getSignaturaBase64());
 
                 //comprovam que la signatura es correcta
-//                System.err.println("La validació de la signatura del correu NRR d'en Bob és: " + Smime.verifySignedMultipart(mPart));
                 missatgeBob.verifySignedMultipart();
                 System.err.println("La validació de la signatura del correu NRR d'en Bob és: " + missatgeBob.isOkSignatura());
-            } catch (IOException | GeneralSecurityException | CMSException | MessagingException | OperatorCreationException | SMIMEException e) {
-                e.printStackTrace();
-            }
-            System.err.println("####################################################################################################################");
-            System.err.println("####################################################################################################################");
+                System.err.println("Certificat de " + missatgeBob.getCert().getSubject() + ", expedit per " + missatgeBob.getCert().getIssuer() +
+                        ". Vàlid des de \"" + missatgeBob.getCert().getNotBefore().toLocaleString() + "\" fins a \"" +
+                        missatgeBob.getCert().getNotAfter().toLocaleString() + "\".");
+
+                System.err.println("####################################################################################################################");
+                System.err.println("####################################################################################################################");
 
 //            try {
 //               System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
@@ -225,15 +145,18 @@ public class ReadMailController {
 
             //Enviam el missatge
 //            try {
-//                enviaCorreu.auth();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-           // enviaCorreu.mail(rwm,mPart);
-            enviaCorreu.mail(rwm,missatgeBob.getmPart());
-            informationalAlert("Enviat missatge NRR", "En Bob ha enviat el missatge NRR a n'Alice\n\n" +
-                    "Nom del certificat: " + missatgeBob.getCert().getSubject() + "\nExpedit per: " + missatgeBob.getCert().getIssuer() + "\n" +
-                    "Vàlid des de " + missatgeBob.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeBob.getCert().getNotAfter().toLocaleString() );
+                enviaCorreu.mail(rwm, missatgeBob.getmPart());
+                informationalAlert("Enviat missatge NRR", "En Bob ha enviat el missatge NRR a n'Alice\n\n" +
+                        "Nom del certificat: " + missatgeBob.getCert().getSubject() + "\nExpedit per: " + missatgeBob.getCert().getIssuer() + "\n" +
+                        "Vàlid des de " + missatgeBob.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeBob.getCert().getNotAfter().toLocaleString());
+            } catch (AuthenticationFailedException e) {
+                informationalAlert("Error d'autenticació SMTP", e.getMessage()+ "\n\nEl missatge de NRR NO s'ha enviat!!");
+            } catch (ClassCastException | NullPointerException e) {
+                informationalAlert("Alguna cosa no ha anat bé", "Mira el log de l'aplicació per obtenir més informació");
+                e.printStackTrace();
+            } catch (IOException | GeneralSecurityException | CMSException | MessagingException | OperatorCreationException | SMIMEException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -242,6 +165,9 @@ public class ReadMailController {
         List<RedWaxMessage> list = new ArrayList<RedWaxMessage>();
         try {
             rebreImap.doit(list, "redWax");
+        } catch (AuthenticationFailedException e) {
+//             e.printStackTrace();
+             informationalAlert("Error d'autenticació IMAP",e.getMessage());
         } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
@@ -278,25 +204,6 @@ public class ReadMailController {
         closeButton.getScene().getWindow().hide();
     }
 
-//    private String obtenir_boundary(byte[] m){
-//
-//        ByteArrayInputStream in = new ByteArrayInputStream(m);
-//        LineInputStream lin = new LineInputStream(in);
-//        String line = null;
-//        try {
-//            line = lin.readLine();
-//            lin.close();
-//            in.close();
-////            System.err.println(line);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        //boundary = line. Es la marca dins dels diferents multiparts
-//        return line.substring(2,line.length());
-//
-//    }
-
-
     public void onDecryptClicked(ActionEvent actionEvent) {
 
         System.err.println("Index del missatge triat: " + redWaxList.getFocusModel().getFocusedIndex());
@@ -306,7 +213,8 @@ public class ReadMailController {
         }
 
         RedWaxMessage rwm = (RedWaxMessage) redWaxList.getFocusModel().getFocusedItem();
-        byte[] hashCem = null;
+//        byte[] hashCem = null;
+        byte[] opRe = null;
 
 
         System.err.println("####################################################################################################################");
@@ -317,57 +225,56 @@ public class ReadMailController {
                 "########################## és 0 i la tx es troba immediatament");
         System.err.println("####################################################################################################################");
 
+        RedWaxSMime missatgeAlice = new RedWaxSMime(rwm.getMailSignedMultiPart());
+        missatgeAlice.cemToRwm(rwm);
         //Obtenim l'adreça Bitcoin del correu enviat per Alice
         String addrAlice = rwm.getAddrAlice();
         System.err.println("addrAlice: " + addrAlice);
 
-        //obtenim el hashCem
-        try {
-            hashCem = Smime.calculateDigest(rwm.getCem());
-            //System.err.println("HashCEM = " + new String(Hex.encode(hashCem)));
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        }
-
         //obtenir les transaccions de l addrAlice i el valor d' OPRETURN, conectant-nos a l'api de blockchain.info
         AESCrypto2 aes = new AESCrypto2();
+        try {
+            opRe = obtenirOpreturn(addrAlice,missatgeAlice.getHashCem("SHA256"));
 
-        byte[] opRe = obtenirOpreturn(addrAlice,hashCem);
-
-        if (opRe!= null) { aes.setK1(opRe); }
-        else {
-            informationalAlert("No hem trobat el Hash(cem)!!!" ,"Per a l'adreça " + addrAlice + ",\n" +
-                    "no hem trobat cap Tx amb un OPRETURN que contengui\n" +
-                    "el hash=" + new String(Hex.encode(hashCem)));
-            return; }
+            if (opRe!= null) { aes.setK1(opRe); }
+            else {
+                informationalAlert("No hem trobat el Hash(cem)!!!" ,"Per a l'adreça " + addrAlice + ",\n" +
+                        "no hem trobat cap Tx amb un OPRETURN que contengui\n" +
+                        "el hash=" + new String(Hex.encode(missatgeAlice.getHashCem("SHA256"))));
+                return; }
+        } catch (GeneralSecurityException | MessagingException | IOException e) {
+            e.printStackTrace();
+        }
 
         //Carrergam la clau privada de Bob per dexifrar kPrima
         PrivateKey priKeyBob = null;
-        Cipher dec = null;
         try {
             priKeyBob = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de'n Bob",new File(Main.appProps.getProperty("Certificats"))));
-            AsymmetricRSAPrivateKey rsaPriKey = new AsymmetricRSAPrivateKey(FipsRSA.ALGORITHM, priKeyBob.getEncoded());
-//            dec = Cipher.getInstance("RSA", "BCFIPS");
-//            dec.init(Cipher.DECRYPT_MODE, priKeyBob);
-//            aes.setK2(dec.doFinal(Hex.decode(rwm.getkPrima())));
-            aes.setK2(Smime.unwrapKey(rsaPriKey,Hex.decode(rwm.getkPrima())));
+            aes.setK2(aes.unSignPrivKey(priKeyBob,Hex.decode(rwm.getkPrima())));
 
+            System.err.println("Del valor K' recupertat del correu de n'Alice obtenim que\n" +
+                    "K2 = " + new String(Hex.encode(aes.getK2())));
+            informationalAlert("\nObtinguts els valors de K1 i K2" ,"De l'OPRETURN de l'adreça " + addrAlice + ", hem obtingut\n" +
+                    "K1="+new String(Hex.encode(opRe)) + ".\n\nDel valor de K' enviat en el missatge de n'Alice, hem obtingut\n" +
+                    "K2=" + new String(Hex.encode(aes.getK2())));
+            aes.obtainK();
+            String missatge = "Molt bé!!! Has obtingut el missatge certificat!!!";
+            try {
+                Smime.byteToFile(aes.cbcDecrypt(rwm.getCertFile()[0], rwm.getCertFile()[1]),"Guardar el fitxer desxifrat",new File(Main.appProps.getProperty("Fitxers")));
+            } catch (FileNotFoundException | NullPointerException e) {
+                e.printStackTrace();
+                missatge = "Ohhh!! El missatge certificat no s'ha guardat";
+            }
+            informationalAlert(missatge,"");
 
+            System.err.println("####################################################################################################################");
+            System.err.println("####################################################################################################################");
+        } catch (ClassCastException | NullPointerException e){
+            informationalAlert("Alguna cosa no ha anat bé", "Mira el log de l'aplicació per obtenir més informació");
+            e.printStackTrace();
         } catch (IOException | CertificateException | InvalidWrappingException e) {
             e.printStackTrace();
         }
-        System.err.println("Del valor K' recupertat del correu de n'Alice obtenim que\n" +
-                "K2 = " + new String(Hex.encode(aes.getK2())));
-        informationalAlert("\nObtinguts els valors de K1 i K2" ,"De l'OPRETURN de l'adreça " + addrAlice + ", hem obtingut\n" +
-                "K1="+new String(Hex.encode(opRe)) + ".\n\nDel valor de K' enviat en el missatge de n'Alice, hem obtingut\n" +
-                "K2=" + new String(Hex.encode(aes.getK2())));
-        aes.obtainK();
-        Smime.byteToFile(aes.cbcDecrypt(rwm.getCertFile()[0], rwm.getCertFile()[1]),"Guardar el fitxer desxifrat",new File(Main.appProps.getProperty("Fitxers")));
-        informationalAlert("Obtingut el fitxer desxifrat","");
-
-        System.err.println("####################################################################################################################");
-        System.err.println("####################################################################################################################");
-
     }
 
     private byte[] obtenirOpreturn(String addr, byte[] hash){
@@ -450,48 +357,6 @@ public class ReadMailController {
         return null;
     }
 
-    @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); connectionLabelIMAP.setText(auth_bustia()); }
-
-    public String auth_bustia() throws IOException {
-        String   UN, PW, host, port, proto;
-
-        host = Main.appProps.getProperty("imap.servidor");
-        port = Main.appProps.getProperty("imap.port");
-        proto = Main.appProps.getProperty("imap.protocol");
-        UN = Main.appProps.getProperty("imap.usuari");
-        PW = Main.appProps.getProperty("imap.contrasenya");
-
-        boolean auth = chk_bustia(UN, PW, host,port,proto);
-        String s="";
-
-        if(!auth) {
-            s="ALERTA: "+ proto + " KO. Connexió no satifactòria. Revisau la configuració " + proto;
-        } else {
-            s= proto + " OK. Credencials correctes";
-        }
-        System.out.println(s + " - " + UN );
-        return s;
-    }
-
-    private  boolean chk_bustia(String UN, String PW, String host, String port, String proto) {
-        Session sesh;
-        try {
-            sesh = Session.getInstance(Main.appProps, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication(UN, PW);}
-            });
-            Store store = sesh.getStore(proto);
-            store.connect(host, UN, PW);
-            System.out.println("Connexio IMAP/POP3 correcte");
-            return true;
-        } catch (AuthenticationFailedException e) {
-            System.out.println("AuthenticationFailedException - for authentication failures");
-//            e.printStackTrace();
-            return false;
-        } catch (MessagingException e) {
-            System.out.println("IMAP/POP3 connection error - for other failures");
-//            e.printStackTrace();
-            return false;
-        }
-    }
+    @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); connectionLabelIMAP.setText(rebreImap.auth()); }
 
 }

@@ -1,6 +1,7 @@
 package com.problemeszero.mail;
 
 import com.problemeszero.crypto.Smime;
+import com.problemeszero.redwax.RedWaxMessage;
 import com.sun.mail.util.LineInputStream;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.DERSet;
@@ -21,6 +22,7 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
 
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -70,22 +72,9 @@ public class RedWaxSMime {
             cem =(MimeMultipart) mPart.getBodyPart(0).getContent();
             //Obtenim el bodypart amb la signatura
             signedPart = (MimeBodyPart) mPart.getBodyPart(1);
-            // byte [] cem = Smime.PartToBAOS(multi);
-
-//            try {
-//                System.err.println(java.util.Arrays.toString(Smime.PartToBAOS(mPart)));
-//                Smime.byteToFile(Smime.PartToBAOS(mPart), "Guardar cemSignat",new File(Main.appProps.getProperty("Fitxers")));
-//            } catch (IOException | MessagingException e) {
-//               e.printStackTrace();
-//            }
-//        } catch (GeneralSecurityException | OperatorCreationException | CMSException | SMIMEException | MessagingException e) {
         } catch ( MessagingException | IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void addPartToCem(MimeBodyPart bPart) throws MessagingException{
-        cem.addBodyPart(bPart);
     }
 
     public RedWaxSMime(MimeMultipart mPart) {
@@ -96,6 +85,58 @@ public class RedWaxSMime {
             signedPart = (MimeBodyPart) mPart.getBodyPart(1);
             // byte [] cem = Smime.PartToBAOS(multi);
         } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addPartToCem (String text, String contendID) throws MessagingException {
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        //AFEGIM UN CR (13) ABANS DEL LF (10) al missatge body del correu
+        if (contendID.equals("mailBody")) text=linebreak(text);
+        messageBodyPart.setText(text);
+        messageBodyPart.setHeader("Content-ID",contendID);
+        cem.addBodyPart(messageBodyPart);
+    }
+
+    public void addPartToCem (byte[] b, String contendID) throws MessagingException {
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        DataSource dataSource = new ByteArrayDataSource(b, "application/octet-stream");
+        messageBodyPart.setDataHandler(new DataHandler(dataSource));
+        messageBodyPart.setFileName("Document_Certificat");
+        messageBodyPart.setHeader("Content-ID",contendID);
+        cem.addBodyPart(messageBodyPart);
+    }
+
+    public void cemToRwm(RedWaxMessage r){
+
+        try {
+            int parts = cem.getCount();
+            System.err.println("Num. parts del missatge multipart = " + parts);
+            for (int j = 0; j < parts; ++j) {
+                MimeBodyPart part = (MimeBodyPart) cem.getBodyPart(j);
+                if (part.getContentID() != null) {
+                    if ("fitxerXifrat".equals(part.getContentID())) {
+                        byte[] out2 = MimeBodyPartToBAOS(part, "Base64");
+                        byte[][] cF = {Arrays.copyOfRange(out2, 0, 16), Arrays.copyOfRange(out2, 16, out2.length)};
+//                                System.err.println(new String(Base64.getEncoder().encode(cF[0])));
+//                                System.err.println(new String(Base64.getEncoder().encode(cF[1])));
+                        r.setCertFile(cF);
+                    }
+
+                    if ("deadTime".equals(part.getContentID())) {
+                        r.setDeadTimeMillis(Long.valueOf(new String(MimeBodyPartToBAOS(part, ""))));
+                    }
+
+                    if ("kPrima".equals(part.getContentID())) {
+                        r.setkPrima(MimeBodyPartToBAOS(part, ""));
+                    }
+
+                    if ("addrAlice".equals(part.getContentID())) {
+                        r.setAddrAlice(new String(MimeBodyPartToBAOS(part, "")));
+                    }
+                }
+            }
+        } catch (MessagingException | IOException  e) {
             e.printStackTrace();
         }
     }
@@ -136,9 +177,7 @@ public class RedWaxSMime {
             setmPart(m.getmPart());
             setSignedPart(m.getSignedPart());
         }
-
     }
-
 
     public void verifySignedMultipart()
             throws GeneralSecurityException, OperatorCreationException, CMSException, SMIMEException, MessagingException {
@@ -165,10 +204,10 @@ public class RedWaxSMime {
         this. okSignatura=true;
     }
 
-     public byte[] getHashCem() throws GeneralSecurityException,MessagingException,IOException {
+     public byte[] getHashCem(String alg) throws GeneralSecurityException,MessagingException,IOException {
         byte[] data = Smime.PartToBAOS(cem);
 
-        MessageDigest hash = MessageDigest.getInstance("SHA256", "BCFIPS");
+        MessageDigest hash = MessageDigest.getInstance(alg, "BCFIPS");
 
         return hash.digest(data);
     }
@@ -205,6 +244,25 @@ public class RedWaxSMime {
         return out.toByteArray();
     }
 
+    //Escriu nomes el contingut del MimeBodyPart. NO inclou les capsaleres
+    private byte [] MimeBodyPartToBAOS (MimeBodyPart part, String code) throws MessagingException, IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        InputStream in = part.getInputStream();
+        byte [] output;
+        int k;
+        while ((k = in.read()) != -1) {
+            out.write(k);
+        }
+        output = out.toByteArray();
+        in.close();
+        out.close();
+//        System.err.println(j+"-" + part.getContentID() +" " + part.getContentType());
+//        if (!code.equals("Base64")) System.err.println(new String(output));
+//        else System.err.println(new String(Base64.getEncoder().encode(output)));
+        return output;
+    }
+
      private String obtenir_boundary(byte[] m){
 
         ByteArrayInputStream in = new ByteArrayInputStream(m);
@@ -222,6 +280,29 @@ public class RedWaxSMime {
         return line.substring(2,line.length());
 
     }
+
+    //Afegeix un CR al final de linia.
+    //A l'hora de comparar els cem a ReadConfirmationController dona error.
+    //Sense haver investigat molt, sembla ser que els servidors de correu afegeixen un \r quan troben un \n, quedant \r\n
+    //Amb aquesta funcio afegim de serie el \r i aixi la comparacio dels cem no falla
+    private String linebreak(String string){
+        int j= 0;
+        int i=string.indexOf(10);
+        String str="";
+        while (i>0) {
+            System.err.println("Corregim modificació SMPT: Afegim un CR abans de cada NL");
+//            System.out.println("i=" + i);
+//            System.out.println(string.substring(j, i));
+//            System.out.println("length="+string.substring(j, i).length());
+            str =  str + string.substring(j, i) + (char) 0x0D + (char) 0x0A;
+//            System.out.println("length="+ str.length());
+            j=i+1;
+            i=string.indexOf(10,j);
+        }
+        str = str + string.substring(j);
+        return str;
+    }
+
 
     //    Aquesta funcio corregeix les modificacions introduides pel servidor SMTP de Gmail al Content-type del missatge.
 //    Aquestes modificacions fan que la validacio de la signatura segui erronea.
