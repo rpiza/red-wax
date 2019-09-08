@@ -38,9 +38,14 @@
        <Label text="Body: " GridPane.columnIndex="0" GridPane.rowIndex="3" />
        <TextArea fx:id="ttext" prefHeight="510" prefWidth="380" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
-       <HBox alignment="CENTER_RIGHT" layoutX="272.0" layoutY="360.0" prefHeight="26.0" prefWidth="561.0" spacing="20.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="17.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+       <HBox alignment="CENTER_RIGHT" layoutX="272.0" layoutY="360.0" prefHeight="26.0" prefWidth="560.0" spacing="10.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="17.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
            <children>
-               <Button fx:id="btn1" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#handleConfigButtonAction" text="Configuració" HBox.hgrow="ALWAYS" />
+               <Button fx:id="btn1" alignment="CENTER" mnemonicParsing="false" onAction="#handleConfigButtonAction" prefHeight="25.0" prefWidth="186.0" text="Configuració SMTP" HBox.hgrow="ALWAYS" />
+            <Label alignment="CENTER_RIGHT" prefHeight="16.0" prefWidth="208.0" text="FASE I - Step 1:" textAlignment="RIGHT">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
                <Button fx:id="btnSEND" mnemonicParsing="false" onAction="#handleSendButton" text="Envia" HBox.hgrow="ALWAYS" />
                <Button fx:id="btnClose" defaultButton="true" layoutX="523.0" layoutY="360.0" maxWidth="80.0" mnemonicParsing="false" onAction="#closeClicked" text="Tanca" HBox.hgrow="ALWAYS" />
            </children>

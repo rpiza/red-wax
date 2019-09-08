@@ -30,10 +30,10 @@ import java.util.*;
 
 import static com.problemeszero.redwax.utils.GuiUtils.informationalAlert;
 
-public class ReadConfirmationController {
+public class AliceController {
 
     public ListView<RedWaxMessage> redWaxList;
-    private ReceiveMailImap rebreImap = new ReceiveMailImap();
+    private RedWaxReceiveMail rebreImap = new RedWaxReceiveMail();
     @FXML Button closeButton;
     @FXML private Label connectionLabelIMAP;
 
@@ -45,7 +45,7 @@ public class ReadConfirmationController {
 
         System.err.println("Index del missatge triat: " + redWaxList.getFocusModel().getFocusedIndex());
         if (redWaxList.getFocusModel().getFocusedIndex() == -1)  {
-            informationalAlert("Atenció!!!!!", "Has de seleccionar una de les línies");
+            informationalAlert("Atenció!!!!!", "Pitja el botó \"Carrega\" i després selecciona el missatge que vulguis.");
             return ;
         }
 
@@ -92,8 +92,6 @@ public class ReadConfirmationController {
 
         //validar la signatura del correu d'en Bob
         try {
-
-           //comprovam que la signatura es correcta
             missatgeBob.verifySignedMultipart();
             okSignatura = missatgeBob.isOkSignatura();
             System.err.println("La validacio de la signatura del correu rebut es: " + okSignatura );

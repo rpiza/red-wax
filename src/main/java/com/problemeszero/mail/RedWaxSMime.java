@@ -141,7 +141,7 @@ public class RedWaxSMime {
         }
     }
 
-    //Signar el cem de l'objecte
+    //Signar el cem del propi obejcte
     public RedWaxSMime createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert)
             throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
         List<X509Certificate> certList = new ArrayList<X509Certificate>();
@@ -282,7 +282,7 @@ public class RedWaxSMime {
     }
 
     //Afegeix un CR al final de linia.
-    //A l'hora de comparar els cem a ReadConfirmationController dona error.
+    //A l'hora de comparar els cem a AliceController dona error.
     //Sense haver investigat molt, sembla ser que els servidors de correu afegeixen un \r quan troben un \n, quedant \r\n
     //Amb aquesta funcio afegim de serie el \r i aixi la comparacio dels cem no falla
     private String linebreak(String string){

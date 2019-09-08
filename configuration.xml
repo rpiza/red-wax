@@ -32,4 +32,5 @@
 
     <entry key="imap.port">993</entry>
     <entry key="imap.folder">Inbox</entry>
+    <entry key="imap.length">10</entry>
 </properties>

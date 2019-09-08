@@ -1,6 +1,6 @@
 package com.problemeszero.mail;
 
-import com.problemeszero.crypto.AESCrypto2;
+import com.problemeszero.crypto.RedWaxSec;
 import com.problemeszero.crypto.Pem;
 import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.Main;
@@ -29,10 +29,10 @@ import static com.problemeszero.redwax.JsonReader.readJsonArrayFromUrl;
 import static com.problemeszero.redwax.JsonReader.readJsonFromUrl;
 import static com.problemeszero.redwax.utils.GuiUtils.informationalAlert;
 
-public class ReadMailController {
+public class BobController {
     public ListView<RedWaxMessage> redWaxList;
-    private SendMailSmtp enviaCorreu = new SendMailSmtp();
-    private ReceiveMailImap rebreImap = new ReceiveMailImap();
+    private RedWaxSendMail enviaCorreu = new RedWaxSendMail();
+    private RedWaxReceiveMail rebreImap = new RedWaxReceiveMail();
     @FXML
     Button closeButton;
     @FXML private Label connectionLabel;
@@ -42,7 +42,7 @@ public class ReadMailController {
 
         System.err.println("Index del missatge triat: " + redWaxList.getFocusModel().getFocusedIndex());
         if (redWaxList.getFocusModel().getFocusedIndex() == -1)  {
-            informationalAlert("Atenció!!!!!", "Has de seleccionar una de les línies");
+            informationalAlert("Atenció!!!!!", "Pitja el botó \"Carrega\" i després selecciona el missatge que vulguis.");
             return ;
         }
 
@@ -106,8 +106,8 @@ public class ReadMailController {
 
 
             //Preparam per signar el missatge
-            X509Certificate bobCert = null;
-            RedWaxSMime missatgeBob = null;
+            X509Certificate bobCert;
+            RedWaxSMime missatgeBob;
 
             try {
                 bobCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de'n Bob", new File(Main.appProps.getProperty("Certificats"))));
@@ -145,7 +145,7 @@ public class ReadMailController {
 
             //Enviam el missatge
 //            try {
-                enviaCorreu.mail(rwm, missatgeBob.getmPart());
+                enviaCorreu.mailToAlice(rwm, missatgeBob.getmPart());
                 informationalAlert("Enviat missatge NRR", "En Bob ha enviat el missatge NRR a n'Alice\n\n" +
                         "Nom del certificat: " + missatgeBob.getCert().getSubject() + "\nExpedit per: " + missatgeBob.getCert().getIssuer() + "\n" +
                         "Vàlid des de " + missatgeBob.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeBob.getCert().getNotAfter().toLocaleString());
@@ -187,7 +187,7 @@ public class ReadMailController {
                             setText("");
                             setGraphic(null);
                         } else {
-                            setText("Remitent: " + item.getFrom() + " - Assumpte:" + item.getSubject() +" - Enviat: " + item.getSentDate());
+                            setText("Remitent: " + item.getFrom() + " - Assumpte: " + item.getSubject() +" - Enviat: " + item.getSentDate());
 //                            ProgressBar bar = new ProgressBar();
 //                            bar.progressProperty().bind(item.depth.divide(3.0));
 //                            setGraphic(bar);
@@ -208,7 +208,7 @@ public class ReadMailController {
 
         System.err.println("Index del missatge triat: " + redWaxList.getFocusModel().getFocusedIndex());
         if (redWaxList.getFocusModel().getFocusedIndex() == -1)  {
-            informationalAlert("Atenció!!!!!", "Has de seleccionar una de les línies");
+            informationalAlert("Atenció!!!!!", "Pitja el botó \"Carrega\" i després selecciona el missatge que vulguis.");
             return ;
         }
 
@@ -232,7 +232,7 @@ public class ReadMailController {
         System.err.println("addrAlice: " + addrAlice);
 
         //obtenir les transaccions de l addrAlice i el valor d' OPRETURN, conectant-nos a l'api de blockchain.info
-        AESCrypto2 aes = new AESCrypto2();
+        RedWaxSec aes = new RedWaxSec();
         try {
             opRe = obtenirOpreturn(addrAlice,missatgeAlice.getHashCem("SHA256"));
 
@@ -250,7 +250,7 @@ public class ReadMailController {
         PrivateKey priKeyBob = null;
         try {
             priKeyBob = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de'n Bob",new File(Main.appProps.getProperty("Certificats"))));
-            aes.setK2(aes.unSignPrivKey(priKeyBob,Hex.decode(rwm.getkPrima())));
+            aes.setK2(aes.unwrapWithPrivKey(priKeyBob,Hex.decode(rwm.getkPrima())));
 
             System.err.println("Del valor K' recupertat del correu de n'Alice obtenim que\n" +
                     "K2 = " + new String(Hex.encode(aes.getK2())));

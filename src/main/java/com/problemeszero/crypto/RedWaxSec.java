@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 
-public class AESCrypto2 {
+public class RedWaxSec {
 
     private SymmetricSecretKey k;
     private byte[] k1;
@@ -38,7 +38,7 @@ public class AESCrypto2 {
     private FipsSymmetricOperatorFactory<FipsAES.Parameters> fipsSymmetricFactory;
     private byte[] iv;
 
-    public AESCrypto2() {
+    public RedWaxSec() {
 //        CryptoServicesRegistrar.setApprovedOnlyMode(true);
 //        System.err.println("Nomes mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
 
@@ -141,7 +141,7 @@ public class AESCrypto2 {
         return bOut.toByteArray();
     }
 
-    public byte[] signPubKey (PublicKey pubKey, byte[] inputKeyBytes) throws PlainInputProcessingException {
+    public byte[] wrapWithPubKey (PublicKey pubKey, byte[] inputKeyBytes) throws PlainInputProcessingException {
         AsymmetricRSAPublicKey rsaPubKey = new AsymmetricRSAPublicKey(FipsRSA.ALGORITHM, pubKey.getEncoded());
         return wrapKey(rsaPubKey,inputKeyBytes);
     }
@@ -154,7 +154,7 @@ public class AESCrypto2 {
         return wrapper.wrap(inputKeyBytes, 0, inputKeyBytes.length);
     }
 
-    public byte[] unSignPrivKey (PrivateKey priKey, byte[] wrappedKeyBytes) throws InvalidWrappingException {
+    public byte[] unwrapWithPrivKey (PrivateKey priKey, byte[] wrappedKeyBytes) throws InvalidWrappingException {
         AsymmetricRSAPrivateKey rsaPriKey = new AsymmetricRSAPrivateKey(FipsRSA.ALGORITHM, priKey.getEncoded());
         return unwrapKey(rsaPriKey,wrappedKeyBytes);
     }
