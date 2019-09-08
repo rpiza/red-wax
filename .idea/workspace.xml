@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec-BCFIPS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/bitcoinj_core.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/bitcoinj_core.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Cert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Cert.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/EC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/EC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Pem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Pem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Rsa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Rsa.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/AliceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/AliceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/BobController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/BobController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/MailEditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/MailEditController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxReceiveMail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxReceiveMail.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxSMime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxSMime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/Main.java" afterDir="false" />
-    </list>
+    <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

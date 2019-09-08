@@ -20,11 +20,19 @@ Per realitzar la instal·lació d'aquestes llibreries hem de seguir les següent
 * descomprimir el fitxer descarregat
 * recordar la ubicació, ja que serà necessari introduir-la en la comanda del punt 5, com a paràmetre de **--module-path**
 
+#### Llibreries Bouncy-Castle
+
+La versió 0.15.3 de la llibreria bitcoinj empra les llibreries de criptografia Bouncy Castle 'BC', quan en la versió 0.14.7 emprava les llibreries de SpongyCastle.  
+En el desenvolupament del client Redwax estava emprant la versió de Bouncy Castle 'BCFIPS', sense cap conflicte amb la llibreria bitcoinj-0.14.7.   
+Al incorporar la llibreria bitcoinj-0.15.3 al desenvolupament de Redwax, vaig solucionar els primers problemes eliminant les classes en conflicte i forçant l'ordre del classpath de java a emprar les llibreries 'BC' abans de les 'BCFIPS'.  
+Així hi tot, aleatòriament s'obtenen errors a l'hora de signar o xifrar amb clau pública, per aquest motiu he creat aquest branca on el desenvolupament de Redwax empra les llibreries 'BC' de Bouncy Castle.
+
+
 ### Descàrrega i execució
 
 1. Primer feim un clone del repositori
 <pre>
-#> git clone --depth=1 --branch=redwax-0.15.3 https://github.com/rpiza/red-wax.git
+#> git clone --depth=1 --branch=redwax-0.15.3-bc https://github.com/rpiza/red-wax.git
 </pre>
 
 2. Entram al directori **red-wax**
@@ -45,7 +53,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
 5. Execució del client amb la comanda:
 <pre>
- #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/com.problemeszero.redwax-0.15.3.jar:lib/bcprov-jdk15on-1.60.jar:lib/*:. com.problemeszero.redwax.Main
+ #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -jar build/libs/com.problemeszero.redwax-0.15.3.jar
 </pre>
 
 6. Carregar el wallet amb bitcoins.
