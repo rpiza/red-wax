@@ -1,3 +1,5 @@
+<mark>**Es recomana emprar la branca redwax-0.15.3-bc**</mark>
+
 # Client de correu certificat sense tercera part de confiança
 
 Desenvolupament d'un client basat en java amb l'objectiu de realitzar una prova de concepte del protocol de correu certificat basat en blockchain descrit a l'article:
