@@ -1,6 +1,5 @@
-<pre>
-**Es recomana emprar la branca redwax-0.15.3-bc**
-</pre>
+
+<mark>**Es recomana emprar la branca redwax-0.15.3-bc**</mark>
 
 # Client de correu certificat sense tercera part de confiança
 
