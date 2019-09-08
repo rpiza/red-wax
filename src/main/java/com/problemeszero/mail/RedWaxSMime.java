@@ -1,12 +1,21 @@
 package com.problemeszero.mail;
 
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.smime.SMIMECapabilitiesAttribute;
+import org.bouncycastle.asn1.smime.SMIMECapability;
+import org.bouncycastle.asn1.smime.SMIMECapabilityVector;
+import org.bouncycastle.asn1.smime.SMIMEEncryptionKeyPreferenceAttribute;
+import org.bouncycastle.mail.smime.SMIMESigned;
+import org.bouncycastle.mail.smime.SMIMESignedGenerator;
+import org.bouncycastle.mail.smime.SMIMEUtil;
+
+
 import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.RedWaxMessage;
 import com.sun.mail.util.LineInputStream;
-import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.asn1.cms.Time;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -17,11 +26,8 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.mail.smime.SMIMEException;
-import org.bouncycastle.mail.smime.SMIMESigned;
-import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.MessagingException;
@@ -37,6 +43,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
+import java.security.cert.CertStore;
 import java.security.cert.X509Certificate;
 import java.util.*;
 
@@ -140,12 +147,12 @@ public class RedWaxSMime {
     }
 
     //Signar el cem del propi obejcte
-    public RedWaxSMime createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert)
+    public RedWaxSMime createSignedMultipart_2(PrivateKey signingKey, X509Certificate signingCert)
             throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
         List<X509Certificate> certList = new ArrayList<X509Certificate>();
         certList.add(signingCert);
         Store certs = new JcaCertStore(certList);
-        ASN1EncodableVector signedAttrs = Smime.generateSignedAttributes();
+        ASN1EncodableVector signedAttrs = generateSignedAttributes();
         signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
         SMIMESignedGenerator gen = new SMIMESignedGenerator();
         gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BCFIPS").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
@@ -154,13 +161,54 @@ public class RedWaxSMime {
         message.setContent(cem);
         return new RedWaxSMime(gen.generate(message));
     }
+
+    public RedWaxSMime createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert)
+            throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
+        // create some smime capabilities in case someone wants to respond
+        List<X509Certificate> certList = new ArrayList<X509Certificate>();
+        certList.add(signingCert);
+        Store certs = new JcaCertStore(certList);
+        ASN1EncodableVector signedAttrs = generateSignedAttributes();
+
+        signedAttrs.add(new SMIMEEncryptionKeyPreferenceAttribute(SMIMEUtil.createIssuerAndSerialNumberFor(signingCert)));
+        signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
+        // set up the generator
+        SMIMESignedGenerator gen = new SMIMESignedGenerator();
+        gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BC").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
+        gen.addCertificates(certs);
+
+        // create the signed message
+        MimeBodyPart message = new MimeBodyPart();
+        message.setContent(cem);
+        return new RedWaxSMime(gen.generate(message));
+    }
+
+    public MimeMultipart createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert,MimeBodyPart message)
+            throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
+        // create some smime capabilities in case someone wants to respond
+        List<X509Certificate> certList = new ArrayList<X509Certificate>();
+        certList.add(signingCert);
+        Store certs = new JcaCertStore(certList);
+        ASN1EncodableVector signedAttrs = generateSignedAttributes();
+
+        signedAttrs.add(new SMIMEEncryptionKeyPreferenceAttribute(SMIMEUtil.createIssuerAndSerialNumberFor(signingCert)));
+        signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
+        // set up the generator
+        SMIMESignedGenerator gen = new SMIMESignedGenerator();
+        gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BC").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
+        gen.addCertificates(certs);
+
+        // create the signed message
+         return gen.generate(message);
+    }
+
     //Signa el cem passat com parametre
-    public MimeMultipart createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert, MimeBodyPart message)
+    public MimeMultipart createSignedMultipart_2(PrivateKey signingKey, X509Certificate signingCert, MimeBodyPart message)
             throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException {
         List<X509Certificate> certList = new ArrayList<X509Certificate>();
         certList.add(signingCert);
         Store certs = new JcaCertStore(certList);
-        ASN1EncodableVector signedAttrs = Smime.generateSignedAttributes();
+        ASN1EncodableVector signedAttrs = generateSignedAttributes();
         signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
         SMIMESignedGenerator gen = new SMIMESignedGenerator();
         gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BCFIPS").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
@@ -195,7 +243,7 @@ public class RedWaxSMime {
 //            System.err.println("Certificat de " + this.cert.getSubject() + ", expedit per " + this.cert.getIssuer()+
 //                    ". Vàlid des de \"" + this.cert.getNotBefore() + "\" fins a \"" + this.cert.getNotAfter()+ "\".");
 
-            if (!signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BCFIPS").build(this.cert))) {
+            if (!signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(this.cert))) {
                 this.okSignatura = false;
             }
         }
@@ -205,7 +253,7 @@ public class RedWaxSMime {
      public byte[] getHashCem(String alg) throws GeneralSecurityException,MessagingException,IOException {
         byte[] data = Smime.PartToBAOS(cem);
 
-        MessageDigest hash = MessageDigest.getInstance(alg, "BCFIPS");
+        MessageDigest hash = MessageDigest.getInstance(alg, "BC");
 
         return hash.digest(data);
     }
@@ -327,6 +375,18 @@ public class RedWaxSMime {
         }
 
         return bigStr.getBytes();
+    }
+
+    public static ASN1EncodableVector generateSignedAttributes() {
+
+        ASN1EncodableVector signedAttrs = new ASN1EncodableVector();
+        SMIMECapabilityVector caps = new SMIMECapabilityVector();
+        caps.addCapability(SMIMECapability.aES128_CBC);
+        caps.addCapability(SMIMECapability.aES192_CBC);
+        caps.addCapability(SMIMECapability.aES256_CBC);
+        signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
+
+        return signedAttrs;
     }
 
     public MimeMultipart getmPart() {

@@ -10,8 +10,9 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import com.problemeszero.crypto.EC;
-import com.problemeszero.crypto.Cert;
+//import com.problemeszero.crypto.EC;
+
+//import com.problemeszero.crypto.Cert;
 import com.problemeszero.redwax.Main;
 import com.problemeszero.redwax.MainController;
 import javafx.application.Application;
@@ -40,9 +41,9 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS8EncryptedPrivateKeyInfoBuilder;
 import org.bouncycastle.pkcs.jcajce.JcePKCSPBEInputDecryptorProviderBuilder;
 import org.bouncycastle.pkcs.jcajce.JcePKCSPBEOutputEncryptorBuilder;
 import java.security.Security;
-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+//import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 
-import static com.problemeszero.crypto.Cert.*;
+//import static com.problemeszero.crypto.Cert.*;
 
 public class Pem extends Application {
     static Stage stage;
@@ -52,17 +53,17 @@ public class Pem extends Application {
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
-        try {
-            crearCert();
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (OperatorCreationException e) {
-            e.printStackTrace();
-        } catch (PKCSException e) {
-            e.printStackTrace();
-        }
+//        try {
+////            crearCert();
+//        } catch (GeneralSecurityException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (OperatorCreationException e) {
+//            e.printStackTrace();
+//        } catch (PKCSException e) {
+//            e.printStackTrace();
+//        }
         primaryStage.setTitle("JavaFX App");
 
         FileChooser fileChooser = new FileChooser();
@@ -214,69 +215,68 @@ public class Pem extends Application {
         return output;
      }
 
-
-
     public static void main(String[] args)
             throws GeneralSecurityException, IOException, OperatorCreationException, PKCSException {
         launch(args);
     }
-    public static void crearCert()  throws GeneralSecurityException, IOException, OperatorCreationException, PKCSException{
-        Security.addProvider(new BouncyCastleFipsProvider());
 
-        KeyPair keyPair = Rsa.generateKeyPair();
-
-        KeyPair taKeyPair = Rsa.generateKeyPair();
-        KeyPair caKeyPair = Rsa.generateKeyPair();
-        KeyPair eeKeyPair = Rsa.generateKeyPair();
-
-        X509Certificate taCert = makeV1RsaCertificate(taKeyPair.getPrivate(), taKeyPair.getPublic());
-        X509Certificate caCert = makeV3CACertificate(taCert, taKeyPair.getPrivate(), caKeyPair.getPublic());
-        X509Certificate eeCert = makeV3Certificate(caCert, caKeyPair.getPrivate(), eeKeyPair.getPublic(),"Alice");
-
-        X509Certificate certificate = makeV3Certificate(caCert, caKeyPair.getPrivate(), keyPair.getPublic(), "Bob");//makeV1Certificate(keyPair.getPrivate(), keyPair.getPublic());
-
-        char[] keyPass = "keyPassword".toCharArray();
-
-        File dir= new File("/home/set/RedWax/Certificats");
-
-        String pemCertificate = writeCertificate(taCert);
-        System.err.println(pemCertificate);
-        stringToFile(pemCertificate,"",dir);
-        pemCertificate = writeCertificate(caCert);
-        stringToFile(pemCertificate,"",dir);
-        pemCertificate = writeCertificate(eeCert);
-        stringToFile(pemCertificate,"",dir);
-        pemCertificate = writeCertificate(certificate);
-        stringToFile(pemCertificate, "" ,dir) ;
-
-
-//        System.err.println(fileToString());
-//        //System.err.println("XXXXXXXXXXXX" + certificate.equals(readCertificate(fileToString())));
-
-        System.err.println(certificate.equals(readCertificate(pemCertificate)));
-
-        String pemPrivateKey = writePrivateKey(taKeyPair.getPrivate());
-        stringToFile(pemPrivateKey,"",dir);
-        pemPrivateKey = writePrivateKey(caKeyPair.getPrivate());
-        stringToFile(pemPrivateKey,"",dir);
-        pemPrivateKey = writePrivateKey(eeKeyPair.getPrivate());
-        stringToFile(pemPrivateKey,"",dir);
-
-        pemPrivateKey = writePrivateKey(keyPair.getPrivate());
-        stringToFile(pemPrivateKey,"", dir);
-
-
-        System.err.println(pemPrivateKey);
-        System.err.println(keyPair.getPrivate().equals(readPrivateKey(pemPrivateKey)));
-
-        String encPrivKey = writeEncryptedKey(keyPass, keyPair.getPrivate());
-
-        System.err.println(encPrivKey);
-        System.err.println(keyPair.getPrivate().equals(readEncryptedKey(keyPass, encPrivKey)));
-
-        String openSslEncPrivKey = writeEncryptedKeyOpenSsl(keyPass, keyPair.getPrivate());
-
-        System.err.println(openSslEncPrivKey);
-        System.err.println(keyPair.getPrivate().equals(readEncryptedKeyOpenSsl(keyPass, openSslEncPrivKey)));
-    }
+//    public static void crearCert()  throws GeneralSecurityException, IOException, OperatorCreationException, PKCSException{
+//        Security.addProvider(new BouncyCastleFipsProvider());
+//
+//        KeyPair keyPair = Rsa.generateKeyPair();
+//
+//        KeyPair taKeyPair = Rsa.generateKeyPair();
+//        KeyPair caKeyPair = Rsa.generateKeyPair();
+//        KeyPair eeKeyPair = Rsa.generateKeyPair();
+//
+//        X509Certificate taCert = makeV1RsaCertificate(taKeyPair.getPrivate(), taKeyPair.getPublic());
+//        X509Certificate caCert = makeV3CACertificate(taCert, taKeyPair.getPrivate(), caKeyPair.getPublic());
+//        X509Certificate eeCert = makeV3Certificate(caCert, caKeyPair.getPrivate(), eeKeyPair.getPublic(),"Alice");
+//
+//        X509Certificate certificate = makeV3Certificate(caCert, caKeyPair.getPrivate(), keyPair.getPublic(), "Bob");//makeV1Certificate(keyPair.getPrivate(), keyPair.getPublic());
+//
+//        char[] keyPass = "keyPassword".toCharArray();
+//
+//        File dir= new File("/home/set/RedWax/Certificats");
+//
+//        String pemCertificate = writeCertificate(taCert);
+//        System.err.println(pemCertificate);
+//        stringToFile(pemCertificate,"",dir);
+//        pemCertificate = writeCertificate(caCert);
+//        stringToFile(pemCertificate,"",dir);
+//        pemCertificate = writeCertificate(eeCert);
+//        stringToFile(pemCertificate,"",dir);
+//        pemCertificate = writeCertificate(certificate);
+//        stringToFile(pemCertificate, "" ,dir) ;
+//
+//
+////        System.err.println(fileToString());
+////        //System.err.println("XXXXXXXXXXXX" + certificate.equals(readCertificate(fileToString())));
+//
+//        System.err.println(certificate.equals(readCertificate(pemCertificate)));
+//
+//        String pemPrivateKey = writePrivateKey(taKeyPair.getPrivate());
+//        stringToFile(pemPrivateKey,"",dir);
+//        pemPrivateKey = writePrivateKey(caKeyPair.getPrivate());
+//        stringToFile(pemPrivateKey,"",dir);
+//        pemPrivateKey = writePrivateKey(eeKeyPair.getPrivate());
+//        stringToFile(pemPrivateKey,"",dir);
+//
+//        pemPrivateKey = writePrivateKey(keyPair.getPrivate());
+//        stringToFile(pemPrivateKey,"", dir);
+//
+//
+//        System.err.println(pemPrivateKey);
+//        System.err.println(keyPair.getPrivate().equals(readPrivateKey(pemPrivateKey)));
+//
+//        String encPrivKey = writeEncryptedKey(keyPass, keyPair.getPrivate());
+//
+//        System.err.println(encPrivKey);
+//        System.err.println(keyPair.getPrivate().equals(readEncryptedKey(keyPass, encPrivKey)));
+//
+//        String openSslEncPrivKey = writeEncryptedKeyOpenSsl(keyPass, keyPair.getPrivate());
+//
+//        System.err.println(openSslEncPrivKey);
+//        System.err.println(keyPair.getPrivate().equals(readEncryptedKeyOpenSsl(keyPass, openSslEncPrivKey)));
+//    }
 }

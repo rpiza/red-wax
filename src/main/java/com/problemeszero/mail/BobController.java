@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.crypto.InvalidWrappingException;
+//import org.bouncycastle.crypto.InvalidWrappingException;
 import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.encoders.Hex;
@@ -272,9 +272,12 @@ public class BobController {
         } catch (ClassCastException | NullPointerException e){
             informationalAlert("Alguna cosa no ha anat bé", "Mira el log de l'aplicació per obtenir més informació");
             e.printStackTrace();
-        } catch (IOException | CertificateException | InvalidWrappingException e) {
+        } catch (IOException | CertificateException  e) {
             e.printStackTrace();
         }
+//        } catch (IOException | CertificateException | InvalidWrappingException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private byte[] obtenirOpreturn(String addr, byte[] hash){

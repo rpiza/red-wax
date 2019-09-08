@@ -27,16 +27,16 @@ import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.*;
 import org.bouncycastle.cms.jcajce.*;
 import org.bouncycastle.crypto.CryptoServicesRegistrar;
-import org.bouncycastle.crypto.EntropySourceProvider;
-import org.bouncycastle.crypto.InvalidWrappingException;
-import org.bouncycastle.crypto.PlainInputProcessingException;
-import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPrivateKey;
-import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPublicKey;
-import org.bouncycastle.crypto.fips.FipsDRBG;
-import org.bouncycastle.crypto.fips.FipsKeyUnwrapperUsingSecureRandom;
-import org.bouncycastle.crypto.fips.FipsKeyWrapperUsingSecureRandom;
-import org.bouncycastle.crypto.fips.FipsRSA;
-import org.bouncycastle.crypto.util.BasicEntropySourceProvider;
+//import org.bouncycastle.crypto.EntropySourceProvider;
+//import org.bouncycastle.crypto.InvalidWrappingException;
+//import org.bouncycastle.crypto.PlainInputProcessingException;
+//import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPrivateKey;
+//import org.bouncycastle.crypto.asymmetric.AsymmetricRSAPublicKey;
+//import org.bouncycastle.crypto.fips.FipsDRBG;
+//import org.bouncycastle.crypto.fips.FipsKeyUnwrapperUsingSecureRandom;
+//import org.bouncycastle.crypto.fips.FipsKeyWrapperUsingSecureRandom;
+//import org.bouncycastle.crypto.fips.FipsRSA;
+//import org.bouncycastle.crypto.util.BasicEntropySourceProvider;
 import org.bouncycastle.mail.smime.*;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
@@ -69,17 +69,17 @@ public class Smime {
         return message;
     }
 
-    public static ASN1EncodableVector generateSignedAttributes() {
-
-        ASN1EncodableVector signedAttrs = new ASN1EncodableVector();
-        SMIMECapabilityVector caps = new SMIMECapabilityVector();
-        caps.addCapability(SMIMECapability.aES128_CBC);
-        caps.addCapability(SMIMECapability.aES192_CBC);
-        caps.addCapability(SMIMECapability.aES256_CBC);
-        signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
-
-        return signedAttrs;
-    }
+//    public static ASN1EncodableVector generateSignedAttributes() {
+//
+//        ASN1EncodableVector signedAttrs = new ASN1EncodableVector();
+//        SMIMECapabilityVector caps = new SMIMECapabilityVector();
+//        caps.addCapability(SMIMECapability.aES128_CBC);
+//        caps.addCapability(SMIMECapability.aES192_CBC);
+//        caps.addCapability(SMIMECapability.aES256_CBC);
+//        signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
+//
+//        return signedAttrs;
+//    }
 
 //    public static MimeMultipart createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert, MimeBodyPart message)
 //            throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException {
@@ -170,18 +170,18 @@ public class Smime {
 //        throw new IllegalArgumentException("recipient for certificate not found");
 //    }
 
-    public static byte[] calculateDigest(byte[] data) throws GeneralSecurityException {
-
-        MessageDigest hash = MessageDigest.getInstance("SHA256", "BCFIPS");
-
-        return hash.digest(data);
-    }
-    public static byte[] calculateSha3Digest(byte[] data) throws GeneralSecurityException {
-
-        MessageDigest hash = MessageDigest.getInstance("SHA3-256", "BCFIPS");
-
-        return hash.digest(data);
-    }
+//    public static byte[] calculateDigest(byte[] data) throws GeneralSecurityException {
+//
+//        MessageDigest hash = MessageDigest.getInstance("SHA256", "BCFIPS");
+//
+//        return hash.digest(data);
+//    }
+//    public static byte[] calculateSha3Digest(byte[] data) throws GeneralSecurityException {
+//
+//        MessageDigest hash = MessageDigest.getInstance("SHA3-256", "BCFIPS");
+//
+//        return hash.digest(data);
+//    }
 
     public static byte[] fileToByte(String title, File initialDir) {
 
@@ -252,22 +252,22 @@ public class Smime {
 
     }
 
-    public static SecureRandom buildDrbg(){
-
-        EntropySourceProvider entSource = new BasicEntropySourceProvider(new SecureRandom(), true);
-        FipsDRBG.Builder drgbBldr = FipsDRBG.SHA512_HMAC.fromEntropySource(entSource).setSecurityStrength(256).setEntropyBitsRequired(256);
-
-        return drgbBldr.build("varibale per inicialitzar".getBytes(), false);
-    }
-
-    public static SecureRandom buildDrbgForKeys(){
-
-        EntropySourceProvider entSource = new BasicEntropySourceProvider(new SecureRandom(), true);
-        FipsDRBG.Builder drgbBldr = FipsDRBG.SHA512_HMAC.fromEntropySource(entSource).setSecurityStrength(256).setEntropyBitsRequired(256)
-                .setPersonalizationString("una altra variable per inicialitzar".getBytes());
-
-        return drgbBldr.build("varibale per inicialitzar".getBytes(), true);
-    }
+//    public static SecureRandom buildDrbg(){
+//
+//        EntropySourceProvider entSource = new BasicEntropySourceProvider(new SecureRandom(), true);
+//        FipsDRBG.Builder drgbBldr = FipsDRBG.SHA512_HMAC.fromEntropySource(entSource).setSecurityStrength(256).setEntropyBitsRequired(256);
+//
+//        return drgbBldr.build("varibale per inicialitzar".getBytes(), false);
+//    }
+//
+//    public static SecureRandom buildDrbgForKeys(){
+//
+//        EntropySourceProvider entSource = new BasicEntropySourceProvider(new SecureRandom(), true);
+//        FipsDRBG.Builder drgbBldr = FipsDRBG.SHA512_HMAC.fromEntropySource(entSource).setSecurityStrength(256).setEntropyBitsRequired(256)
+//                .setPersonalizationString("una altra variable per inicialitzar".getBytes());
+//
+//        return drgbBldr.build("varibale per inicialitzar".getBytes(), true);
+//    }
 
     public static  void crearDirectoris() {
         String [] carpetes = {"Certificats", "RedWax", "Fitxers", "Temp"};

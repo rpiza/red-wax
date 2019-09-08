@@ -25,7 +25,8 @@ import com.problemeszero.redwax.controls.NotificationBarPane;
 import com.problemeszero.redwax.utils.GuiUtils;
 import com.problemeszero.redwax.utils.TextFieldValidator;
 import org.bouncycastle.crypto.CryptoServicesRegistrar;
-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+//import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -100,9 +101,10 @@ public class Main extends Application {
         //System.setProperty("line.separator","\r\n");
 
         //carregam el proveidor desde la JVM - https://docs.oracle.com/cd/E19830-01/819-4712/ablsc/index.html
-        Security.addProvider(new BouncyCastleFipsProvider());
-        CryptoServicesRegistrar.setApprovedOnlyMode(false);
-        System.err.println("Només mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
+         Security.addProvider(new BouncyCastleProvider());
+//        Security.addProvider(new BouncyCastleFipsProvider());
+//        CryptoServicesRegistrar.setApprovedOnlyMode(false);
+//        System.err.println("Només mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
 
 //        //Carregam el fitxer de configuracio de l'aplicacio
 //        System.err.println("Llegint el fitxer de propietats configuration.xml");

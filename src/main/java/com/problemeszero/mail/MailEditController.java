@@ -21,7 +21,6 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.encoders.Hex;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;

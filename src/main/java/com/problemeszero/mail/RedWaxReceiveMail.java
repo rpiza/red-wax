@@ -98,7 +98,7 @@ public class RedWaxReceiveMail {
             int total_missatges = ((messages.length > num_missatges) ? num_missatges : messages.length);
 
             for (int i= messages.length - total_missatges; i < messages.length; ++i) {
-                System.out.println("valor de i = " + i);
+//                System.out.println("valor de i = " + i);
                 Message msg = messages[i];
                 if (msg.getHeader("Content-ID")!=null)
                 if (contentId.equals(msg.getHeader("Content-ID")[0])) {

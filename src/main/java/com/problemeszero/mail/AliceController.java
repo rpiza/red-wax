@@ -77,7 +77,8 @@ public class AliceController {
             // Comprovam si el cem generat per n'Alice es el matiex que li ha enviat en Bob
 
             System.err.println("HashCEM enviat per en Bob   = " + new String(Hex.encode(missatgeBob.getHashCem("SHA256"))));
-            System.err.println("HashCEM original de n'Alice = " + new String(Hex.encode(Smime.calculateDigest(rwmAlice.getCem()))));
+//            System.err.println("HashCEM original de n'Alice = " + new String(Hex.encode(Smime.calculateDigest(rwmAlice.getCem()))));
+            System.err.println("HashCEM original de n'Alice = " + new String(Hex.encode(rwmAlice.getHashCem())));
 
             if (Arrays.equals(Smime.PartToBAOS(missatgeBob.getCem()),rwmAlice.getCem())){
                 cemIguals = true;
