@@ -20,11 +20,20 @@ Per realitzar la instal·lació d'aquestes llibreries hem de seguir les següent
 * descomprimir el fitxer descarregat
 * recordar la ubicació, ja que serà necessari introduir-la en la comanda del punt 5, com a paràmetre de **--module-path**
 
+#### Llibreries Bouncy-Castle
+
+La versió 0.15.3 de la llibreria bitcoinj empra les llibreries de criptografia Bouncy Castle 'BC', quan en la versió 0.14.7 emprava les llibreries de SpongyCastle.  
+En el desenvolupament del client Redwax estava emprant la versió de Bouncy Castle 'BCFIPS', sense cap conflicte amb la llibreria bitcoinj-0.14.7.   
+Al incorporar la llibreria bitcoinj-0.15.3 al desenvolupament de Redwax, vaig solucionar els primers problemes eliminant les classes en conflicte i forçant l'ordre del classpath de java a emprar les llibreries 'BC' abans de les 'BCFIPS'.  
+Així hi tot, aleatòriament s'obtenen errors a l'hora de signar o xifrar amb clau pública.
+
+**Es recomana emprar la branca redwax-0.15.3-bc on el desenvolupament de Redwax empra les llibreries 'BC' de Bouncy Castle.**
+
 ### Descàrrega i execució
 
 1. Primer feim un clone del repositori
 <pre>
-#> git clone --depth=1 --branch=redwax-0.15.3 https://github.com/rpiza/red-wax.git
+#> git clone --depth=1 --branch=redwax-0.15.3-bcfips https://github.com/rpiza/red-wax.git
 </pre>
 
 2. Entram al directori **red-wax**
@@ -76,3 +85,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
    Els missatges semblen idèntics a l'ull, però a l'hora de validar les signatures la modificació de aquests continguts afecta la validació de la signatura del missatge, donant-la com invàlida. El client permet a l'usuari continuar malgrat la signatura sigui invàlida.
 
    Per evitar els problemes amb gmail s'ha utilitzat el servidor smtp d'OVH, i encara que aquest també modifica els finals de línia del body de missatge de correu per programació es corregit a l'origen, i el funcionament és correcte.
+
+2. Errors aleatoris en la branca redwax-0.15.3-bcfips
+
+   A causa del conflicte amb les llibreries Bouncy Castle emprades en el desenvolupament del client Redwax 'BCFIPS' i les emprades per la llibreria bitcoinj-0.15.3 'BC'. Es recomana emprar la branca redwax-0.15.3-bc en lloc d'aquesta.
