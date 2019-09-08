@@ -45,7 +45,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
 5. Execució del client amb la comanda:
 <pre>
- #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/com.problemeszero.redwax-0.15.3.jar:lib/*:. com.problemeszero.redwax.Main
+ #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/com.problemeszero.redwax-0.15.3.jar:lib/bcprov-jdk15on-1.60.jar:lib/*:. com.problemeszero.redwax.Main
 </pre>
 
 6. Carregar el wallet amb bitcoins.
@@ -66,10 +66,6 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
    Per simplicitat en el tutorial assumim que n'Alice i en Bob tenen la mateixa adreça de correu, així només utilitzam una instància del client.
 
    Per simular un cas real, s'ha de duplicar el directori **red-wax** descarregat i modificar el **configuration.xml** de cada directori amb les dades de n'Alice i de'n Bob respectivament. Finalment executar una instància del client de cada directori.   
-
-
-
-
 
 ### Problemes detectats
 

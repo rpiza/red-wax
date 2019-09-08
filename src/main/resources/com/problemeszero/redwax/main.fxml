@@ -37,8 +37,8 @@
     </HBox>
     <HBox fx:id="controlsBox" alignment="TOP_LEFT" fillHeight="true" layoutX="14.0" minHeight="16.0" prefHeight="36.0" prefWidth="243.0" spacing="10.0" translateY="60.0" visible="true" AnchorPane.bottomAnchor="17.0">
       <children>
-        <Button fx:id="mailButton" defaultButton="true" mnemonicParsing="false" onAction="#onEnviarClicked" styleClass="fat-button" text="Envia RedWax" />
-        <Button fx:id="k1Button" defaultButton="true" mnemonicParsing="false" onAction="#onEnviarK1Clicked" styleClass="fat-button" text="Valida NRR" />
+        <Button fx:id="mailButton" defaultButton="true" mnemonicParsing="false" onAction="#onEnviarClicked" styleClass="fat-button" text="Alice: Fase I" />
+        <Button fx:id="k1Button" defaultButton="true" mnemonicParsing="false" onAction="#onEnviarK1Clicked" styleClass="fat-button" text="Alice: Fase II" />
       </children>
     </HBox>
     <ImageView fitHeight="243.0" fitWidth="243.0" opacity="0.28" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="-36.0" AnchorPane.rightAnchor="-34.0">
@@ -68,7 +68,7 @@
     </HBox>
     <HBox alignment="TOP_RIGHT" fillHeight="true" layoutX="616.0" minHeight="16.0" prefHeight="36.0" prefWidth="170.0" visible="true" AnchorPane.bottomAnchor="17.0">
       <children>
-        <Button fx:id="readButton" defaultButton="true" mnemonicParsing="false" onAction="#onLlegirClicked" styleClass="fat-button" text="Llegeix RedWax" />
+        <Button fx:id="readButton" defaultButton="true" mnemonicParsing="false" onAction="#onLlegirClicked" styleClass="fat-button" text="Bob: Fase I i Fase III" />
       </children>
     </HBox>
   </children>

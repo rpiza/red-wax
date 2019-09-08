@@ -7,9 +7,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javax.mail.*;
-import javax.mail.internet.*;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -23,7 +20,7 @@ public class MailConfController {
     @FXML protected TextField tUN, tPW, tServidor, tPort;
     @FXML private static final Text UNfail = new Text("Cannot authenticate");
     @FXML private Button btnClose;
-    private SendMailSmtp smtpConf;
+    private RedWaxSendMail smtpConf;
 
     private String UN, PW, host, port;
 
@@ -49,7 +46,7 @@ public class MailConfController {
 
     }
 
-    public void setSendMailSmtp(SendMailSmtp smtpConf){
+    public void setSendMailSmtp(RedWaxSendMail smtpConf){
         this.smtpConf=smtpConf;
 
     }

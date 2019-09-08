@@ -3,17 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/AESCrypto2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/AESCrypto2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Pem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Pem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Smime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/MailConfController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/MailConfController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/AliceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/AliceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/BobController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/BobController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/MailEditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/MailEditController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadConfirmationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadConfirmationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReadMailController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReceiveMailImap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/ReceiveMailImap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxReceiveMail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxReceiveMail.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxSMime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxSMime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/SendMailSmtp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/SendMailSmtp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/mailconf.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/mailconf.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxSendMail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/mail/RedWaxSendMail.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/redwax/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/alice.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/alice.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/bob.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/bob.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/mailedit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/problemeszero/mail/mailedit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/problemeszero/redwax/main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/problemeszero/redwax/main.fxml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -85,7 +87,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.red-wax [run]">
+  <component name="RunManager" selected="Gradle.red-wax [fatJar]">
     <configuration name="red-wax [fatJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -126,8 +128,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.red-wax [run]" />
         <item itemvalue="Gradle.red-wax [fatJar]" />
+        <item itemvalue="Gradle.red-wax [run]" />
       </list>
     </recent_temporary>
   </component>
