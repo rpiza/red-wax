@@ -204,6 +204,9 @@ public class MailEditController {
                         rwmAlice.setSubject(tsub.getText());
 
                         enviaCorreu.mailToBob(rwmAlice,missatgeAlice);
+                        informationalAlert("Enviat missatge certificat", "N'Alice ha enviat el missatge a ne'n Bob\n\n" +
+                             "Nom del certificat: " + missatgeAlice.getCert().getSubject() + "\nExpedit per: " + missatgeAlice.getCert().getIssuer() + "\n" +
+                             "Vàlid des de " + missatgeAlice.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeAlice.getCert().getNotAfter().toLocaleString());
 
                         System.err.println("################### Contingut del fitxer xml, que dona persistència a les dades del missatge enviat per n'Alice");
                         System.err.println("####################################################################################################################");

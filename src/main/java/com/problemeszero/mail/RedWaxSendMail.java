@@ -142,7 +142,7 @@ public class RedWaxSendMail {
             Transport t = sesh.getTransport(proto);
             System.out.println(">> ? smtp(s) ---> ## " + t.getURLName() + " \n>> ?");
             Transport.send(m);
-            informationalAlert("Missatge de correu enviat", "El missatge de correu s'ha enviat satifactòriament al destinatari: " + rwm.getTo());
+//            informationalAlert("Missatge de correu enviat", "El missatge de correu s'ha enviat satifactòriament al destinatari: " + rwm.getTo());
 
         } catch (MessagingException e) {
             informationalAlert("Alguna cosa no ha anat bé", "Mira el log de l'aplicació per obtenir més informació");
@@ -160,7 +160,7 @@ public class RedWaxSendMail {
         m.setContent(mPart, mPart.getContentType());
         m.setHeader("Content-ID", "redWax-NRR");
         Transport t = sesh.getTransport(proto);
-        informationalAlert("Missatge de correu enviat", "El missatge de correu s'ha enviat satifactòriament al destinatari: " + rwm.getTo());
+//        informationalAlert("Missatge de correu enviat", "El missatge de correu s'ha enviat satifactòriament al destinatari: " + rwm.getTo());
 
         System.out.println(">> ? smtp(s) ---> ## " + t.getURLName() + " \n>> ?");
 

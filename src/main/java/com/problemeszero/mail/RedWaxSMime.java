@@ -25,7 +25,6 @@ import org.bouncycastle.util.Store;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
@@ -38,7 +37,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 
@@ -173,7 +171,7 @@ public class RedWaxSMime {
     public void setmPartAndSignedPart(RedWaxSMime m){
 
         if (cem.equals(m.getCem())) {
-            System.err.println("Els objectes cem son iguals!!!");
+//            System.err.println("Els objectes cem son iguals!!!");
             setmPart(m.getmPart());
             setSignedPart(m.getSignedPart());
         }
