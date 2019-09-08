@@ -148,7 +148,7 @@ public class MainController {
                                 address = tx.getOutput(0).getScriptPubKey().getToAddress(Main.params);
                          } catch (Exception e){
                              address = null;
-                             System.err.println("Excepcio llegint tx: " + e.toString());
+//                             System.err.println("Excepcio llegint tx: " + e.toString());
                          }
                         if (value.isPositive()) {
                             return "Entrada  de " + MonetaryFormat.BTC.format(value) +" cap a " + address + " - " + tx.getUpdateTime();

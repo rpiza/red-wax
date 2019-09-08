@@ -214,7 +214,7 @@ public class BobController {
 
         RedWaxMessage rwm = (RedWaxMessage) redWaxList.getFocusModel().getFocusedItem();
 //        byte[] hashCem = null;
-        byte[] opRe = null;
+        byte[] opRe_K1 = null;
 
 
         System.err.println("####################################################################################################################");
@@ -234,9 +234,9 @@ public class BobController {
         //obtenir les transaccions de l addrAlice i el valor d' OPRETURN, conectant-nos a l'api de blockchain.info
         RedWaxSec aes = new RedWaxSec();
         try {
-            opRe = obtenirOpreturn(addrAlice,missatgeAlice.getHashCem("SHA256"));
+            opRe_K1 = obtenirOpreturn(addrAlice,missatgeAlice.getHashCem("SHA256"));
 
-            if (opRe!= null) { aes.setK1(opRe); }
+            if (opRe_K1!= null) { aes.setK1(opRe_K1); }
             else {
                 informationalAlert("No hem trobat el Hash(cem)!!!" ,"Per a l'adreça " + addrAlice + ",\n" +
                         "no hem trobat cap Tx amb un OPRETURN que contengui\n" +
@@ -255,7 +255,7 @@ public class BobController {
             System.err.println("Del valor K' recupertat del correu de n'Alice obtenim que\n" +
                     "K2 = " + new String(Hex.encode(aes.getK2())));
             informationalAlert("\nObtinguts els valors de K1 i K2" ,"De l'OPRETURN de l'adreça " + addrAlice + ", hem obtingut\n" +
-                    "K1="+new String(Hex.encode(opRe)) + ".\n\nDel valor de K' enviat en el missatge de n'Alice, hem obtingut\n" +
+                    "K1="+new String(Hex.encode(opRe_K1)) + ".\n\nDel valor de K' enviat en el missatge de n'Alice, hem obtingut\n" +
                     "K2=" + new String(Hex.encode(aes.getK2())));
             aes.obtainK();
             String missatge = "Molt bé!!! Has obtingut el missatge certificat!!!";

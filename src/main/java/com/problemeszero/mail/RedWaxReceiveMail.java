@@ -102,9 +102,9 @@ public class RedWaxReceiveMail {
                 Message msg = messages[i];
                 if (msg.getHeader("Content-ID")!=null)
                 if (contentId.equals(msg.getHeader("Content-ID")[0])) {
-                    System.err.println("####################################################################################################################");
-                    System.err.println("########################## Contingut dels missatges recuperats del compte de correu");
-                    System.err.println("####################################################################################################################");
+//                    System.err.println("####################################################################################################################");
+//                    System.err.println("########################## Contingut dels missatges recuperats del compte de correu");
+//                    System.err.println("####################################################################################################################");
 
                     System.out.println("MESSAGE #" + (i + 1) + ":");
                     RedWaxMessage rwm = new RedWaxMessage();
@@ -139,7 +139,7 @@ public class RedWaxReceiveMail {
     //                   System.err.println(new String(java.util.Arrays.toString(mPartBaos.toByteArray())));
     //                   Smime.byteToFile(mPartBaos.toByteArray(), "Guardar multipart", new File(Main.appProps.getProperty("Fitxers")));
 
-                         System.err.println("Content-Type=" + multi.getContentType());
+//                         System.err.println("Content-Type=" + multi.getContentType());
                          if (multi.getContentType().toLowerCase().contains("multipart/signed;")){
                              rwm.setMailSignedMultiPart(Smime.PartToBAOS(multi)); //Guardam el Multipart de tot el correu (CEM + Signatura)
                          }
@@ -148,8 +148,8 @@ public class RedWaxReceiveMail {
                      }
 
 
-                    System.err.println("####################################################################################################################");
-                    System.err.println("####################################################################################################################");
+//                    System.err.println("####################################################################################################################");
+//                    System.err.println("####################################################################################################################");
                     msg.setFlag(Flags.Flag.SEEN, true);
                     rwmList.add(rwm);
                     // to delete the message
