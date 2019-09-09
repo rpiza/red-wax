@@ -53,7 +53,7 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
 5. Execució del client amb la comanda:
 <pre>
- #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -jar build/libs/com.problemeszero.redwax-0.15.3.jar
+ #> java --module-path /opt/javafx-11.0.2/lib --add-modules javafx.fxml,javafx.controls -cp build/libs/com.problemeszero.redwax-0.15.3.jar:lib/*:. com.problemeszero.redwax.Main
 </pre>
 
 6. Carregar el wallet amb bitcoins.
