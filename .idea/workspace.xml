@@ -2,13 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/bc_fips.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Cert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Cert.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Rsa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Rsa.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/certs/1-bobCertRSA.pem" beforeDir="false" afterPath="$PROJECT_DIR$/certs/1-bobCertRSA.pem" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/certs/2-bobPrivateRSA.key" beforeDir="false" afterPath="$PROJECT_DIR$/certs/2-bobPrivateRSA.key" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/certs/3-aliceCertRSA.pem" beforeDir="false" afterPath="$PROJECT_DIR$/certs/3-aliceCertRSA.pem" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/certs/4-alicePrivateRSA.key" beforeDir="false" afterPath="$PROJECT_DIR$/certs/4-alicePrivateRSA.key" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -64,7 +63,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/bcprov-jdk15on-1.60.jar!/" />
-    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -82,6 +81,42 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.red-wax [run]">
+    <configuration name="/home/set/Documents_NAS/Formacio_i_Estudis/Grau_Telematica/TFG/Java/red-wax/build.gradle" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/build.gradle" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="red-wax [buildDependents]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="buildDependents" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="red-wax [fatJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -123,6 +158,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.red-wax [run]" />
+        <item itemvalue="Gradle.red-wax [buildDependents]" />
+        <item itemvalue="Gradle./home/set/Documents_NAS/Formacio_i_Estudis/Grau_Telematica/TFG/Java/red-wax/build.gradle" />
         <item itemvalue="Gradle.red-wax [fatJar]" />
       </list>
     </recent_temporary>
@@ -139,6 +176,16 @@
       <updated>1567272798609</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
