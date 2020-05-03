@@ -14,13 +14,10 @@ public class RedWaxSec {
     private SecretKeySpec k;
     private byte[] k1;
     private byte[] k2;
-    private byte[] iv;
 
     public RedWaxSec() {
 
         CryptoServicesRegistrar.setSecureRandom(new SecureRandom());
-        this.iv = new byte[16];
-        CryptoServicesRegistrar.getSecureRandom().nextBytes(iv);
 
         byte[] keyBytes = new byte[32];
         CryptoServicesRegistrar.getSecureRandom().nextBytes(keyBytes);

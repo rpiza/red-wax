@@ -2,17 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da233642-3abb-4ee9-8b27-6696db3ecb54" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/com.problemeszero.redwax-0.15.3.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/bc-fips-1.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/bcmail-fips-1.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/bcpkix-fips-1.0.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/bcprov-jdk15on-1.60.jar" beforeDir="false" afterPath="$PROJECT_DIR$/lib/bcprov-jdk15on-1.60.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Cert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Cert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/RedWaxSec.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Rsa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/problemeszero/crypto/Rsa.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,7 +29,17 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="red-wax" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="red-wax" type="f1a62948:ProjectNode" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -58,10 +64,10 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/bcprov-jdk15on-1.60.jar!/" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
