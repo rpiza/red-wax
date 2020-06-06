@@ -179,15 +179,12 @@ public class AliceController {
             if (result.get() == ButtonType.OK) {
                 // ... user chose OK
                 Main.bitcoin.wallet().sendCoins(SendRequest.forTx(tx));
-            }
-
-
 
             System.err.println("TxID de la TX = " + tx.getTxId());
             //Treure un Alert amb info de la transaccio
-            informationalAlert("Enviada la transacio a Bitcoin","OPRETURN=" + new String(Hex.encode(rwm.getOpReturn())) +"\n" +
+            informationalAlert("Enviada la transació a Bitcoin","OPRETURN=" + new String(Hex.encode(rwm.getOpReturn())) +"\n" +
                     "TX=" + tx.getTxId() +"\nAddr="+ rwm.getAddrAlice());
-
+            }
 //            throw new VerificationException.DuplicatedOutPoint();
 
         } catch (InsufficientMoneyException e) {
