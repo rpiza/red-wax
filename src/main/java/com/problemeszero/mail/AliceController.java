@@ -123,21 +123,21 @@ public class AliceController {
                 hText = null;
 
             } else{
-                titol = "Signatura NO vàlida";
-                hText = "La validació de la signatura del missatge NRR no és correcta.\n\n" +
+                titol = "Signatura NO vàlida!!!!";
+                hText = "La validació de la signatura del missatge NRR NO és correcta.\n\n" +
                         "Això pot ser degut a canvis realitzats pel servidor IMAP/POP3 a les capseleres MIME.\n" +
-                        "Problema detectat amb els servidors de GMAIL i possiblement amb altres";
+                        "Problema detectat en els servidors de GMAIL";
             }
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle(titol);
             alert.setHeaderText(hText);
             alert.setContentText("Vols enviar la transacció amb la K1 a la xarxa blockchain?");
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+//            Optional<ButtonType> result = alert.showAndWait();
+//            if (result.get() == ButtonType.OK) {
                 // ... user chose OK
-                enviarTx(rwmAlice);
-            }
+            enviarTx(rwmAlice,alert);
+//            }
         } else {
             System.err.println("Els CEM no són iguals. No s'envia K1 a la xarxa blockchain");
             informationalAlert("Els CEM no són iguals","No s'envia K1 a la xarxa blockchain" );
@@ -148,7 +148,7 @@ public class AliceController {
 
     }
 
-    private void enviarTx(RedWaxMessage rwm) {
+    private void enviarTx(RedWaxMessage rwm, Alert a) {
 
         System.err.println("Valor de OPRETURN = " + new String(Hex.encode(rwm.getOpReturn())));
         // Create a tx with an OP_RETURN output
@@ -175,7 +175,13 @@ public class AliceController {
 
             }
 
-            Main.bitcoin.wallet().sendCoins(SendRequest.forTx(tx));
+            Optional<ButtonType> result = a.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                // ... user chose OK
+                Main.bitcoin.wallet().sendCoins(SendRequest.forTx(tx));
+            }
+
+
 
             System.err.println("TxID de la TX = " + tx.getTxId());
             //Treure un Alert amb info de la transaccio

@@ -62,9 +62,10 @@ Per assegurar el correcte funcionament recomanam la versió **Java11** d'Oracle
 
    6.1 Llocs web on obtenir bitcoins per a la testnet:
 
+   - https://testnet-faucet.mempool.co/
+   - https://bitcoinfaucet.uo1.net/
    - https://coinfaucet.eu/en/btc-testnet/
    - http://tpfaucet.appspot.com/
-   - https://testnet-faucet.mempool.co/
 
 
 7. En el següent vídeo s'expliquen les passes a seguir per executar el client i fer l'enviament d'un correu certificat en base les especificacions del protocol:
