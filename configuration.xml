@@ -8,7 +8,7 @@
     <!--<entry key="keys_api">txs,hash,outputs,script,block_height</entry>
     <entry key="api_addr">http://api.blockcypher.com/v1/btc/test3/addrs/</entry>
     <entry key="api_addr_sufix">/full</entry>-->
-    <entry key="keys_api">,txid,vout,scriptpubkey,block_height</entry>
+    <entry key="keys_api">,txid,vout,scriptpubkey,status,block_height</entry>
     <entry key="api_addr">https://blockstream.info/testnet/api/address/</entry>
     <entry key="api_addr_sufix">/txs</entry>
     <!--Conslutla el darrer bloc de la xarxa blockchain-->
@@ -19,14 +19,14 @@
     <entry key="usuari">redwax@oneselnord.com</entry>
     <!--<entry key="port">465</entry>-->
     <entry key="port">587</entry>
-    <entry key="contrasenya">xxxxx</entry>
+    <entry key="contrasenya">xxxxxxxx</entry>
     <entry key="protocol">smtp</entry>
     <entry key="servidor">ssl0.ovh.net</entry>
 
-    <!-- Fa referencia al servidor IMAPS o POP3S -->
+    <!-- Fa referencia al servidor IMAPS o POP3S-->
     <entry key="imap.usuari">redwax@oneselnord.com</entry>
-    <entry key="imap.contrasenya">xxxxx</entry>
-    <!-- El protocol pot ser imaps o pop3s -->
+    <entry key="imap.contrasenya">xxxxxxxx</entry>
+    <!-- El protocol pot ser imaps o pop3s-->
     <entry key="imap.protocol">imaps</entry>
     <entry key="imap.servidor">ssl0.ovh.net</entry>
 

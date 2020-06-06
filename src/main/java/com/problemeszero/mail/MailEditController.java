@@ -1,9 +1,8 @@
 package com.problemeszero.mail;
 
 import com.google.common.primitives.Bytes;
-import com.problemeszero.crypto.Pem;
+import com.problemeszero.crypto.RedWaxUtils;
 import com.problemeszero.crypto.RedWaxSec;
-import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.Main;
 
 import com.problemeszero.redwax.RedWaxMessage;
@@ -14,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.mail.smime.SMIMEException;
@@ -22,6 +22,8 @@ import org.bouncycastle.util.encoders.Hex;
 
 import javax.mail.MessagingException;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -49,8 +51,8 @@ public class MailEditController {
     private RedWaxSendMail enviaCorreu = new RedWaxSendMail();
 
 
-    public void LayEditController(){
-    }
+   // public void LayEditController(){
+  //  }
 
     @FXML
     protected void handleConfigButtonAction(ActionEvent actionEvent)  throws Exception {
@@ -117,7 +119,7 @@ public class MailEditController {
                         System.err.println("Es genera K = K1 XOR K2");
                         RedWaxSec aes = new RedWaxSec(); //quan incialitzam RedWaxSec, es crea K, K1 i es calcula K2 mitjançant XOR
                         System.err.println("Obtenim el fitxer a xifrar M");
-                        byte[][] certFile = aes.cbcEncrypt(Smime.fileToByte("Document a xifrar:", new File(Main.appProps.getProperty("Fitxers"))));
+                        byte[][] certFile = aes.cbcEncrypt(RedWaxUtils.fileToByte(elegirFitxer("Document a xifrar:", new File(Main.appProps.getProperty("Fitxers")))));
                         //byte[][] certFile ={new byte[16], aes.fileToByte("Document a xifrar:")};
                         System.err.println("Es genera C(M)");
                         System.err.println("IV: " + new String(Base64.getEncoder().encode(certFile[0])));
@@ -150,7 +152,7 @@ public class MailEditController {
 
                         //Carregar la clau Publica de Bob
                         System.err.println("Xifram K2 amb la clau publica d'en Bob");
-                        bobCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de'n Bob", new File(Main.appProps.getProperty("Certificats"))));
+                        bobCert = RedWaxUtils.readCertificate(RedWaxUtils.fileToString(elegirFitxer("Introdueix el certificat de'n Bob", new File(Main.appProps.getProperty("Certificats")))));
                         byte[] kPrima = aes.wrapWithPubKey(bobCert.getPublicKey(),aes.getK2());
                         System.err.println("k2 (Hex): " + new String(Hex.encode(aes.getK2()))); //k2 en hexadecimal
                         System.err.println("kPrima (Hex): " +  new String(Hex.encode(kPrima))); //kprima en hexadecimal
@@ -164,8 +166,8 @@ public class MailEditController {
     ///////////////////////////////////////////////////////////////////////////////////////////
     //////////////// Obtenim l'adreca de Bitcoin de n'Alice ##############################################################
                         //Hem hagut de fer la classe ClickableBitcoinAddress static. La variable address i el metode addressProperty tambe
-                        System.err.println("Obtenim l'adreça de n'Alice:");
-                        rwmAlice.setAddrAlice(Main.bitcoin.wallet().currentChangeAddress().toString());
+                        rwmAlice.setAddrAlice(Main.getUTXOAddress().toString());
+                        //rwmAlice.setAddrAlice(Main.bitcoin.wallet().currentChangeAddress().toString());
                         System.err.println("Addr d'Alice: " + rwmAlice.getAddrAlice());
                         //Part five is Alice address
                         missatgeAlice.addPartToCem(rwmAlice.getAddrAlice(),"addrAlice");
@@ -178,8 +180,8 @@ public class MailEditController {
 
                         //Preparam per signar el missatge
                         System.err.println("N'Alice signa el missatge de correu");
-                        aliceCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de n'Alice", new File(Main.appProps.getProperty("Certificats"))));
-                        PrivateKey priKeyAlice = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de n'ALice", new File(Main.appProps.getProperty("Certificats"))));
+                        aliceCert = RedWaxUtils.readCertificate(RedWaxUtils.fileToString(elegirFitxer("Introdueix el certificat de n'Alice", new File(Main.appProps.getProperty("Certificats")))));
+                        PrivateKey priKeyAlice = RedWaxUtils.readPrivateKey(RedWaxUtils.fileToString(elegirFitxer("Selecciona la clau Privada de n'ALice", new File(Main.appProps.getProperty("Certificats")))));
                         //Signam el missatge i del RedWaxSMime retornat actualitzam les parts de missatgeAlice
                         missatgeAlice.setmPartAndSignedPart(missatgeAlice.createSignedMultipart(priKeyAlice,aliceCert));
 
@@ -191,7 +193,7 @@ public class MailEditController {
 
                         //Calculam el hash del cem
                         System.err.println("HashCEM = " + new String(Hex.encode(missatgeAlice.getHashCem("SHA256"))));
-                        rwmAlice.setCem(Smime.PartToBAOS(missatgeAlice.getCem()));
+                        rwmAlice.setCem(missatgeAlice.PartToBAOS(missatgeAlice.getCem()));
                         rwmAlice.setHashCem(missatgeAlice.getHashCem("SHA256"));
                         System.err.println("Signatura: "+ missatgeAlice.getSignaturaBase64());
                         rwmAlice.setMailSign(missatgeAlice.getSignaturaBytes());
@@ -209,7 +211,7 @@ public class MailEditController {
 
                         System.err.println("################### Contingut del fitxer xml, que dona persistència a les dades del missatge enviat per n'Alice");
                         System.err.println("####################################################################################################################");
-                        rwmAlice.redWaxToPersistent();
+                        rwmAlice.redWaxToPersistent(RedWaxUtils.getRedWaxFile(elegirFitxer("Nom del fitxer \"xml\"",new File(Main.appProps.getProperty("RedWax")),true)));
                         System.err.println("####################################################################################################################");
                         System.err.println("####################################################################################################################");
 
@@ -234,4 +236,16 @@ public class MailEditController {
         btnClose.getScene().getWindow().hide();
     }
 
+    private Path elegirFitxer(String title, File dir, Boolean guardaFitxer) {
+        FileChooser FC = new FileChooser();
+        FC.setTitle(title);
+        FC.setInitialDirectory(dir);
+        if (guardaFitxer)
+            return Paths.get(FC.showSaveDialog(Main.instance.stage).getAbsolutePath());
+        else
+            return Paths.get(FC.showOpenDialog(Main.instance.stage).getAbsolutePath());
+    }
+    private Path elegirFitxer(String title, File dir) {
+        return elegirFitxer(title, dir, false);
+    }
 }

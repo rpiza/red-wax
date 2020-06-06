@@ -2,11 +2,10 @@ package com.problemeszero.redwax;
 
 import com.google.common.util.concurrent.*;
 
-import com.problemeszero.crypto.Smime;
+import com.problemeszero.crypto.RedWaxUtils;
 import javafx.scene.input.*;
 import org.apache.log4j.BasicConfigurator;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Utils;
+import org.bitcoinj.core.*;
 import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.params.*;
 import org.bitcoinj.script.Script;
@@ -24,7 +23,6 @@ import javafx.stage.Stage;
 import com.problemeszero.redwax.controls.NotificationBarPane;
 import com.problemeszero.redwax.utils.GuiUtils;
 import com.problemeszero.redwax.utils.TextFieldValidator;
-import org.bouncycastle.crypto.CryptoServicesRegistrar;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 //import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 import javax.annotation.Nullable;
@@ -34,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.Security;
+import java.util.Iterator;
 import java.util.Properties;
 
 import static com.problemeszero.redwax.utils.GuiUtils.*;
@@ -102,29 +101,8 @@ public class Main extends Application {
 
         //carregam el proveidor desde la JVM - https://docs.oracle.com/cd/E19830-01/819-4712/ablsc/index.html
          Security.addProvider(new BouncyCastleProvider());
-//        Security.addProvider(new BouncyCastleFipsProvider());
-//        CryptoServicesRegistrar.setApprovedOnlyMode(false);
-//        System.err.println("Només mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
 
-//        //Carregam el fitxer de configuracio de l'aplicacio
-//        System.err.println("Llegint el fitxer de propietats configuration.xml");
-//        try {
-//            InputStream in = new FileInputStream("configuration.xml");
-//            appProps.loadFromXML(in);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        Smime.crearDirectoris();
-
-//        System.err.println("Connectant a la xarxa " + appProps.getProperty("env"));
-//
-//        if ("Testnet3".equals(appProps.getProperty("env"))) {
-//            System.err.println("OK a la xarxa Testnet3");
-//            params = TestNet3Params.get();
-//        } else {
-//            if ("Mainnet".equals(appProps.getProperty("env"))) { params = MainNetParams.get(); System.err.println("OK a la xarxa Mainnet");}
-//            else params = RegTestParams.get();
-//        }
+        RedWaxUtils.crearDirectoris();
 
         this.mainWindow = mainWindow;
         instance = this;
@@ -313,6 +291,55 @@ public class Main extends Application {
         // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
         Runtime.getRuntime().exit(0);
     }
+
+    public static Address getUTXOAddress(){
+
+        Iterator it = bitcoin.wallet().getUnspents().iterator();
+        int rr = 0;
+        double totalUTXO = 0;
+        long maxUTXO = 0;
+        int pos = 0;
+        while (it.hasNext()) {
+            TransactionOutput txouput = (TransactionOutput) it.next();
+            if (maxUTXO < txouput.getValue().value) {
+                pos = rr;
+                maxUTXO = txouput.getValue().value;
+            }
+            System.err.println(rr + " - UTXO: tx: " + txouput.getParentTransaction().getTxId()+ ", addr: " + txouput.getScriptPubKey().getToAddress(params)
+                    +" , unspent = " + txouput.getValue() + " satoshis");
+            totalUTXO = totalUTXO + txouput.getValue().value;
+            rr = rr +1;
+        }
+        System.err.println("Total disponible = " + totalUTXO/100000000L + " BTC");
+        if (totalUTXO == 0) {
+            System.err.println("L'adreça seleccionada és la currentAddress: " + bitcoin.wallet().currentChangeAddress().toString());
+            return bitcoin.wallet().currentChangeAddress();
+        }
+         System.err.println("Seleccionada UTXO: " + (pos) + " associada a l'adreça: " + bitcoin.wallet().getUnspents().get(pos).getScriptPubKey().getToAddress(params));
+         return bitcoin.wallet().getUnspents().get(pos).getScriptPubKey().getToAddress(params);
+    }
+
+    public static TransactionOutput getTransactionOutput(Address addr) throws Exception {
+        int i = 0;
+
+        System.err.println("Cercant UTXO associat a l'adreça: "+ addr.toString());
+
+        Iterator it = bitcoin.wallet().getUnspents().iterator();
+
+        while (it.hasNext()) {
+            TransactionOutput txouput = (TransactionOutput) it.next();
+            System.err.println(i + " - UTXO " + " associat a: " + txouput.getScriptPubKey().getToAddress(params).toString());
+            i= i +1;
+            if (addr.toString().equals(txouput.getScriptPubKey().getToAddress(params).toString())) {
+                System.err.println("Trobada la transacció " + txouput.getParentTransaction().getTxId()+ ", unspent = " + txouput.getValue() + " satoshis, associada a l'adreça " + addr.toString());
+                return txouput;
+            }
+        }
+        System.err.println("No s'ha trobat cap UTXO associada a l'adreça " + addr.toString());
+        throw new Exception("No UTXO disponible per a l'adreça" + addr.toString() +". Impossible enviar la transacció");
+
+    }
+
 
     public static void main(String[] args) {
         launch(args);

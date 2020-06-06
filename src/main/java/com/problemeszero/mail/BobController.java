@@ -1,13 +1,13 @@
 package com.problemeszero.mail;
 
 import com.problemeszero.crypto.RedWaxSec;
-import com.problemeszero.crypto.Pem;
-import com.problemeszero.crypto.Smime;
+import com.problemeszero.crypto.RedWaxUtils;
 import com.problemeszero.redwax.Main;
 import com.problemeszero.redwax.RedWaxMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import org.bouncycastle.cms.CMSException;
 //import org.bouncycastle.crypto.InvalidWrappingException;
@@ -20,6 +20,8 @@ import org.json.JSONObject;
 import javax.mail.*;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -82,7 +84,7 @@ public class BobController {
         if (!okSignatura) {
             titol = "Signatura NO vàlida";
             hText = "La validació de la signatura del missatge no és correcta.\n\n" +
-                    "Això pot ser degut a canvis realitzats pel servidor SMTP a les capseleres MIME.\n" +
+                    "Això pot ser degut a canvis realitzats pel servidor IMAP/POP3 a les capseleres MIME.\n" +
                     "Detectat amb els servidors de GMAIL.";
 
         } else{
@@ -110,8 +112,8 @@ public class BobController {
             RedWaxSMime missatgeBob;
 
             try {
-                bobCert = Pem.readCertificate(Pem.fileToString("Introdueix el certificat de'n Bob", new File(Main.appProps.getProperty("Certificats"))));
-                PrivateKey priKeyBob = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de'n Bob", new File(Main.appProps.getProperty("Certificats"))));
+                bobCert = RedWaxUtils.readCertificate(RedWaxUtils.fileToString(elegirFitxer("Introdueix el certificat de'n Bob", new File(Main.appProps.getProperty("Certificats")))));
+                PrivateKey priKeyBob = RedWaxUtils.readPrivateKey(RedWaxUtils.fileToString(elegirFitxer("Selecciona la clau Privada de'n Bob", new File(Main.appProps.getProperty("Certificats")))));
 //                Signam el missatge
                 missatgeBob = missatgeAlice.createSignedMultipart(priKeyBob, bobCert);
 
@@ -249,7 +251,7 @@ public class BobController {
         //Carrergam la clau privada de Bob per dexifrar kPrima
         PrivateKey priKeyBob = null;
         try {
-            priKeyBob = Pem.readPrivateKey(Pem.fileToString("Selecciona la clau Privada de'n Bob",new File(Main.appProps.getProperty("Certificats"))));
+            priKeyBob = RedWaxUtils.readPrivateKey(RedWaxUtils.fileToString(elegirFitxer("Selecciona la clau Privada de'n Bob",new File(Main.appProps.getProperty("Certificats")))));
             aes.setK2(aes.unwrapWithPrivKey(priKeyBob,Hex.decode(rwm.getkPrima())));
 
             System.err.println("Del valor K' recupertat del correu de n'Alice obtenim que\n" +
@@ -260,7 +262,7 @@ public class BobController {
             aes.obtainK();
             String missatge = "Molt bé!!! Has obtingut el missatge certificat!!!";
             try {
-                Smime.byteToFile(aes.cbcDecrypt(rwm.getCertFile()[0], rwm.getCertFile()[1]),"Guardar el fitxer desxifrat",new File(Main.appProps.getProperty("Fitxers")));
+                RedWaxUtils.byteToFile(aes.cbcDecrypt(rwm.getCertFile()[0], rwm.getCertFile()[1]), elegirFitxer("Guardar el fitxer desxifrat",new File(Main.appProps.getProperty("Fitxers")),true));
             } catch (FileNotFoundException | NullPointerException e) {
                 e.printStackTrace();
                 missatge = "Ohhh!! El missatge certificat no s'ha guardat";
@@ -272,7 +274,7 @@ public class BobController {
         } catch (ClassCastException | NullPointerException e){
             informationalAlert("Alguna cosa no ha anat bé", "Mira el log de l'aplicació per obtenir més informació");
             e.printStackTrace();
-        } catch (IOException | CertificateException  e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 //        } catch (IOException | CertificateException | InvalidWrappingException e) {
@@ -315,17 +317,19 @@ public class BobController {
 
             //Obtenim el valor del darrer bloc de la cadena per calcular el nombre de confirmacions de la nostra transaccio
             //doc = readJsonFromUrl("https://testnet.blockchain.info/latestblock");
-            doc = readJsonFromUrl(Main.appProps.getProperty("api_currentBlock"));
-            currentBlock = Long.valueOf(doc.get("height").toString()); //Long.valueOf(doc.body().text());
-            System.err.println("URI de cerca del darrer bloc la xarxa blockchain: "+ Main.appProps.getProperty("api_currentBlock") + "\n" + "Darrer bloc = " + currentBlock );
 
-            String tx;
+//            doc = readJsonFromUrl(Main.appProps.getProperty("api_currentBlock"));
+//            currentBlock = Long.valueOf(doc.get("height").toString()); //Long.valueOf(doc.body().text());
+//            System.err.println("URI de cerca del darrer bloc la xarxa blockchain: "+ Main.appProps.getProperty("api_currentBlock") + "\n" + "Darrer bloc = " + currentBlock );
+
+
 //////////////////////////////*****************https://blockstream.info/testnet/api/address/************************************///////////////////////////////////
             // int w = 1;   //blockstream.info
              JSONArray txs = readJsonArrayFromUrl(Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
              System.err.println("URI de cerca de les txs de l'adreça de n'Alice: " + Main.appProps.getProperty("api_addr") + addr + Main.appProps.getProperty("api_addr_sufix"));
              System.err.println("Claus del json = " + Arrays.toString(clau));
              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            String tx;
             Iterator itT = txs.iterator();
             while (itT.hasNext()) {
                 JSONObject level = (JSONObject) itT.next();
@@ -341,16 +345,19 @@ public class BobController {
                         System.err.println("Obtenim el valor de K1 = " + op.substring(68));
                         //En el cas de que la tx no estiqui a cap block donam el pes de block = 0
                         if (level.has(clau[4])){
-                            txBlock = level.getLong(clau[4]);
+                            JSONObject status = level.getJSONObject(clau[4]);
+                            if ("true".equals(status.get("confirmed").toString())){
+                               txBlock = status.getLong(clau[5]);}
                         } else {txBlock = 0L;}
 
                         System.err.println("Block TX del OpReturn = " + txBlock);
-                        Long confirmacions = ((currentBlock - txBlock + 1) <= currentBlock) ? (currentBlock - txBlock + 1) : 0L;
-                        if ((confirmacions>=depth)){ return Hex.decode(op.substring(68)); }
-                        else {
-                            informationalAlert("Confirmacions insuficients","La transacció té "+ confirmacions +" confirmacions.\nPer obtenir validesa són necessaries " + depth + " confirmacions.");
-                            break;
-                        }
+                        return Hex.decode(op.substring(68));
+//                        Long confirmacions = ((currentBlock - txBlock + 1) <= currentBlock) ? (currentBlock - txBlock + 1) : 0L;
+//                        if ((confirmacions>=depth)){ return Hex.decode(op.substring(68)); }
+//                        else {
+//                            informationalAlert("Confirmacions insuficients","La transacció té "+ confirmacions +" confirmacions.\nPer obtenir validesa són necessaries " + depth + " confirmacions.");
+//                            break;
+//                        }
                     }
                 }
             }
@@ -362,4 +369,16 @@ public class BobController {
 
     @FXML public void initialize() throws IOException { connectionLabel.setText(enviaCorreu.auth()); connectionLabelIMAP.setText(rebreImap.auth()); }
 
+    private Path elegirFitxer(String title, File dir, Boolean guardaFitxer) {
+        FileChooser FC = new FileChooser();
+        FC.setTitle(title);
+        FC.setInitialDirectory(dir);
+        if (guardaFitxer)
+            return Paths.get(FC.showSaveDialog(Main.instance.stage).getAbsolutePath());
+        else
+            return Paths.get(FC.showOpenDialog(Main.instance.stage).getAbsolutePath());
+    }
+    private Path elegirFitxer(String title, File dir) {
+        return elegirFitxer(title, dir, false);
+    }
 }

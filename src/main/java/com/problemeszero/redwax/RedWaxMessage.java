@@ -4,7 +4,7 @@ import com.google.common.primitives.Bytes;
 
 import javafx.beans.binding.StringExpression;
 
-import javafx.stage.FileChooser;
+//import javafx.stage.FileChooser;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -205,13 +205,13 @@ public class RedWaxMessage implements Serializable {
         this.id = id;
     }
 
-    public void redWaxToPersistent() {
+    public void redWaxToPersistent(File file) {
         try {
 
-            FileChooser FC = new FileChooser();
-            FC.setTitle("Nom del fitxer");
-            FC.setInitialDirectory(new File(Main.appProps.getProperty("RedWax")));
-            File file = new File(FC.showSaveDialog(Main.instance.stage).getAbsolutePath());
+//            FileChooser FC = new FileChooser();
+//            FC.setTitle("Nom del fitxer");
+//            FC.setInitialDirectory(new File(Main.appProps.getProperty("RedWax")));
+//            File file = new File(FC.showSaveDialog(Main.instance.stage).getAbsolutePath());
 
             JAXBContext jaxbContext = JAXBContext.newInstance(RedWaxMessage.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();

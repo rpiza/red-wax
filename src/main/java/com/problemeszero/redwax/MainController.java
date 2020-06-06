@@ -37,6 +37,8 @@ import com.problemeszero.redwax.utils.easing.ElasticInterpolator;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import static com.problemeszero.redwax.Main.bitcoin;
 
@@ -88,10 +90,7 @@ public class MainController {
 
     public void onBitcoinSetup() {
 
-        //carregam el proveidor desde la JVM - https://docs.oracle.com/cd/E19830-01/819-4712/ablsc/index.html
-        //Security.addProvider(new BouncyCastleFipsProvider());
-        //CryptoServicesRegistrar.setApprovedOnlyMode(true);
-//        System.err.println("Nomes mode aprovat:" + CryptoServicesRegistrar.isInApprovedOnlyMode());
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 
         model.setWallet(bitcoin.wallet());
         addressControl.addressProperty().bind(model.addressProperty());
@@ -135,6 +134,7 @@ public class MainController {
                 showBitcoinSyncMessage();
             }
         });
+
         Bindings.bindContent(transactionsList.getItems(), model.getTransactions());
         transactionsList.setCellFactory(new Callback<ListView<Transaction>, ListCell<Transaction>>() {
             @Override
@@ -143,19 +143,25 @@ public class MainController {
                     @Override
                     public String toString(Transaction tx) {
                         Coin value = tx.getValue(Main.bitcoin.wallet());
-                        Address address;
+                        Address addrOutput;
+                        Address addrInput;
                          try {
-                                address = tx.getOutput(0).getScriptPubKey().getToAddress(Main.params);
+                                addrOutput = tx.getOutput(0).getScriptPubKey().getToAddress(Main.params);
+                                addrInput = tx.getInput(0).getConnectedOutput().getScriptPubKey().getToAddress(Main.params);
                          } catch (Exception e){
-                             address = null;
-//                             System.err.println("Excepcio llegint tx: " + e.toString());
+                             addrOutput = null;
+                             addrInput = null;
+
                          }
                         if (value.isPositive()) {
-                            return "Entrada  de " + MonetaryFormat.BTC.format(value) +" cap a " + address + " - " + tx.getUpdateTime();
+                            System.err.println(dateFormat.format(tx.getUpdateTime()) + " - Entrada  de " + MonetaryFormat.BTC.format(value) +" cap a " + addrOutput + " - " + tx.getTxId());
+                            return dateFormat.format(tx.getUpdateTime()) + " - Entrada  de " + MonetaryFormat.BTC.format(value) + " - tx: " + tx.getTxId();
                         } else  if (value.isNegative()) {
-                            return "Sortida de " + MonetaryFormat.BTC.format(value)  +" cap a " + address + " - " + tx.getUpdateTime();
+                            System.err.println(dateFormat.format(tx.getUpdateTime()) + " - Sortida de " + MonetaryFormat.BTC.format(value)  +" de " + addrInput + " - " + tx.getTxId());
+                            return dateFormat.format(tx.getUpdateTime()) + " - Sortida de " + MonetaryFormat.BTC.format(value)  + " - tx: " + tx.getTxId();
                         }
-                        return "Pagament amb id " + tx.getHash();
+                        System.err.println("Pagament amb id " + tx.getTxId());
+                        return "Pagament amb id " + tx.getTxId();
                     }
 
                     @Override

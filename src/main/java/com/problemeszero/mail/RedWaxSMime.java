@@ -10,8 +10,6 @@ import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 
-
-import com.problemeszero.crypto.Smime;
 import com.problemeszero.redwax.RedWaxMessage;
 import com.sun.mail.util.LineInputStream;
 import org.bouncycastle.asn1.DERSet;
@@ -31,6 +29,7 @@ import org.bouncycastle.util.Store;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
@@ -43,7 +42,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
-import java.security.cert.CertStore;
 import java.security.cert.X509Certificate;
 import java.util.*;
 
@@ -60,13 +58,13 @@ public class RedWaxSMime {
         mPart = new MimeMultipart();
         cem = new MimeMultipart();
         signedPart = new MimeBodyPart();
-    };
+    }
 
     public RedWaxSMime(byte [] message) {
 
         ContentType cType = new ContentType("multipart", "signed", null);
         cType.setParameter("boundary", obtenir_boundary(message));
-        DataSource dataSource = new ByteArrayDataSource(tractar_smtp(message),cType.toString());
+        DataSource dataSource = new ByteArrayDataSource(tractar_imap(message),cType.toString());
 //        System.err.println(java.util.Arrays.toString(rwm.getMailSignedMultiPart()));
         mPart = null;
         try {
@@ -88,7 +86,7 @@ public class RedWaxSMime {
             cem = (MimeMultipart) mPart.getBodyPart(0).getContent();
             //Obtenim el bodypart amb la signatura
             signedPart = (MimeBodyPart) mPart.getBodyPart(1);
-            // byte [] cem = Smime.PartToBAOS(multi);
+            // byte [] cem = PartToBAOS(multi);
         } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
@@ -129,7 +127,7 @@ public class RedWaxSMime {
                     }
 
                     if ("deadTime".equals(part.getContentID())) {
-                        r.setDeadTimeMillis(Long.valueOf(new String(MimeBodyPartToBAOS(part, ""))));
+                        r.setDeadTimeMillis(Long.parseLong(new String(MimeBodyPartToBAOS(part, ""))));
                     }
 
                     if ("kPrima".equals(part.getContentID())) {
@@ -141,26 +139,29 @@ public class RedWaxSMime {
                     }
                 }
             }
-        } catch (MessagingException | IOException  e) {
+        }catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
     }
 
     //Signar el cem del propi obejcte
-    public RedWaxSMime createSignedMultipart_2(PrivateKey signingKey, X509Certificate signingCert)
-            throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
-        List<X509Certificate> certList = new ArrayList<X509Certificate>();
-        certList.add(signingCert);
-        Store certs = new JcaCertStore(certList);
-        ASN1EncodableVector signedAttrs = generateSignedAttributes();
-        signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
-        SMIMESignedGenerator gen = new SMIMESignedGenerator();
-        gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BCFIPS").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
-        gen.addCertificates(certs);
-        MimeBodyPart message = new MimeBodyPart();
-        message.setContent(cem);
-        return new RedWaxSMime(gen.generate(message));
-    }
+//    public RedWaxSMime createSignedMultipart_2(PrivateKey signingKey, X509Certificate signingCert)
+//            throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
+//        List<X509Certificate> certList = new ArrayList<>();
+//        certList.add(signingCert);
+//        Store certs = new JcaCertStore(certList);
+//        ASN1EncodableVector signedAttrs = generateSignedAttributes();
+//
+//        signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
+//
+//        SMIMESignedGenerator gen = new SMIMESignedGenerator();
+//        gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BCFIPS").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
+//        gen.addCertificates(certs);
+//
+//        MimeBodyPart message = new MimeBodyPart();
+//        message.setContent(cem);
+//        return new RedWaxSMime(gen.generate(message));
+//    }
 
     public RedWaxSMime createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert)
             throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
@@ -183,7 +184,7 @@ public class RedWaxSMime {
         return new RedWaxSMime(gen.generate(message));
     }
 
-    public MimeMultipart createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert,MimeBodyPart message)
+    public MimeMultipart createSignedMultipart(PrivateKey signingKey, X509Certificate signingCert, MimeBodyPart message)
             throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException, MessagingException {
         // create some smime capabilities in case someone wants to respond
         List<X509Certificate> certList = new ArrayList<X509Certificate>();
@@ -203,18 +204,18 @@ public class RedWaxSMime {
     }
 
     //Signa el cem passat com parametre
-    public MimeMultipart createSignedMultipart_2(PrivateKey signingKey, X509Certificate signingCert, MimeBodyPart message)
-            throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException {
-        List<X509Certificate> certList = new ArrayList<X509Certificate>();
-        certList.add(signingCert);
-        Store certs = new JcaCertStore(certList);
-        ASN1EncodableVector signedAttrs = generateSignedAttributes();
-        signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
-        SMIMESignedGenerator gen = new SMIMESignedGenerator();
-        gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BCFIPS").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
-        gen.addCertificates(certs);
-        return gen.generate(message);
-    }
+//    public MimeMultipart createSignedMultipart_2(PrivateKey signingKey, X509Certificate signingCert, MimeBodyPart message)
+//            throws GeneralSecurityException, OperatorCreationException, SMIMEException, IOException {
+//        List<X509Certificate> certList = new ArrayList<X509Certificate>();
+//        certList.add(signingCert);
+//        Store certs = new JcaCertStore(certList);
+//        ASN1EncodableVector signedAttrs = generateSignedAttributes();
+//        signedAttrs.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(new Date()))));
+//        SMIMESignedGenerator gen = new SMIMESignedGenerator();
+//        gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BCFIPS").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA384withRSAandMGF1", signingKey, signingCert));
+//        gen.addCertificates(certs);
+//        return gen.generate(message);
+//    }
 
     public void setmPartAndSignedPart(RedWaxSMime m){
 
@@ -251,7 +252,7 @@ public class RedWaxSMime {
     }
 
      public byte[] getHashCem(String alg) throws GeneralSecurityException,MessagingException,IOException {
-        byte[] data = Smime.PartToBAOS(cem);
+        byte[] data = PartToBAOS(cem);
 
         MessageDigest hash = MessageDigest.getInstance(alg, "BC");
 
@@ -309,6 +310,26 @@ public class RedWaxSMime {
         return output;
     }
 
+    //Escriu tot el "part" al byteArray. Incloses les capsaleres.
+    public byte [] PartToBAOS(Object p) throws MessagingException,IOException {
+
+        ByteArrayOutputStream bodyPartBaos = new ByteArrayOutputStream();
+        byte [] bPB;
+
+        if (p instanceof Multipart) {
+            Multipart part = (Multipart) p;
+            part.writeTo(bodyPartBaos);
+        } else {
+            MimeBodyPart part = (MimeBodyPart) p;
+            part.writeTo(bodyPartBaos);
+        }
+        bPB = bodyPartBaos.toByteArray();
+        bodyPartBaos.close();
+
+        return bPB;
+
+    }
+
      private String obtenir_boundary(byte[] m){
 
         ByteArrayInputStream in = new ByteArrayInputStream(m);
@@ -323,7 +344,8 @@ public class RedWaxSMime {
             e.printStackTrace();
         }
         //boundary = line. Es la marca dins dels diferents multiparts
-        return line.substring(2,line.length());
+         assert line != null;
+         return line.substring(2);
 
     }
 
@@ -334,26 +356,26 @@ public class RedWaxSMime {
     private String linebreak(String string){
         int j= 0;
         int i=string.indexOf(10);
-        String str="";
+        StringBuilder str= new StringBuilder();
         while (i>0) {
             System.err.println("Corregim modificació SMPT: Afegim un CR abans de cada NL");
 //            System.out.println("i=" + i);
 //            System.out.println(string.substring(j, i));
 //            System.out.println("length="+string.substring(j, i).length());
-            str =  str + string.substring(j, i) + (char) 0x0D + (char) 0x0A;
+            str.append(string.substring(j, i)).append((char) 0x0D).append((char) 0x0A);
 //            System.out.println("length="+ str.length());
             j=i+1;
             i=string.indexOf(10,j);
         }
-        str = str + string.substring(j);
-        return str;
+        str.append(string.substring(j));
+        return str.toString();
     }
 
 
-    //    Aquesta funcio corregeix les modificacions introduides pel servidor SMTP de Gmail al Content-type del missatge.
+//    Aquesta funcio corregeix les modificacions introduides pel servidor IMAP de Gmail al Content-type del missatge.
 //    Aquestes modificacions fan que la validacio de la signatura segui erronea.
 //    Pot ser que altres servidors indroduexien altres modificacions o que els servidor de gmail en generi de noves amb el temps.
-    private byte [] tractar_smtp (byte [] content){
+    private byte [] tractar_imap (byte [] content){
         int i,j;
         String bigStr = new String(content, StandardCharsets.UTF_8);
         byte [] small1 = {98, 111, 117, 110, 100, 97, 114, 121, 61, 34, 45, 45, 45, 45}; //boundary="----
@@ -365,13 +387,13 @@ public class RedWaxSMime {
 //        System.err.println(java.util.Arrays.toString(bigStr.substring(i-3,i).getBytes()));
         if (!bigStr.substring(i-3,i).equals("\r\n\t")) {
             bigStr = bigStr.substring(0, i) + (char) 0x0D + (char) 0x0A + (char) 0x09 + bigStr.substring(i);
-            System.err.println("Corregim modificació SMTP: \"boundary=\"----\"");
+            System.err.println("Corregim modificació IMAP/POP3: \"boundary=\"----\"");
         }
         j = bigStr.indexOf(smallStr2);
 //        System.err.println(java.util.Arrays.toString(bigStr.substring(j-2,j).getBytes()));
         if (bigStr.substring(j-2,j).equals("\r\n")) {
             bigStr = bigStr.substring(0, j - 2) + bigStr.substring(j - 2);
-            System.err.println("Corregim modificació SMPT: \" smime-type=signed-data\"");
+            System.err.println("Corregim modificació IMAP/POP3: \" smime-type=signed-data\"");
         }
 
         return bigStr.getBytes();

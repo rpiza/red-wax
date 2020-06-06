@@ -1,6 +1,6 @@
 package com.problemeszero.mail;
 
-import com.problemeszero.crypto.Smime;
+import com.problemeszero.crypto.RedWaxUtils;
 import com.problemeszero.redwax.Main;
 import com.problemeszero.redwax.RedWaxMessage;
 import javafx.event.ActionEvent;
@@ -8,12 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
+import org.bitcoinj.core.*;
 import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.InsufficientMoneyException;
-import org.bitcoinj.core.Transaction;
 import org.bitcoinj.script.ScriptBuilder;
 import org.bitcoinj.wallet.KeyChain;
+import org.bitcoinj.wallet.Protos;
 import org.bitcoinj.wallet.SendRequest;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.mail.smime.SMIMEException;
@@ -25,6 +24,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
@@ -56,10 +57,12 @@ public class AliceController {
         //comparar el cem enviat per Bob amb l'envat per Alice
         RedWaxMessage rwmAlice = null;
         try {
-            FileChooser FC = new FileChooser();
-            FC.setTitle("Nom del fitxer \"xml\"");
-            FC.setInitialDirectory(new File(Main.appProps.getProperty("RedWax")));
-            File file = new File(FC.showOpenDialog(Main.instance.stage).getAbsolutePath());
+//            FileChooser FC = new FileChooser();
+//            FC.setTitle("Nom del fitxer \"xml\"");
+//            FC.setInitialDirectory(new File(Main.appProps.getProperty("RedWax")));
+//            File file = new File(FC.showOpenDialog(Main.instance.stage).getAbsolutePath());
+
+            File file = RedWaxUtils.getRedWaxFile(elegirFitxer("Nom del fitxer \"xml\"",new File(Main.appProps.getProperty("RedWax"))));
             JAXBContext jaxbContext = JAXBContext.newInstance(RedWaxMessage.class);
 
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -80,7 +83,7 @@ public class AliceController {
 //            System.err.println("HashCEM original de n'Alice = " + new String(Hex.encode(Smime.calculateDigest(rwmAlice.getCem()))));
             System.err.println("HashCEM original de n'Alice = " + new String(Hex.encode(rwmAlice.getHashCem())));
 
-            if (Arrays.equals(Smime.PartToBAOS(missatgeBob.getCem()),rwmAlice.getCem())){
+            if (Arrays.equals(missatgeBob.PartToBAOS(missatgeBob.getCem()),rwmAlice.getCem())){
                 cemIguals = true;
             } else  no = "NO ";
 
@@ -122,7 +125,7 @@ public class AliceController {
             } else{
                 titol = "Signatura NO vàlida";
                 hText = "La validació de la signatura del missatge NRR no és correcta.\n\n" +
-                        "Això pot ser degut a canvis realitzats pel servidor SMTP a les capseleres MIME.\n" +
+                        "Això pot ser degut a canvis realitzats pel servidor IMAP/POP3 a les capseleres MIME.\n" +
                         "Problema detectat amb els servidors de GMAIL i possiblement amb altres";
             }
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -155,12 +158,13 @@ public class AliceController {
 
         // Send it to the Bitcoin network
         try{
+            tx.addInput(Main.getTransactionOutput(Address.fromString(Main.params, rwm.getAddrAlice())));
 //            System.err.println("Current:" + Main.bitcoin.wallet().currentChangeAddress().toString());
 //            System.err.println("Authentication:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.AUTHENTICATION).toString());
 //            System.err.println("Change:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString());
 //            System.err.println("Receive:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.RECEIVE_FUNDS).toString());
 //            System.err.println("Refund:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.REFUND).toString());
-            System.err.println("ChangeAddress actual del wallet:" + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString());
+            System.err.println("ChangeAddress actual del wallet: " + Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString());
             System.err.println("Addr de n'Alice: " + rwm.getAddrAlice());
             if (!rwm.getAddrAlice().equals(Main.bitcoin.wallet().currentAddress(KeyChain.KeyPurpose.CHANGE).toString())){
                 Main.bitcoin.wallet().reuseAddress(KeyChain.KeyPurpose.CHANGE,
@@ -170,13 +174,29 @@ public class AliceController {
                 System.err.println("ChangeAddress és correspon amb l'adreça de n'Alice");
 
             }
+
             Main.bitcoin.wallet().sendCoins(SendRequest.forTx(tx));
-            System.err.println("Hash de la TX = " + tx.getHash());
+
+            System.err.println("TxID de la TX = " + tx.getTxId());
             //Treure un Alert amb info de la transaccio
             informationalAlert("Enviada la transacio a Bitcoin","OPRETURN=" + new String(Hex.encode(rwm.getOpReturn())) +"\n" +
-                    "TX=" + tx.getHash() +"\nAddr="+ rwm.getAddrAlice());
+                    "TX=" + tx.getTxId() +"\nAddr="+ rwm.getAddrAlice());
+
+//            throw new VerificationException.DuplicatedOutPoint();
+
         } catch (InsufficientMoneyException e) {
             informationalAlert("Insufficient funds","You need bitcoins in this wallet in order to pay network fees.");
+        } catch (VerificationException.DuplicatedOutPoint e) {
+            //Aquest error es produeix quan la UTXO seleccionada no té capital suficient per
+            //satisfer el fee. Encara que el captial de la wallet es suficient intenta crear la transacció duplicant el UTXO.
+            //Es pot evitar l'error obtenint el fee i proporcionant els UTXO amb quantitat suficient. PENDENT
+            System.err.println("####### Excepció DuplicateOutPoint. UTXO duplicat #######################");
+            informationalAlert("UTXO duplicat", "Revisa els UTXO associats a l'adreça " + rwm.getAddrAlice()+ ".\nTal vegada disposin de capital insuficient i sigui" +
+                    " necessari reunificar-los");
+            Address temp = Main.getUTXOAddress();  //imprimir els UTXO per consola
+        } catch (Exception e) {
+            informationalAlert("Alguna cosa no ha anat bé","Revisa el log per obtenir més informació");
+            e.printStackTrace();
         }
     }
 
@@ -226,6 +246,13 @@ public class AliceController {
 
     @FXML public void initialize() throws IOException { connectionLabelIMAP.setText(rebreImap.auth()); }
 
+    private Path elegirFitxer(String title, File dir) {
+        FileChooser FC = new FileChooser();
+        FC.setTitle(title);
+        FC.setInitialDirectory(dir);
+
+        return Paths.get(FC.showOpenDialog(Main.instance.stage).getAbsolutePath());
+    }
 }
 
 
