@@ -336,7 +336,7 @@ public class Main extends Application {
             }
         }
         System.err.println("No s'ha trobat cap UTXO associada a l'adreça " + addr.toString());
-        throw new Exception("No UTXO disponible per a l'adreça" + addr.toString() +". Impossible enviar la transacció");
+        throw new Exception("No UTXO disponible per a l'adreça " + addr.toString() +". Impossible enviar la transacció");
 
     }
 

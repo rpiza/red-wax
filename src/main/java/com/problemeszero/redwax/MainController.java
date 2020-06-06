@@ -154,13 +154,13 @@ public class MainController {
 
                          }
                         if (value.isPositive()) {
-                            System.err.println(dateFormat.format(tx.getUpdateTime()) + " - Entrada  de " + MonetaryFormat.BTC.format(value) +" cap a " + addrOutput + " - " + tx.getTxId());
+                          //  System.err.println(dateFormat.format(tx.getUpdateTime()) + " - Entrada  de " + MonetaryFormat.BTC.format(value) +" cap a " + addrOutput + " - " + tx.getTxId());
                             return dateFormat.format(tx.getUpdateTime()) + " - Entrada  de " + MonetaryFormat.BTC.format(value) + " - tx: " + tx.getTxId();
                         } else  if (value.isNegative()) {
-                            System.err.println(dateFormat.format(tx.getUpdateTime()) + " - Sortida de " + MonetaryFormat.BTC.format(value)  +" de " + addrInput + " - " + tx.getTxId());
+                          //  System.err.println(dateFormat.format(tx.getUpdateTime()) + " - Sortida de " + MonetaryFormat.BTC.format(value)  +" de " + addrInput + " - " + tx.getTxId());
                             return dateFormat.format(tx.getUpdateTime()) + " - Sortida de " + MonetaryFormat.BTC.format(value)  + " - tx: " + tx.getTxId();
                         }
-                        System.err.println("Pagament amb id " + tx.getTxId());
+                       // System.err.println("Pagament amb id " + tx.getTxId());
                         return "Pagament amb id " + tx.getTxId();
                     }
 
