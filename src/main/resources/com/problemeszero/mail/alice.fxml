@@ -41,7 +41,7 @@
             <Font name="System Bold" size="13.0" />
           </font>
         </Label>
-        <Button defaultButton="true" mnemonicParsing="false" onAction="#onEnviaK1Clicked" styleClass="fat-button" text="NRR + K1" />
+        <Button defaultButton="true" mnemonicParsing="false" onAction="#onEnviaK1Clicked" styleClass="fat-button" text="Envia K1" />
       </children>
     </HBox>
     <ImageView fitHeight="243.0" fitWidth="243.0" opacity="0.28" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="-36.0" AnchorPane.rightAnchor="-34.0">

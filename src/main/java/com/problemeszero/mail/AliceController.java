@@ -88,7 +88,7 @@ public class AliceController {
             } else  no = "NO ";
 
             System.err.println("El cem rebut per Alice "+ no +"és igual a l'enviat a ne'n Bob ");
-            informationalAlert("Els cem son iguals?","N'Alice determina que el cem enviat per en Bob al missatge NRR "+ no +"és el mateix que li va enviar ella");
+            informationalAlert("Els cem son iguals?","N'Alice determina que el cem enviat per en Bob al missatge NRR1 "+ no +"és el mateix que li va enviar ella");
         } catch (NullPointerException | JAXBException| GeneralSecurityException | MessagingException | IOException e) {
             informationalAlert("Alguna cosa no ha anat bé", "Mira el log de l'aplicació per obtenir més informació");
             e.printStackTrace();
@@ -105,7 +105,7 @@ public class AliceController {
 
             no = "";
             if (!okSignatura) {no = "NO ";}
-            informationalAlert("Validació de la signatura","N'Alice determina que la signatura del missatge NRR enviat per en Bob " + no + "és correcta\n\n" +
+            informationalAlert("Validació de la signatura","N'Alice determina que la signatura del missatge NRR1 enviat per en Bob " + no + "és correcta\n\n" +
                     "Nom del certificat: " + missatgeBob.getCert().getSubject() + "\nExpedit per: " + missatgeBob.getCert().getIssuer() + "\n" +
                     "Vàlid des de " + missatgeBob.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeBob.getCert().getNotAfter().toLocaleString() );
 
@@ -124,7 +124,7 @@ public class AliceController {
 
             } else{
                 titol = "Signatura NO vàlida!!!!";
-                hText = "La validació de la signatura del missatge NRR NO és correcta.\n\n" +
+                hText = "La validació de la signatura del missatge NRR1 NO és correcta.\n\n" +
                         "Això pot ser degut a canvis realitzats pel servidor IMAP/POP3 a les capseleres MIME.\n" +
                         "Problema detectat en els servidors de GMAIL";
             }

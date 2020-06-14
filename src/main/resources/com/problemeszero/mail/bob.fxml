@@ -50,7 +50,7 @@
             <Font name="System Bold" size="13.0" />
           </font>
         </Label>
-        <Button defaultButton="true" mnemonicParsing="false" onAction="#onConfirmClicked" styleClass="fat-button" text="Envia NRR" />
+        <Button defaultButton="true" mnemonicParsing="false" onAction="#onConfirmClicked" styleClass="fat-button" text="Envia NRR1" />
         <Label alignment="CENTER_RIGHT" prefHeight="16.0" prefWidth="70.0" text=" FASE III:" textAlignment="RIGHT">
           <font>
             <Font name="System Bold" size="13.0" />

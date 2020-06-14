@@ -64,7 +64,7 @@ public class BobController {
 
 
         System.err.println("####################################################################################################################");
-        System.err.println("########################## Step 2: NRR enviat per en Bob");
+        System.err.println("########################## Step 2: NRR1 enviat per en Bob");
         System.err.println("####################################################################################################################");
         System.err.println("La validació de la signatura del correu rebut és: " + okSignatura );
         System.err.println("Certificat de " + missatgeAlice.getCert().getSubject() + ", expedit per " + missatgeAlice.getCert().getIssuer()+
@@ -88,13 +88,13 @@ public class BobController {
                     "Detectat amb els servidors de GMAIL.";
 
         } else{
-                titol = "Envia no rebuig";
+                titol = "Envia  la prova de recepció (NRR1)";
                 hText = null;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(titol);
         alert.setHeaderText(hText);
-        alert.setContentText("Vols enviar el missatge de no rebuig a n'Alice?");
+        alert.setContentText("Vols enviar el missatge NRR1 a n'Alice?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
@@ -129,7 +129,7 @@ public class BobController {
 
                 //comprovam que la signatura es correcta
                 missatgeBob.verifySignedMultipart();
-                System.err.println("La validació de la signatura del correu NRR d'en Bob és: " + missatgeBob.isOkSignatura());
+                System.err.println("La validació de la signatura del correu NRR1 d'en Bob és: " + missatgeBob.isOkSignatura());
                 System.err.println("Certificat de " + missatgeBob.getCert().getSubject() + ", expedit per " + missatgeBob.getCert().getIssuer() +
                         ". Vàlid des de \"" + missatgeBob.getCert().getNotBefore().toLocaleString() + "\" fins a \"" +
                         missatgeBob.getCert().getNotAfter().toLocaleString() + "\".");
@@ -148,11 +148,11 @@ public class BobController {
             //Enviam el missatge
 //            try {
                 enviaCorreu.mailToAlice(rwm, missatgeBob.getmPart());
-                informationalAlert("Enviat missatge NRR", "En Bob ha enviat el missatge NRR a n'Alice\n\n" +
+                informationalAlert("Enviat missatge NRR1", "En Bob ha enviat el missatge NRR1 a n'Alice\n\n" +
                         "Nom del certificat: " + missatgeBob.getCert().getSubject() + "\nExpedit per: " + missatgeBob.getCert().getIssuer() + "\n" +
                         "Vàlid des de " + missatgeBob.getCert().getNotBefore().toLocaleString() + " fins a " + missatgeBob.getCert().getNotAfter().toLocaleString());
             } catch (AuthenticationFailedException e) {
-                informationalAlert("Error d'autenticació SMTP", e.getMessage()+ "\n\nEl missatge de NRR NO s'ha enviat!!");
+                informationalAlert("Error d'autenticació SMTP", e.getMessage()+ "\n\nEl missatge de NRR1 NO s'ha enviat!!");
             } catch (ClassCastException | NullPointerException e) {
                 informationalAlert("Alguna cosa no ha anat bé", "Mira el log de l'aplicació per obtenir més informació");
                 e.printStackTrace();

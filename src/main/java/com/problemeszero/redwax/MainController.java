@@ -247,7 +247,7 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/problemeszero/mail/alice.fxml"));
 
             Main.instance.stage = new Stage();
-            Main.instance.stage.setTitle("FASE II: N'Aice valida el NRR de'n Bob i publica la K1");
+            Main.instance.stage.setTitle("FASE II: N'Aice valida el NRR1 de'n Bob i publica la K1");
             Main.instance.stage.initOwner(readButton.getScene().getWindow());
             Main.instance.stage.setScene(new Scene((Parent) loader.load()));
 
@@ -269,7 +269,7 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/problemeszero/mail/bob.fxml"));
 
             Main.instance.stage = new Stage();
-            Main.instance.stage.setTitle("FASE I - Step 2: En Bob decideix si envia el NRR -- FASE III: En Bob obtè la K1 i desxifra el document");
+            Main.instance.stage.setTitle("FASE I - Step 2: En Bob decideix si envia el NRR1 -- FASE III: En Bob obtè la K1 i desxifra el document");
             Main.instance.stage.initOwner(readButton.getScene().getWindow());
             Main.instance.stage.setScene(new Scene((Parent) loader.load()));
 
